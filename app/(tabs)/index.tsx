@@ -231,6 +231,24 @@ export default function HomeScreen() {
             color="primary"
             onPress={() => router.push("/cognitive-check")}
           />
+          <ActionCard
+            title="Omron Devices"
+            icon="antenna.radiowaves.left.and.right"
+            color="primary"
+            onPress={() => router.push("/omron-devices")}
+          />
+          <ActionCard
+            title="Live Vitals Monitor"
+            icon="waveform.path.ecg"
+            color="error"
+            onPress={() => router.push("/realtime-vitals")}
+          />
+          <ActionCard
+            title="Milestones & Badges"
+            icon="trophy.fill"
+            color="warning"
+            onPress={() => router.push("/milestones")}
+          />
         </View>
       </ScrollView>
     </ScreenContainer>

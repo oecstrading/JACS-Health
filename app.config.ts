@@ -28,11 +28,11 @@ const schemeFromBundleId = `manus${timestamp}`;
 
 const env = {
   // App branding - update these values directly (do not use env vars)
-  appName: "AI Health Companion",
+  appName: "HealthMate",
   appSlug: "health_companion",
   // S3 URL of the app logo - set this to the URL returned by generate_image when creating custom logo
   // Leave empty to use the default icon from assets/images/icon.png
-  logoUrl: "",
+  logoUrl: "https://private-us-east-1.manuscdn.com/sessionFile/lPi99jeKjZIJNCi6tdrrvq/sandbox/HEoont6tpGB4LkKzlX3G8e-img-1_1770565240000_na1fn_aGVhbHRoLWNvbXBhbmlvbi1sb2dv.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvbFBpOTlqZUtqWklKTkNpNnRkcnJ2cS9zYW5kYm94L0hFb29udDZ0cEdCNExrS3psWDNHOGUtaW1nLTFfMTc3MDU2NTI0MDAwMF9uYTFmbl9hR1ZoYkhSb0xXTnZiWEJoYm1sdmJpMXNiMmR2LnBuZz94LW9zcy1wcm9jZXNzPWltYWdlL3Jlc2l6ZSx3XzE5MjAsaF8xOTIwL2Zvcm1hdCx3ZWJwL3F1YWxpdHkscV84MCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=JM8WTEgTZS8zOa9Iz9zmObk6DG4MMAYTbDvld7JBb8rFxHnI7CvzaEdbC4Hfi~zPyWQd3CY57v4sGJIB5xWypUt2Z1mL-p6MhK1NaHVL8wesYNLyI1tXr4-Z7UVaAp9z8SmvyMQG5wf3riAphuFZInajVtnSWEUICjHN0EOp9pai5TPf-quuSWHxrzfyT7MP18bSUAsijU7s2F3L~A0GUROhQ8wcfUDbrbUJ-elH9tvKuuJFoDL99Mlp~YmJwDFgxcsrYl3qgTaCtha8XatcEANrCohW6bOFECgOl9tgrMZqezj~vUHEL8yD6oW5vVSwK5cNWcS~5adDeOG1F2fAlQ__",
   scheme: schemeFromBundleId,
   iosBundleId: bundleId,
   androidPackage: bundleId,
@@ -43,7 +43,7 @@ const config: ExpoConfig = {
   slug: env.appSlug,
   version: "1.0.0",
   orientation: "portrait",
-  icon: "./assets/images/icon.png",
+  icon: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663129142386/UZykvIgyKgXxArxm.png",
   scheme: env.scheme,
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
@@ -57,7 +57,7 @@ const config: ExpoConfig = {
   android: {
     adaptiveIcon: {
       backgroundColor: "#E6F4FE",
-      foregroundImage: "./assets/images/android-icon-foreground.png",
+      foregroundImage: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663129142386/DJqsbQDSEyZOgpse.png",
       backgroundImage: "./assets/images/android-icon-background.png",
       monochromeImage: "./assets/images/android-icon-monochrome.png",
     },
@@ -82,7 +82,7 @@ const config: ExpoConfig = {
   web: {
     bundler: "metro",
     output: "static",
-    favicon: "./assets/images/favicon.png",
+    favicon: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663129142386/xzypbNibxNIvuCiO.png",
   },
   plugins: [
     "expo-router",
@@ -102,7 +102,7 @@ const config: ExpoConfig = {
     [
       "expo-splash-screen",
       {
-        image: "./assets/images/splash-icon.png",
+        image: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663129142386/GIoxyTwgfqLGpEpQ.png",
         imageWidth: 200,
         resizeMode: "contain",
         backgroundColor: "#ffffff",

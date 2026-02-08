@@ -170,16 +170,61 @@ function levenshteinDistance(str1: string, str2: string): number {
 }
 
 /**
- * Log medication via voice
+ * Check for drug interactions
+ */
+export async function checkDrugInteractions(
+  newMedication: string,
+  existingMedications: string[]
+): Promise<{
+  hasInteractions: boolean;
+  interactions: Array<{
+    medication: string;
+    severity: "minor" | "moderate" | "severe";
+    description: string;
+  }>;
+}> {
+  // Import medication interactions database
+  const { checkMedicationInteractions } = await import("./medication-interactions");
+  
+  const result = checkMedicationInteractions(newMedication, existingMedications);
+  
+  const interactions = result.interactions.map(interaction => ({
+    medication: interaction.drug2,
+    severity: interaction.severity,
+    description: interaction.description,
+  }));
+  
+  return {
+    hasInteractions: interactions.length > 0,
+    interactions,
+  };
+}
+
+/**
+ * Log medication via voice with interaction checking
  */
 export async function logMedicationVoice(
-  voiceText: string
-): Promise<MedicationLogEntry | null> {
+  voiceText: string,
+  existingMedications: string[] = []
+): Promise<{
+  entry: MedicationLogEntry | null;
+  interactions: Array<{
+    medication: string;
+    severity: "minor" | "moderate" | "severe";
+    description: string;
+  }>;
+}> {
   const command = parseVoiceCommand(voiceText);
 
   if (command.intent !== "log_medication" || !command.medicationName) {
-    return null;
+    return { entry: null, interactions: [] };
   }
+
+  // Check for drug interactions
+  const interactionCheck = await checkDrugInteractions(
+    command.medicationName,
+    existingMedications
+  );
 
   const entry: MedicationLogEntry = {
     id: `med-${Date.now()}`,
@@ -192,7 +237,10 @@ export async function logMedicationVoice(
   // In production, save to AsyncStorage
   console.log("Medication logged via voice:", entry);
 
-  return entry;
+  return {
+    entry,
+    interactions: interactionCheck.interactions,
+  };
 }
 
 /**

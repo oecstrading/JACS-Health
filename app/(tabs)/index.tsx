@@ -213,6 +213,24 @@ export default function HomeScreen() {
             color="primary"
             onPress={() => router.push("/wellness-dashboard")}
           />
+          <ActionCard
+            title="Medical Visit Mode"
+            icon="waveform"
+            color="primary"
+            onPress={() => router.push("/medical-visit-mode")}
+          />
+          <ActionCard
+            title="Stability Monitor"
+            icon="figure.walk"
+            color="warning"
+            onPress={() => router.push("/stability-monitor")}
+          />
+          <ActionCard
+            title="Brain Health Check"
+            icon="brain"
+            color="primary"
+            onPress={() => router.push("/cognitive-check")}
+          />
         </View>
       </ScrollView>
     </ScreenContainer>

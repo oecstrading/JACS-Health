@@ -1,58 +1,172 @@
-import { ScrollView, Text, View, Pressable, TextInput, type ViewStyle } from "react-native";
-import { useState } from "react";
+import { ScrollView, Text, View, Pressable, type ViewStyle } from "react-native";
+import { useState, useEffect } from "react";
 import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
+import {
+  getMedications,
+  saveMedications,
+  getVitals,
+  getActivities,
+  type Medication,
+  type Vital,
+} from "@/lib/storage";
+import {
+  requestNotificationPermissions,
+  scheduleMedicationReminder,
+  rescheduleMedicationReminders,
+} from "@/lib/notifications";
 
 type HealthTab = "medications" | "vitals" | "activity";
-
-interface Medication {
-  id: string;
-  name: string;
-  dosage: string;
-  time: string;
-  taken: boolean;
-}
-
-interface Vital {
-  id: string;
-  type: string;
-  icon: React.ComponentProps<typeof IconSymbol>["name"];
-  value: string;
-  unit: string;
-  status: "normal" | "warning" | "error";
-}
 
 /**
  * Health Screen - Comprehensive Health Tracking
  *
- * Track medications, vitals, and daily activities with large, easy-to-use interface.
+ * Track medications, vitals, and daily activities with persistent data storage.
  */
 export default function HealthScreen() {
   const colors = useColors();
   const [activeTab, setActiveTab] = useState<HealthTab>("medications");
+  const [medications, setMedications] = useState<Medication[]>([]);
+  const [vitals, setVitals] = useState<Vital[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Sample data - in production, this would come from AsyncStorage or database
-  const [medications, setMedications] = useState<Medication[]>([
-    { id: "1", name: "Lisinopril", dosage: "10mg", time: "8:00 AM", taken: true },
-    { id: "2", name: "Metformin", dosage: "500mg", time: "8:00 AM", taken: true },
-    { id: "3", name: "Atorvastatin", dosage: "20mg", time: "8:00 PM", taken: false },
-  ]);
+  // Load data from AsyncStorage on mount
+  useEffect(() => {
+    loadData();
+    setupNotifications();
+  }, []);
 
-  const [vitals] = useState<Vital[]>([
-    { id: "1", type: "Blood Pressure", icon: "heart.fill", value: "120/80", unit: "mmHg", status: "normal" },
-    { id: "2", type: "Heart Rate", icon: "heart.fill", value: "72", unit: "bpm", status: "normal" },
-    { id: "3", type: "Weight", icon: "figure.walk", value: "165", unit: "lbs", status: "normal" },
-    { id: "4", type: "Blood Glucose", icon: "heart.fill", value: "105", unit: "mg/dL", status: "normal" },
-  ]);
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const [medsData, vitalsData] = await Promise.all([
+        getMedications(),
+        getVitals(),
+      ]);
 
-  const handleToggleMedication = (id: string) => {
+      // Filter medications for today
+      const today = new Date().toISOString().split("T")[0];
+      const todayMeds = medsData.filter(m => m.date === today);
+
+      // If no medications for today, create default ones
+      if (todayMeds.length === 0 && medsData.length === 0) {
+        const defaultMeds: Medication[] = [
+          {
+            id: "1",
+            name: "Lisinopril",
+            dosage: "10mg",
+            time: "8:00 AM",
+            taken: false,
+            date: today,
+          },
+          {
+            id: "2",
+            name: "Metformin",
+            dosage: "500mg",
+            time: "8:00 AM",
+            taken: false,
+            date: today,
+          },
+          {
+            id: "3",
+            name: "Atorvastatin",
+            dosage: "20mg",
+            time: "8:00 PM",
+            taken: false,
+            date: today,
+          },
+        ];
+        await saveMedications(defaultMeds);
+        setMedications(defaultMeds);
+      } else {
+        setMedications(todayMeds);
+      }
+
+      // Get recent vitals (last 7 days)
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      const recentVitals = vitalsData.filter(
+        v => new Date(v.date) >= sevenDaysAgo
+      );
+
+      // If no vitals, create sample data
+      if (recentVitals.length === 0) {
+        const defaultVitals: Vital[] = [
+          {
+            id: "1",
+            type: "blood_pressure",
+            value: "120/80",
+            unit: "mmHg",
+            status: "normal",
+            date: today,
+          },
+          {
+            id: "2",
+            type: "heart_rate",
+            value: "72",
+            unit: "bpm",
+            status: "normal",
+            date: today,
+          },
+          {
+            id: "3",
+            type: "weight",
+            value: "165",
+            unit: "lbs",
+            status: "normal",
+            date: today,
+          },
+          {
+            id: "4",
+            type: "blood_glucose",
+            value: "105",
+            unit: "mg/dL",
+            status: "normal",
+            date: today,
+          },
+        ];
+        setVitals(defaultVitals);
+      } else {
+        setVitals(recentVitals);
+      }
+    } catch (error) {
+      console.error("Error loading health data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const setupNotifications = async () => {
+    const hasPermission = await requestNotificationPermissions();
+    if (hasPermission) {
+      // Reschedule medication reminders
+      const meds = await getMedications();
+      await rescheduleMedicationReminders(meds);
+    }
+  };
+
+  const handleToggleMedication = async (id: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setMedications(meds =>
-      meds.map(med => (med.id === id ? { ...med, taken: !med.taken } : med))
+
+    const updatedMeds = medications.map(med =>
+      med.id === id ? { ...med, taken: !med.taken } : med
     );
+    setMedications(updatedMeds);
+
+    // Save to AsyncStorage
+    try {
+      const allMeds = await getMedications();
+      const otherMeds = allMeds.filter(m => m.id !== id);
+      const updatedMed = updatedMeds.find(m => m.id === id);
+      if (updatedMed) {
+        await saveMedications([...otherMeds, updatedMed]);
+      }
+    } catch (error) {
+      console.error("Error saving medication:", error);
+    }
   };
 
   const handleTabChange = (tab: HealthTab) => {
@@ -72,6 +186,50 @@ export default function HealthScreen() {
         return colors.muted;
     }
   };
+
+  const getVitalIcon = (type: Vital["type"]): React.ComponentProps<typeof IconSymbol>["name"] => {
+    switch (type) {
+      case "blood_pressure":
+      case "heart_rate":
+      case "blood_glucose":
+        return "heart.fill";
+      case "weight":
+        return "figure.walk";
+      case "temperature":
+        return "thermometer";
+      default:
+        return "heart.fill";
+    }
+  };
+
+  const getVitalLabel = (type: Vital["type"]): string => {
+    switch (type) {
+      case "blood_pressure":
+        return "Blood Pressure";
+      case "heart_rate":
+        return "Heart Rate";
+      case "weight":
+        return "Weight";
+      case "blood_glucose":
+        return "Blood Glucose";
+      case "temperature":
+        return "Temperature";
+      default:
+        return type;
+    }
+  };
+
+  if (loading) {
+    return (
+      <ScreenContainer>
+        <View className="flex-1 items-center justify-center">
+          <Text className="text-xl text-muted" style={{ lineHeight: 28 }}>
+            Loading health data...
+          </Text>
+        </View>
+      </ScreenContainer>
+    );
+  }
 
   return (
     <ScreenContainer>
@@ -173,49 +331,57 @@ export default function HealthScreen() {
             <Text className="text-xl font-semibold text-foreground mb-2" style={{ lineHeight: 28 }}>
               Today's Medications
             </Text>
-            {medications.map(med => (
-              <Pressable
-                key={med.id}
-                onPress={() => handleToggleMedication(med.id)}
-                style={({ pressed }) => [
-                  {
-                    transform: [{ scale: pressed ? 0.98 : 1 }],
-                    opacity: pressed ? 0.9 : 1,
-                  } as ViewStyle,
-                ]}
-              >
-                <View className="bg-surface rounded-3xl p-6 border border-border">
-                  <View className="flex-row items-center gap-4">
-                    <Pressable
-                      onPress={() => handleToggleMedication(med.id)}
-                      style={({ pressed }) => [
-                        {
-                          transform: [{ scale: pressed ? 0.95 : 1 }],
-                          width: 48,
-                          height: 48,
-                          borderRadius: 24,
-                          borderWidth: 3,
-                          borderColor: med.taken ? colors.success : colors.border,
-                          backgroundColor: med.taken ? colors.success : "transparent",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        } as ViewStyle,
-                      ]}
-                    >
-                      {med.taken && <IconSymbol name="checkmark.circle.fill" size={32} color="#ffffff" />}
-                    </Pressable>
-                    <View className="flex-1">
-                      <Text className="text-xl font-semibold text-foreground" style={{ lineHeight: 28 }}>
-                        {med.name}
-                      </Text>
-                      <Text className="text-lg text-muted mt-1" style={{ lineHeight: 24 }}>
-                        {med.dosage} • {med.time}
-                      </Text>
+            {medications.length === 0 ? (
+              <View className="bg-surface rounded-3xl p-8 border border-border items-center">
+                <Text className="text-lg text-muted text-center" style={{ lineHeight: 26 }}>
+                  No medications scheduled for today
+                </Text>
+              </View>
+            ) : (
+              medications.map(med => (
+                <Pressable
+                  key={med.id}
+                  onPress={() => handleToggleMedication(med.id)}
+                  style={({ pressed }) => [
+                    {
+                      transform: [{ scale: pressed ? 0.98 : 1 }],
+                      opacity: pressed ? 0.9 : 1,
+                    } as ViewStyle,
+                  ]}
+                >
+                  <View className="bg-surface rounded-3xl p-6 border border-border">
+                    <View className="flex-row items-center gap-4">
+                      <Pressable
+                        onPress={() => handleToggleMedication(med.id)}
+                        style={({ pressed }) => [
+                          {
+                            transform: [{ scale: pressed ? 0.95 : 1 }],
+                            width: 48,
+                            height: 48,
+                            borderRadius: 24,
+                            borderWidth: 3,
+                            borderColor: med.taken ? colors.success : colors.border,
+                            backgroundColor: med.taken ? colors.success : "transparent",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          } as ViewStyle,
+                        ]}
+                      >
+                        {med.taken && <IconSymbol name="checkmark.circle.fill" size={32} color="#ffffff" />}
+                      </Pressable>
+                      <View className="flex-1">
+                        <Text className="text-xl font-semibold text-foreground" style={{ lineHeight: 28 }}>
+                          {med.name}
+                        </Text>
+                        <Text className="text-lg text-muted mt-1" style={{ lineHeight: 24 }}>
+                          {med.dosage} • {med.time}
+                        </Text>
+                      </View>
                     </View>
                   </View>
-                </View>
-              </Pressable>
-            ))}
+                </Pressable>
+              ))
+            )}
             <Pressable
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -244,39 +410,47 @@ export default function HealthScreen() {
         {activeTab === "vitals" && (
           <View className="gap-4 pb-8">
             <Text className="text-xl font-semibold text-foreground mb-2" style={{ lineHeight: 28 }}>
-              Today's Vitals
+              Recent Vitals
             </Text>
-            {vitals.map(vital => (
-              <View key={vital.id} className="bg-surface rounded-3xl p-6 border border-border">
-                <View className="flex-row items-center gap-4">
-                  <View
-                    className="w-16 h-16 rounded-2xl items-center justify-center"
-                    style={{ backgroundColor: `${getStatusColor(vital.status)}20` }}
-                  >
-                    <IconSymbol name={vital.icon} size={32} color={getStatusColor(vital.status)} />
-                  </View>
-                  <View className="flex-1">
-                    <Text className="text-lg text-muted" style={{ lineHeight: 24 }}>
-                      {vital.type}
-                    </Text>
-                    <Text className="text-2xl font-bold text-foreground mt-1" style={{ lineHeight: 32 }}>
-                      {vital.value} <Text className="text-lg text-muted">{vital.unit}</Text>
-                    </Text>
-                  </View>
-                  <View
-                    className="px-4 py-2 rounded-full"
-                    style={{ backgroundColor: `${getStatusColor(vital.status)}20` }}
-                  >
-                    <Text
-                      className="text-sm font-semibold capitalize"
-                      style={{ color: getStatusColor(vital.status), lineHeight: 18 }}
+            {vitals.length === 0 ? (
+              <View className="bg-surface rounded-3xl p-8 border border-border items-center">
+                <Text className="text-lg text-muted text-center" style={{ lineHeight: 26 }}>
+                  No vitals recorded yet
+                </Text>
+              </View>
+            ) : (
+              vitals.map(vital => (
+                <View key={vital.id} className="bg-surface rounded-3xl p-6 border border-border">
+                  <View className="flex-row items-center gap-4">
+                    <View
+                      className="w-16 h-16 rounded-2xl items-center justify-center"
+                      style={{ backgroundColor: `${getStatusColor(vital.status)}20` }}
                     >
-                      {vital.status}
-                    </Text>
+                      <IconSymbol name={getVitalIcon(vital.type)} size={32} color={getStatusColor(vital.status)} />
+                    </View>
+                    <View className="flex-1">
+                      <Text className="text-lg text-muted" style={{ lineHeight: 24 }}>
+                        {getVitalLabel(vital.type)}
+                      </Text>
+                      <Text className="text-2xl font-bold text-foreground mt-1" style={{ lineHeight: 32 }}>
+                        {vital.value} <Text className="text-lg text-muted">{vital.unit}</Text>
+                      </Text>
+                    </View>
+                    <View
+                      className="px-4 py-2 rounded-full"
+                      style={{ backgroundColor: `${getStatusColor(vital.status)}20` }}
+                    >
+                      <Text
+                        className="text-sm font-semibold capitalize"
+                        style={{ color: getStatusColor(vital.status), lineHeight: 18 }}
+                      >
+                        {vital.status}
+                      </Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-            ))}
+              ))
+            )}
             <Pressable
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

@@ -136,3 +136,45 @@
 - [ ] Feature overview document
 - [ ] Privacy policy
 - [ ] Terms of service
+
+## New Enhancements (Phase 2)
+
+### Data Persistence
+- [x] Create AsyncStorage utility functions for health data
+- [x] Implement medication data persistence
+- [x] Implement vitals data persistence
+- [x] Implement activity data persistence
+- [x] Implement settings persistence
+- [ ] Add data migration and versioning
+
+### Push Notifications
+- [x] Set up Expo Notifications configuration
+- [x] Create notification scheduling system
+- [x] Implement medication reminder notifications
+- [x] Implement appointment reminder notifications
+- [x] Add notification permission handling
+- [ ] Create notification settings UI
+
+### Caregiver Connection
+- [x] Create caregiver invitation system
+- [x] Build caregiver dashboard
+- [x] Implement real-time health data sharing
+- [x] Add caregiver alert system for critical events
+- [ ] Create two-way messaging between user and caregivers
+- [ ] Implement privacy controls for data sharing
+
+### Data Visualization
+- [x] Install charting library (react-native-chart-kit or victory-native)
+- [x] Create vitals trend charts (line charts)
+- [x] Create activity progress charts (bar charts)
+- [x] Create medication adherence visualization
+- [x] Add health score gauge visualization
+- [x] Implement time range selector (week, month, year)
+
+### Appointment Scheduling
+- [x] Create appointment list view
+- [x] Implement add appointment form
+- [x] Add appointment reminders
+- [x] Create calendar view for appointments
+- [x] Implement appointment notifications
+- [x] Add doctor/clinic information to appointments

@@ -127,10 +127,25 @@ export default function HomeScreen() {
             title="View Health Insights"
             icon="chart.bar.fill"
             color="primary"
-            onPress={() => {
-              // TODO: Navigate to insights
-              alert("Health insights coming soon");
-            }}
+            onPress={() => router.push("/insights")}
+          />
+          <ActionCard
+            title="Telemedicine"
+            icon="video.fill"
+            color="primary"
+            onPress={() => router.push("/telemedicine")}
+          />
+          <ActionCard
+            title="Community"
+            icon="person.3.fill"
+            color="success"
+            onPress={() => router.push("/social")}
+          />
+          <ActionCard
+            title="Health Docs"
+            icon="book.fill"
+            color="primary"
+            onPress={() => router.push("/health-docs")}
           />
         </View>
       </ScrollView>

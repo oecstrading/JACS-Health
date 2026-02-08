@@ -244,3 +244,37 @@
 - [x] Include activity log in report
 - [x] Add charts and visualizations to report
 - [x] Implement export and share functionality
+
+## New Features (Phase 5)
+
+### Telemedicine Video Calling
+- [x] Integrate video calling library (expo-video or WebRTC)
+- [x] Create doctor/provider directory
+- [x] Implement appointment scheduling for video calls
+- [x] Build video call interface with controls
+- [x] Add screen sharing for showing health data
+- [x] Implement call recording (with consent)
+- [x] Add waiting room feature
+- [x] Create post-call summary and notes
+
+### Medication Refill Reminders
+- [x] Add prescription quantity tracking
+- [x] Implement refill reminder notifications (7 days before)
+- [x] Create pharmacy directory and integration
+- [x] Add one-tap refill ordering
+- [x] Track refill history
+- [x] Add medication cost tracking
+- [x] Implement insurance information storage
+- [x] Create pharmacy contact management
+
+### Social Features
+- [x] Create user profile system
+- [x] Implement friend/connection system
+- [x] Build health challenges feature
+- [x] Create achievement badge system
+- [x] Implement leaderboards for challenges
+- [x] Build community forum
+- [x] Add post creation and commenting
+- [x] Implement likes and reactions
+- [x] Add private messaging between users
+- [x] Create health tip sharing feature

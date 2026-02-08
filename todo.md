@@ -395,3 +395,41 @@
 - [x] Create symptom reports for doctors
 - [x] Add symptom-medication correlation analysis
 - [x] Implement symptom alerts
+
+## New Features (Phase 9)
+
+### Medication Photo Recognition
+- [x] Integrate camera for pill photo capture
+- [x] Implement AI-powered pill identification
+- [x] Extract medication name, dosage, and shape from photo
+- [x] Auto-fill medication details from recognition results
+- [x] Add confidence score display
+- [x] Implement manual correction interface
+- [x] Store pill photos for reference
+- [x] Add photo history
+
+### Health Insurance Card Scanner
+- [x] Create insurance card scanner screen
+- [x] Implement OCR for card text extraction
+- [x] Extract insurance company name
+- [x] Extract policy number
+- [x] Extract group number
+- [x] Extract member ID
+- [x] Store insurance information securely
+- [x] Add insurance card photo storage
+- [x] Implement insurance info editing
+- [x] Add multiple insurance card support
+
+### Wellness Score Dashboard
+- [x] Create wellness score calculation algorithm
+- [x] Combine medication adherence into score
+- [x] Combine vitals trends into score
+- [x] Combine activity levels into score
+- [x] Combine nutrition data into score
+- [x] Combine sleep data into score
+- [x] Build wellness score visualization
+- [x] Add daily/weekly/monthly score trends
+- [x] Implement personalized improvement tips
+- [x] Create score breakdown by category
+- [x] Add goal-based score adjustments
+- [x] Implement score history tracking

@@ -195,6 +195,24 @@ export default function HomeScreen() {
             color="warning"
             onPress={() => router.push("/symptom-diary")}
           />
+          <ActionCard
+            title="Pill Identifier"
+            icon="camera.fill"
+            color="primary"
+            onPress={() => router.push("/pill-identifier")}
+          />
+          <ActionCard
+            title="Insurance Scanner"
+            icon="creditcard.fill"
+            color="success"
+            onPress={() => router.push("/insurance-scanner")}
+          />
+          <ActionCard
+            title="Wellness Score"
+            icon="chart.bar.fill"
+            color="primary"
+            onPress={() => router.push("/wellness-dashboard")}
+          />
         </View>
       </ScrollView>
     </ScreenContainer>

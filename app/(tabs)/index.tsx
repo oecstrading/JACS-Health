@@ -147,6 +147,12 @@ export default function HomeScreen() {
             color="primary"
             onPress={() => router.push("/health-docs")}
           />
+          <ActionCard
+            title="Caregiver Dashboard"
+            icon="person.2.fill"
+            color="success"
+            onPress={() => router.push("/caregiver-dashboard")}
+          />
         </View>
       </ScrollView>
     </ScreenContainer>

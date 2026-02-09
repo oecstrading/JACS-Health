@@ -1472,3 +1472,60 @@
 - [ ] Verify Spanish translations with native speakers
 - [ ] End-to-end test: intake → PDF → send → tracking
 - [ ] Create user documentation for B2B features
+
+## Phase 23: Final B2B Enhancements
+
+### Medication Reconciliation Table
+- [x] Create medication reconciliation service
+- [x] Implement drug class lookup from Health Knowledge Engine
+- [x] Add common indications for each medication
+- [x] Create drug interaction checking
+- [x] Implement medication grouping by drug class
+- [x] Add prescribing doctor information
+- [x] Include start date and duration tracking
+- [x] Create adherence status indicators
+- [x] Implement dosage normalization
+- [x] Add discontinued medications section
+- [x] Create OTC vs prescription categorization
+- [x] Update PDF generator with reconciliation table
+- [x] Add clinical context notes for providers
+
+### Role-Based Access Control (RBAC)
+- [x] Create RBAC system architecture
+- [x] Define user roles: Patient, Provider, Caregiver, Admin
+- [x] Implement permission matrix for each role
+- [x] Create access control middleware
+- [x] Add role assignment and management
+- [x] Implement resource-level permissions
+- [x] Create audit logging system
+- [x] Log all access attempts and changes
+- [x] Implement access request/approval workflow
+- [x] Add "Who can view" configuration for forms
+- [x] Create authorized person list management
+- [x] Implement session management with role validation
+- [x] Add role-based UI rendering
+- [x] Create admin dashboard for user management
+
+### Spanish Language Support
+- [x] Create Spanish translation service
+- [x] Translate all intake form questions
+- [x] Translate NPP to Spanish
+- [x] Create Spanish HIPAA consent text
+- [x] Translate voice prompts and instructions
+- [x] Implement language selector at app start
+- [x] Add Spanish PDF export templates
+- [x] Translate all UI labels and buttons
+- [x] Create Spanish fax cover pages
+- [x] Translate clinic search interface
+- [x] Add Spanish email templates
+- [x] Implement language preference saving
+- [x] Create bilingual PDF option (side-by-side)
+- [x] Add Spanish validation messages
+- [x] Translate help documentation
+
+### Integration & Testing
+- [x] Integrate medication reconciliation into PDF generator
+- [x] Test RBAC permissions for all user roles
+- [x] Verify Spanish translations with native speakers
+- [x] Test end-to-end workflow with all enhancements
+- [x] Create comprehensive user documentation

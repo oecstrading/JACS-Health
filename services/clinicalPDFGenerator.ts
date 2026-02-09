@@ -8,6 +8,7 @@
 import type { PatientIntakeForm } from "./patientIntake";
 import { generatePDF, type PDFOptions } from "react-native-html-to-pdf";
 import * as FileSystem from "expo-file-system";
+import MedicationReconciliationService from "./medicationReconciliation";
 
 export interface PDFGenerationOptions {
   includeVoiceConsentQR?: boolean;
@@ -579,26 +580,35 @@ class ClinicalPDFGeneratorService {
   }
 
   /**
-   * Generate medication reconciliation table (Phase 22 feature)
+   * Generate medication reconciliation table with drug class lookup
    */
-  private generateMedicationReconciliation(form: PatientIntakeForm, language: string): string {
+  private async generateMedicationReconciliation(form: PatientIntakeForm, language: string): Promise<string> {
     if (form.medications.length === 0) {
       return this.generateMedications(form, language);
     }
 
-    // This will be enhanced with drug class lookup in Phase 22
-    const medsHTML = form.medications
+    // Reconcile medications with drug class lookup
+    const reconciled = await MedicationReconciliationService.reconcileMedications(form.medications);
+    
+    const medsHTML = reconciled
       .map(
         (med) => `
         <tr>
-          <td>${med.name}</td>
+          <td><strong>${med.name}</strong></td>
           <td>${med.dosage}</td>
           <td>${med.frequency}</td>
           <td>${med.route}</td>
-          <td>${med.reason || "—"}</td>
-          <td>—</td>
-          <td>—</td>
+          <td>${med.reason || med.drugClass?.commonIndications[0] || "—"}</td>
+          <td>${med.drugClass?.class || "—"}</td>
+          <td style="font-size: 8pt;">${med.drugClass?.commonIndications.join(", ") || "—"}</td>
         </tr>
+        ${med.interactions && med.interactions.length > 0 ? `
+        <tr style="background: #fff3cd;">
+          <td colspan="7" style="font-size: 8pt; padding: 4px 8px;">
+            <strong>⚠️ Interactions:</strong> ${med.interactions.join("; ")}
+          </td>
+        </tr>
+        ` : ""}
       `
       )
       .join("");

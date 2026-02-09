@@ -61,6 +61,9 @@ export default function SettingsScreen() {
       case "account":
         router.push("/account-management");
         break;
+      case "whatsNew":
+        router.push("/whats-new");
+        break;
     }
   };
 
@@ -155,6 +158,13 @@ export default function SettingsScreen() {
   ];
 
   const accountSettings: SettingItem[] = [
+    {
+      id: "whatsNew",
+      title: "What's New",
+      subtitle: "See latest features and updates",
+      icon: "sparkles",
+      type: "action",
+    },
     {
       id: "privacy",
       title: "Privacy Settings",

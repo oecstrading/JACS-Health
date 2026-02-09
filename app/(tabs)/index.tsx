@@ -300,8 +300,26 @@ export default function HomeScreen() {
           <ActionCard
             title="AI Meal Planner"
             icon="fork.knife"
-            color="warning"
+            color="primary"
             onPress={() => router.push("/ai-meal-planner")}
+          />
+          <ActionCard
+            title="CGM Caregiver Sharing"
+            icon="person.2.fill"
+            color="primary"
+            onPress={() => router.push("/cgm-caregiver-sharing")}
+          />
+          <ActionCard
+            title="Voice Emergency"
+            icon="exclamationmark.triangle.fill"
+            color="error"
+            onPress={() => router.push("/emergency" as any)}
+          />
+          <ActionCard
+            title="Interaction Checker"
+            icon="exclamationmark.shield.fill"
+            color="warning"
+            onPress={() => router.push("/interactions" as any)}
           />
         </View>
       </ScrollView>

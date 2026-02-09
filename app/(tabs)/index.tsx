@@ -330,12 +330,18 @@ export default function HomeScreen() {
             onPress={() => router.push("/device-sync" as any)}
           />
 
-          {/* Phase 17: Global Health Knowledge Engine */}
+          {/* Phase 17 & 25: Global Health Knowledge Engine + Categorized Library */}
           <ActionCard
-            title="Health Knowledge"
+            title="Medical Library"
             icon="book.fill"
             color="primary"
-            onPress={() => router.push("/health-knowledge" as any)}
+            onPress={() => router.push("/medical-library-categorized" as any)}
+          />
+          <ActionCard
+            title="Mood & Cognitive Tracker"
+            icon="brain.fill"
+            color="warning"
+            onPress={() => router.push("/mood-cognitive-tracker" as any)}
           />
           <ActionCard
             title="My Health Center"

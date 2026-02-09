@@ -337,6 +337,21 @@ export default function HomeScreen() {
             color="primary"
             onPress={() => router.push("/medical-library-categorized" as any)}
           />
+          
+          {/* Phase 26: Interactive Health Tools */}
+          <ActionCard
+            title="Symptom Checker"
+            icon="heart.fill"
+            color="error"
+            onPress={() => router.push("/symptom-checker" as any)}
+          />
+          <ActionCard
+            title="Family Health History"
+            icon="person.3.fill"
+            color="warning"
+            onPress={() => router.push("/family-health-history" as any)}
+          />
+          
           <ActionCard
             title="Mood & Cognitive Tracker"
             icon="brain.fill"

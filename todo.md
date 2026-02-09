@@ -1241,3 +1241,126 @@
 - [x] Validate template pre-fill logic
 - [x] Test end-to-end workflow with all enhancements
 - [x] Create user documentation for new features
+
+## Phase 21: HIPAA Compliance & Production Enhancements
+
+### Notice of Privacy Practices (NPP)
+- [x] Create comprehensive NPP text with February 2026 HIPAA updates
+- [x] Include Texas Medical Privacy Act specific requirements
+- [x] Add mandatory legal header: "THIS NOTICE DESCRIBES HOW MEDICAL INFORMATION ABOUT YOU MAY BE USED AND DISCLOSED..."
+- [x] Include sensitive health records language (behavioral health, substance use disorder)
+- [x] Add electronic disclosure requirements for Texas
+- [x] Include data storage location disclosure (U.S.-based)
+- [x] Create NPP display screen with large-font, readable layout
+- [x] Implement "Review NPP" button at form start
+- [x] Add NPP version tracking and update notifications
+- [x] Create printable/downloadable NPP PDF
+- [x] Implement NPP acknowledgment checkbox
+- [x] Add "I have read and understand" confirmation
+
+### Voice-Activated Consent Module
+- [x] Create AI-powered HIPAA rights summary
+- [x] Implement voice consent recording functionality
+- [x] Add time-stamped digital signature capture
+- [x] Create consent playback for verification
+- [x] Implement "Repeat HIPAA Summary" voice command
+- [x] Add verbal acknowledgment recording ("I consent")
+- [x] Create consent metadata (timestamp, duration, confidence score)
+- [x] Implement consent storage with encryption
+- [x] Add consent revocation mechanism
+- [x] Create consent audit trail
+- [x] Implement multi-language consent (English/Spanish)
+- [x] Add consent verification before form submission
+
+### Real-Time HIPAA Compliance Validation
+- [x] Create compliance validation service
+- [x] Implement required field checker for HIPAA sections
+- [x] Add NPP acknowledgment validation
+- [x] Create consent recording validation
+- [x] Implement signature validation (digital or voice)
+- [x] Add real-time validation feedback during form completion
+- [x] Create voice prompts for missing required sections
+- [x] Implement "Compliance Status" indicator (percentage complete)
+- [x] Add section-by-section compliance checklist
+- [x] Create validation error messages with remediation steps
+- [x] Implement pre-submission compliance check
+- [x] Add "Cannot Submit" lock until all compliance requirements met
+- [x] Create compliance report for completed forms
+
+### Secure Storage & Role-Based Access Control
+- [ ] Implement U.S.-based data storage compliance
+- [ ] Create encryption at rest for all intake forms
+- [ ] Implement encryption in transit (TLS 1.3)
+- [ ] Add role-based access control (RBAC) system
+- [ ] Define user roles: Patient, Provider, Admin, Caregiver
+- [ ] Implement permission matrix for each role
+- [ ] Create access audit logging
+- [ ] Add "Who can view this form" configuration
+- [ ] Implement authorized person list management
+- [ ] Create access request/approval workflow
+- [ ] Add data retention policy enforcement
+- [ ] Implement secure deletion (data wiping)
+- [ ] Create backup and disaster recovery procedures
+- [ ] Add breach notification system
+
+### API Key Configuration Settings
+- [ ] Create Settings screen in app
+- [ ] Add "API Keys" section
+- [ ] Implement Google Cloud Speech API key input
+- [ ] Add Azure Speech Service credentials input
+- [ ] Create AWS Transcribe credentials input
+- [ ] Add Phaxio fax API key input
+- [ ] Implement HelloFax/Dropbox Sign credentials input
+- [ ] Create RingCentral Fax API configuration
+- [ ] Add secure credential storage (expo-secure-store)
+- [ ] Implement credential validation on save
+- [ ] Create "Test Connection" buttons for each API
+- [ ] Add credential encryption
+- [ ] Implement credential rotation reminders
+- [ ] Create API usage tracking and limits
+
+### Form Analytics Dashboard
+- [ ] Create analytics data collection service
+- [ ] Implement form completion rate tracking
+- [ ] Add average completion time per template
+- [ ] Track most-used templates
+- [ ] Measure drop-off points in forms
+- [ ] Create analytics dashboard UI
+- [ ] Add completion rate chart (line graph over time)
+- [ ] Implement template usage pie chart
+- [ ] Create average time comparison bar chart
+- [ ] Add drop-off funnel visualization
+- [ ] Implement date range filters
+- [ ] Create export analytics to CSV
+- [ ] Add insights and recommendations
+- [ ] Implement privacy-preserving analytics (no PII)
+
+### Multi-Language Support (Spanish)
+- [ ] Create Spanish translations for all form sections
+- [ ] Translate NPP to Spanish with legal review
+- [ ] Add Spanish voice consent module
+- [ ] Implement Spanish speech recognition
+- [ ] Create Spanish medical terminology vocabulary
+- [ ] Translate all form templates to Spanish
+- [ ] Add language selector at form start
+- [ ] Implement bilingual form display (English/Spanish side-by-side option)
+- [ ] Create Spanish voice prompts
+- [ ] Add Spanish validation messages
+- [ ] Implement Spanish PDF generation
+- [ ] Create Spanish fax cover pages
+- [ ] Add language preference saving
+- [ ] Implement automatic language detection
+
+### Compliance Testing & Documentation
+- [ ] Create HIPAA compliance checklist
+- [ ] Test NPP display and acknowledgment
+- [ ] Verify voice consent recording and storage
+- [ ] Validate encryption at rest and in transit
+- [ ] Test RBAC permissions for all roles
+- [ ] Verify U.S.-based data storage
+- [ ] Create compliance documentation
+- [ ] Generate HIPAA compliance report
+- [ ] Test breach notification system
+- [ ] Verify audit logging
+- [ ] Create user privacy guide
+- [ ] Generate provider compliance manual

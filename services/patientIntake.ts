@@ -157,6 +157,13 @@ export interface PatientIntakeForm {
   allergies: Allergy[];
   hipaaConsent: HIPAAConsent;
   
+  // HIPAA Compliance (Phase 21)
+  nppVersion?: string; // NPP version acknowledged
+  hipaaAuthorization?: { authorized: boolean; date?: string };
+  treatmentConsent?: { consented: boolean; date?: string };
+  sensitiveHealthConsent?: { consented: boolean; date?: string };
+  signature?: string; // Base64 encoded signature or voice consent ID
+  
   // Metadata
   forProvider?: string; // Doctor/clinic name
   appointmentDate?: string;

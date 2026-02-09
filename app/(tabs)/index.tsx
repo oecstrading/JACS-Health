@@ -343,6 +343,20 @@ export default function HomeScreen() {
             color="success"
             onPress={() => router.push("/my-health-center" as any)}
           />
+
+          {/* Phase 18: Local Health Finder */}
+          <ActionCard
+            title="Find Care Near Me"
+            icon="house.fill"
+            color="success"
+            onPress={() => router.push("/find-care" as any)}
+          />
+          <ActionCard
+            title="Pharmacy Finder"
+            icon="cross.case.fill"
+            color="warning"
+            onPress={() => router.push("/pharmacy-finder" as any)}
+          />
         </View>
       </ScrollView>
     </ScreenContainer>

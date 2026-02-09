@@ -270,6 +270,20 @@ export default function HealthKnowledgeScreen() {
       {/* Interactive Actions */}
       <View className="gap-3">
         <TouchableOpacity
+          onPress={() => router.push({ pathname: "/find-care" as any, params: { condition: result.title } })}
+          className="rounded-2xl p-5 flex-row items-center justify-between"
+          style={{ backgroundColor: colors.success }}
+        >
+          <View className="flex-1">
+            <Text className="text-lg font-bold text-white">🏥 Find Care Near Me</Text>
+            <Text className="text-sm text-white mt-1 opacity-90">
+              Connect with local doctors and specialists in Fulshear/Houston
+            </Text>
+          </View>
+          <Text className="text-2xl text-white">→</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           onPress={handleTalkToResult}
           className="rounded-2xl p-5 flex-row items-center justify-between"
           style={{ backgroundColor: colors.primary }}

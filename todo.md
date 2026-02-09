@@ -907,3 +907,132 @@
 - [ ] Add share expiration options
 - [ ] Create share notification system
 - [ ] Implement share analytics (who viewed, when)
+
+## Global Health Knowledge Engine (Phase 17)
+
+### Multi-Modal Search Interface
+- [ ] Create central Global Health Knowledge Engine screen
+- [ ] Implement text search input with autocomplete
+- [ ] Add voice search using speech-to-text
+- [ ] Implement photo/OCR search for pill identification
+- [ ] Create tiered source hierarchy (Level 1: NIH/Mayo/CDC, Level 2: PubMed, Level 3: FDA)
+- [ ] Implement API integrations for credible sources
+- [ ] Add high-contrast UI with large fonts for seniors
+- [ ] Create search history tracking
+- [ ] Implement recent searches quick access
+- [ ] Add search suggestions and related terms
+
+### Visual-First Display Logic
+- [ ] Implement "Visual First" result display
+- [ ] Generate/retrieve medical diagrams for conditions
+- [ ] Add high-resolution pill identification images
+- [ ] Create anatomical visualizations (e.g., joint arthritis)
+- [ ] Implement symptom visualization (rashes, swelling, etc.)
+- [ ] Add "Source Verified" tags to all images
+- [ ] Create image zoom and pan functionality
+- [ ] Implement image carousel for multiple visuals
+- [ ] Add image captions with source attribution
+- [ ] Create fallback images for missing visuals
+
+### Plain English Translation Layer
+- [ ] Implement AI-powered medical-to-senior translation
+- [ ] Convert technical language to 6th-grade reading level
+- [ ] Add "Definitions" hover feature for complex terms
+- [ ] Create glossary of common medical terms
+- [ ] Implement "Read Aloud" feature with natural voice
+- [ ] Add adjustable reading speed for audio
+- [ ] Create text-to-speech for all content
+- [ ] Implement highlighting of current sentence being read
+- [ ] Add pause/resume controls for audio
+- [ ] Create downloadable audio versions
+
+### Interactive Features & Personalization
+- [ ] Add "Talk to this Result" conversational AI button
+- [ ] Implement follow-up question functionality
+- [ ] Create context-aware AI responses
+- [ ] Add "Save to My Health Center" button
+- [ ] Implement personalized health library
+- [ ] Create folders for organizing saved content
+- [ ] Add notes and annotations to saved items
+- [ ] Implement sharing saved content with caregivers
+- [ ] Create "Ask My Doctor" question generator
+- [ ] Add print-friendly format for doctor visits
+- [ ] Implement bookmark and favorites system
+- [ ] Create related content recommendations
+
+### Source Credibility & Verification
+- [ ] Display source credibility ratings
+- [ ] Add publication date and last updated info
+- [ ] Implement peer-review status indicators
+- [ ] Create citation format for references
+- [ ] Add "View Full Study" links
+- [ ] Implement conflict of interest disclosures
+- [ ] Create source comparison feature
+- [ ] Add expert review badges
+
+## Phase 17: Global Health Knowledge Engine
+
+### Multi-Modal Search Interface
+- [x] Create health knowledge search screen
+- [x] Implement text search input with large, senior-friendly UI
+- [x] Add voice search button (placeholder for future implementation)
+- [x] Add photo search button with camera integration
+- [x] Implement search history tracking
+- [x] Display recent searches as quick-access chips
+- [x] Create search results display with visual-first layout
+
+### Tiered Credible Sources
+- [x] Implement Level 1 sources (NIH, Mayo Clinic, CDC)
+- [x] Implement Level 2 sources (PubMed, peer-reviewed journals)
+- [x] Implement Level 3 sources (FDA databases, MedlinePlus)
+- [x] Add source verification badges
+- [x] Display source credibility levels
+- [x] Show last updated dates for sources
+- [x] Add peer-review indicators
+
+### Visual-First Display
+- [x] Display high-resolution medical diagrams
+- [x] Show anatomical images for conditions
+- [x] Include medication pill images
+- [x] Add symptom visualizations
+- [x] Display biological impact visualizations
+- [x] Implement horizontal scrolling image gallery
+- [x] Add image captions with source attribution
+- [x] Show source verification tags on images
+
+### Plain English Translation Layer
+- [x] Implement medical text simplification to 6th-grade reading level
+- [x] Create "What You Need to Know" summary section
+- [x] Add complex term definitions (hover/tap for explanations)
+- [x] Implement read-aloud functionality with natural voice
+- [x] Add reading speed controls (slower/normal)
+- [x] Create stop reading button
+- [x] Use senior-friendly voice settings (slower rate, clear pronunciation)
+
+### Interactive Features
+- [x] Add "Talk to this Result" button for follow-up questions
+- [x] Implement "Save to My Health Center" functionality
+- [x] Create My Health Center screen for saved items
+- [x] Add folder organization (My Conditions, My Medications, Symptoms, Procedures)
+- [x] Implement delete saved item functionality
+- [x] Add notes field for saved items
+- [x] Display related topics as clickable chips
+- [x] Create navigation between search and saved items
+
+### Integration with Existing Features
+- [x] Add Health Knowledge button to home screen
+- [x] Add My Health Center button to home screen
+- [x] Link to AI assistant for follow-up questions
+- [x] Ensure consistent senior-friendly design
+- [x] Implement high-contrast UI elements
+- [x] Use large, readable fonts throughout
+
+### Service Layer
+- [x] Create HealthKnowledgeEngineService
+- [x] Implement search method with multi-modal support
+- [x] Add search history management
+- [x] Implement saved items storage
+- [x] Add read-aloud functionality
+- [x] Create text simplification logic
+- [x] Implement AsyncStorage persistence
+- [x] Add error handling and loading states

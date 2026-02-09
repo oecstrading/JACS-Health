@@ -329,6 +329,20 @@ export default function HomeScreen() {
             color="primary"
             onPress={() => router.push("/device-sync" as any)}
           />
+
+          {/* Phase 17: Global Health Knowledge Engine */}
+          <ActionCard
+            title="Health Knowledge"
+            icon="book.fill"
+            color="primary"
+            onPress={() => router.push("/health-knowledge" as any)}
+          />
+          <ActionCard
+            title="My Health Center"
+            icon="folder.fill"
+            color="success"
+            onPress={() => router.push("/my-health-center" as any)}
+          />
         </View>
       </ScrollView>
     </ScreenContainer>

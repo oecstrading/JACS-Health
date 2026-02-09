@@ -249,6 +249,18 @@ export default function HomeScreen() {
             color="warning"
             onPress={() => router.push("/milestones")}
           />
+          <ActionCard
+            title="Rheumatoid Arthritis"
+            icon="hand.raised.fill"
+            color="error"
+            onPress={() => router.push("/rheumatoid-arthritis")}
+          />
+          <ActionCard
+            title="Type 1 Diabetes"
+            icon="drop.fill"
+            color="warning"
+            onPress={() => router.push("/type1-diabetes")}
+          />
         </View>
       </ScrollView>
     </ScreenContainer>

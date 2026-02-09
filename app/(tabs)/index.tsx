@@ -357,6 +357,14 @@ export default function HomeScreen() {
             color="warning"
             onPress={() => router.push("/pharmacy-finder" as any)}
           />
+
+          {/* Phase 19: Smart Voice Intake */}
+          <ActionCard
+            title="New Patient Forms"
+            icon="doc.text.fill"
+            color="primary"
+            onPress={() => router.push("/voice-intake" as any)}
+          />
         </View>
       </ScrollView>
     </ScreenContainer>

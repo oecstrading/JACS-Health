@@ -285,6 +285,24 @@ export default function HomeScreen() {
             color="warning"
             onPress={() => router.push("/type1-diabetes")}
           />
+          <ActionCard
+            title="Apple Watch"
+            icon="applewatch"
+            color="primary"
+            onPress={() => router.push("/watch-complications")}
+          />
+          <ActionCard
+            title="Auto-Refill"
+            icon="arrow.clockwise.circle.fill"
+            color="success"
+            onPress={() => router.push("/pharmacy-auto-refill")}
+          />
+          <ActionCard
+            title="AI Meal Planner"
+            icon="fork.knife"
+            color="warning"
+            onPress={() => router.push("/ai-meal-planner")}
+          />
         </View>
       </ScrollView>
     </ScreenContainer>

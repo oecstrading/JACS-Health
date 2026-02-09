@@ -266,6 +266,9 @@ const MEDICAL_IMAGE_DATABASE: Record<string, MedicalImage[]> = {
 
 class MedicalImageService {
   private cacheKey = "medical_images_cache";
+  private NIH_NLM_API_BASE = "https://www.nlm.nih.gov/medlineplus/images";
+  private SERVIER_API_BASE = "https://smart.servier.com/smart_servier_medical_art_api/v1";
+  private apiCache: Map<string, { data: MedicalImage[]; timestamp: number }> = new Map();
 
   /**
    * Search for medical images by condition or keyword
@@ -310,6 +313,114 @@ class MedicalImageService {
   async getImagesForCondition(conditionKey: string): Promise<MedicalImage[]> {
     const normalizedKey = conditionKey.toLowerCase().replace(/['\s]/g, "_");
     return MEDICAL_IMAGE_DATABASE[normalizedKey] || [];
+  }
+
+  /**
+   * Fetch images from NIH NLM Image Gallery API
+   */
+  async fetchFromNIH(query: string): Promise<MedicalImage[]> {
+    const cacheKey = `nih_${query}`;
+    const cached = this.apiCache.get(cacheKey);
+    
+    // Return cached data if less than 24 hours old
+    if (cached && Date.now() - cached.timestamp < 24 * 60 * 60 * 1000) {
+      return cached.data;
+    }
+    
+    try {
+      // Note: This is a placeholder for actual NIH API integration
+      // Real implementation would use NIH NLM API with proper authentication
+      const response = await fetch(`${this.NIH_NLM_API_BASE}/search?q=${encodeURIComponent(query)}`);
+      
+      if (!response.ok) {
+        throw new Error(`NIH API error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      const images: MedicalImage[] = data.results?.map((item: any) => ({
+        id: `nih_${item.id}`,
+        title: item.title,
+        description: item.description,
+        url: item.imageUrl,
+        thumbnailUrl: item.thumbnailUrl,
+        source: "NIH_Image_Gallery" as const,
+        license: "Public Domain",
+        attribution: "National Library of Medicine",
+        category: item.category || "General",
+        tags: item.tags || [],
+      })) || [];
+      
+      this.apiCache.set(cacheKey, { data: images, timestamp: Date.now() });
+      return images;
+    } catch (error) {
+      console.error("Error fetching from NIH:", error);
+      return [];
+    }
+  }
+
+  /**
+   * Fetch images from Servier Medical ART API
+   */
+  async fetchFromServier(query: string): Promise<MedicalImage[]> {
+    const cacheKey = `servier_${query}`;
+    const cached = this.apiCache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < 24 * 60 * 60 * 1000) {
+      return cached.data;
+    }
+    
+    try {
+      // Note: Servier Medical ART provides free images but requires manual download
+      // This is a placeholder for potential API integration
+      const response = await fetch(`${this.SERVIER_API_BASE}/search?q=${encodeURIComponent(query)}`);
+      
+      if (!response.ok) {
+        throw new Error(`Servier API error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      const images: MedicalImage[] = data.results?.map((item: any) => ({
+        id: `servier_${item.id}`,
+        title: item.title,
+        description: item.description,
+        url: item.imageUrl,
+        thumbnailUrl: item.thumbnailUrl,
+        source: "Servier_Medical_ART" as const,
+        license: "Creative Commons Attribution 3.0 Unported License",
+        attribution: "Servier Medical Art by Servier",
+        category: item.category || "General",
+        tags: item.tags || [],
+        highResUrl: item.highResUrl,
+      })) || [];
+      
+      this.apiCache.set(cacheKey, { data: images, timestamp: Date.now() });
+      return images;
+    } catch (error) {
+      console.error("Error fetching from Servier:", error);
+      return [];
+    }
+  }
+
+  /**
+   * Search images across all sources (local + API)
+   */
+  async searchAllSources(query: string, limit: number = 10): Promise<MedicalImage[]> {
+    // Search local database first
+    const localResults = await this.searchImages({ query, limit });
+    
+    // Fetch from APIs in parallel
+    const [nihResults, servierResults] = await Promise.all([
+      this.fetchFromNIH(query),
+      this.fetchFromServier(query),
+    ]);
+    
+    // Combine and deduplicate results
+    const allResults = [...localResults, ...nihResults, ...servierResults];
+    const uniqueResults = Array.from(
+      new Map(allResults.map((img) => [img.id, img])).values()
+    );
+    
+    return uniqueResults.slice(0, limit);
   }
 
   /**

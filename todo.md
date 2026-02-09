@@ -694,3 +694,63 @@
 - [ ] Add community support forums
 - [ ] Include specialist finder tools
 - [ ] Add downloadable tracking templates
+
+## Advanced Diabetes & Healthcare Features (Phase 13)
+
+### CGM Device Integration
+- [x] Install Bluetooth Low Energy (BLE) libraries for device communication
+- [x] Create Dexcom G6/G7 integration service
+- [x] Create Freestyle Libre integration service
+- [x] Create Omnipod integration service
+- [x] Implement real-time glucose data sync
+- [x] Add CGM device pairing screen
+- [x] Create live glucose monitoring dashboard
+- [x] Implement customizable alert thresholds (high/low glucose)
+- [x] Add predictive low glucose warnings (15-30 min ahead)
+- [x] Create glucose trend arrows and rate of change display
+- [x] Implement calibration reminders
+- [x] Add sensor expiration tracking
+- [x] Create glucose history with time-in-range statistics
+- [x] Implement ambulatory glucose profile (AGP) reports
+
+### Food Scanning & Nutritional Analysis
+- [x] Integrate camera for food photo capture
+- [x] Implement AI-powered food recognition
+- [x] Add barcode scanner for packaged foods
+- [x] Create nutritional database integration (USDA, OpenFoodFacts)
+- [x] Extract calories, carbs, protein, fat, fiber
+- [x] Calculate glycemic index and glycemic load
+- [x] Implement portion size estimation
+- [x] Add glucose impact prediction algorithm
+- [x] Create insulin dosage recommendations based on food
+- [x] Implement meal logging with photos
+- [x] Add favorite foods library
+- [x] Create meal history and patterns analysis
+
+### Medication Cost Comparison Tool
+- [x] Create medication cost comparison screen
+- [x] Integrate pharmacy price API (GoodRx, RxSaver)
+- [x] Implement local pharmacy search by ZIP code
+- [x] Display price comparison table across pharmacies
+- [x] Add generic alternative suggestions
+- [x] Implement manufacturer coupon search
+- [x] Add patient assistance program finder
+- [x] Create price alerts for medication changes
+- [x] Implement prescription transfer assistance
+- [x] Add insurance coverage checker
+- [x] Create medication cost history tracking
+- [x] Implement savings calculator
+
+### Specialist Appointment Booking
+- [x] Create specialist directory (rheumatologists, endocrinologists, PCPs)
+- [x] Implement specialist search by specialty and location
+- [x] Add insurance network verification
+- [x] Create appointment booking interface
+- [x] Implement calendar integration
+- [x] Add telehealth appointment options
+- [x] Create appointment reminders
+- [x] Implement appointment preparation checklist
+- [x] Add doctor ratings and reviews
+- [x] Create appointment history tracking
+- [x] Implement insurance verification before booking
+- [x] Add copay estimation tool

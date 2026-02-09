@@ -250,6 +250,30 @@ export default function HomeScreen() {
             onPress={() => router.push("/milestones")}
           />
           <ActionCard
+            title="CGM Monitor"
+            icon="waveform.path.ecg"
+            color="primary"
+            onPress={() => router.push("/cgm-monitor")}
+          />
+          <ActionCard
+            title="Food Scanner"
+            icon="camera.fill"
+            color="success"
+            onPress={() => router.push("/food-scanner")}
+          />
+          <ActionCard
+            title="Medication Cost Compare"
+            icon="dollarsign.circle.fill"
+            color="warning"
+            onPress={() => router.push("/medication-cost")}
+          />
+          <ActionCard
+            title="Book Specialist"
+            icon="calendar"
+            color="primary"
+            onPress={() => router.push("/specialist-booking")}
+          />
+          <ActionCard
             title="Rheumatoid Arthritis"
             icon="hand.raised.fill"
             color="error"

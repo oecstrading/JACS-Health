@@ -1973,3 +1973,22 @@
 - [ ] Implement deep linking to changelog from notifications
 - [ ] Create update announcement system
 - [ ] Test update flow end-to-end
+
+## Bug Fixes - Account Management Tab
+
+### Field Editing Issues
+- [ ] Ensure all fields in Account Management are editable
+- [ ] Fix backspace/delete functionality not removing all characters
+- [ ] Verify TextInput components have proper editable prop
+- [ ] Test field clearing and re-entering text
+- [ ] Ensure controlled input state updates correctly
+
+### Specific Fields to Test
+- [ ] Full Name field
+- [ ] Email field
+- [ ] Phone Number field
+- [ ] Address field
+- [ ] Date of Birth field
+- [ ] Emergency Contact Name field
+- [ ] Emergency Contact Phone field
+- [ ] Emergency Contact Relationship field

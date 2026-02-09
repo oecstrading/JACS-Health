@@ -106,8 +106,12 @@ export default function AccountManagementScreen() {
           placeholder={placeholder}
           placeholderTextColor={colors.muted}
           keyboardType={keyboardType}
+          editable={true}
+          selectTextOnFocus={true}
+          autoCorrect={false}
+          autoCapitalize="words"
           className="bg-surface border-2 border-border rounded-2xl px-6 py-4 text-lg text-foreground"
-          style={{ lineHeight: 24 }}
+          style={{ lineHeight: 24, color: colors.foreground }}
         />
       ) : (
         <View className="bg-surface border border-border rounded-2xl px-6 py-4">

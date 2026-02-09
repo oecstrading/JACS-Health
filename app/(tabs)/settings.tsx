@@ -1,5 +1,6 @@
 import { ScrollView, Text, View, Pressable, Switch, type ViewStyle } from "react-native";
 import { useState } from "react";
+import { router } from "expo-router";
 import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
@@ -58,7 +59,7 @@ export default function SettingsScreen() {
         alert("Privacy settings coming soon");
         break;
       case "account":
-        alert("Account management coming soon");
+        router.push("/account-management");
         break;
     }
   };

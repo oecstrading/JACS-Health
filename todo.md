@@ -1913,3 +1913,12 @@
 - [ ] Validate genetic risk calculations
 - [ ] Test end-to-end workflow with all features
 - [ ] Create user documentation for advanced features
+
+## Bug Fixes
+
+### Account Management Profile Update
+- [x] Fix profile update functionality in account management tab
+- [x] Ensure profile fields are editable
+- [x] Implement save functionality for profile changes
+- [x] Add validation for profile fields
+- [x] Test profile update end-to-end

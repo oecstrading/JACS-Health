@@ -321,6 +321,14 @@ export default function HomeScreen() {
             color="warning"
             onPress={() => router.push("/interactions" as any)}
           />
+
+          {/* Phase 16: Device Sync Management */}
+          <ActionCard
+            title="Device Sync"
+            icon="arrow.triangle.2.circlepath"
+            color="primary"
+            onPress={() => router.push("/device-sync" as any)}
+          />
         </View>
       </ScrollView>
     </ScreenContainer>

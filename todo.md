@@ -845,3 +845,65 @@
 - [x] Create interaction report generation
 - [x] Implement pharmacy database sync
 - [x] Add medication allergy cross-checking
+
+## Device Sync Management & Reporting (Phase 16)
+
+### Manual Device Sync Controls
+- [x] Create device sync management screen
+- [x] Implement manual sync button for each device type
+- [x] Add sync status indicators (syncing, success, error)
+- [x] Create last sync timestamp display
+- [x] Implement sync history log
+- [x] Add device connection status monitoring
+- [x] Create sync error handling and retry logic
+- [x] Implement batch sync for multiple devices
+- [x] Add sync progress indicators
+- [x] Create auto-sync toggle per device
+
+### Reading History with Timestamps
+- [x] Create detailed reading history screen
+- [x] Display date and time for each reading
+- [x] Implement filtering by device type
+- [x] Add filtering by date range
+- [x] Create sorting options (newest/oldest first)
+- [x] Implement pagination for large datasets
+- [x] Add reading detail view with metadata
+- [ ] Create search functionality for readings
+- [ ] Implement reading deletion/editing
+- [ ] Add reading notes and annotations
+
+### Statistical Calculations
+- [x] Calculate daily averages for all metrics
+- [x] Calculate weekly averages for all metrics
+- [x] Calculate monthly averages for all metrics
+- [x] Implement trend analysis (improving/declining)
+- [x] Add min/max values per period
+- [x] Create standard deviation calculations
+- [x] Implement time-in-range statistics
+- [ ] Add comparison between periods
+- [ ] Create goal achievement tracking
+- [ ] Implement anomaly detection
+
+### PDF Report Generation
+- [x] Create PDF report generator service
+- [x] Design comprehensive health report template
+- [ ] Include reading history tables in PDF
+- [ ] Add statistical summaries to PDF
+- [ ] Include trend charts and graphs
+- [ ] Add device information section
+- [ ] Create customizable report date ranges
+- [ ] Implement report branding (logo, colors)
+- [ ] Add physician-friendly formatting
+- [ ] Create report preview before export
+
+### Sharing Functionality
+- [ ] Implement PDF sharing via email
+- [ ] Add PDF sharing via messaging apps
+- [ ] Create secure link sharing
+- [ ] Implement direct physician portal upload
+- [ ] Add cloud storage integration (Drive, Dropbox)
+- [ ] Create share history tracking
+- [ ] Implement share permissions management
+- [ ] Add share expiration options
+- [ ] Create share notification system
+- [ ] Implement share analytics (who viewed, when)

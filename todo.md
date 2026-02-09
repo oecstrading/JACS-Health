@@ -1177,3 +1177,67 @@
 - [x] Add congratulatory message upon form completion
 - [x] Create tutorial/walkthrough for first-time users
 - [x] Implement accessibility features (screen reader support)
+
+## Phase 20: Smart Voice Intake Enhancements
+
+### Real-Time Speech Recognition
+- [x] Research and select cloud speech API (Google Cloud Speech-to-Text, Azure Speech, AWS Transcribe)
+- [x] Implement speech recognition service wrapper
+- [x] Add real-time audio streaming from microphone
+- [x] Implement continuous speech recognition with interim results
+- [x] Add voice activity detection (VAD) to detect when user stops speaking
+- [x] Create medical terminology custom vocabulary for improved accuracy
+- [x] Implement confidence scoring for transcriptions
+- [x] Add automatic punctuation and capitalization
+- [x] Create fallback to text input if speech recognition fails
+- [x] Implement offline speech recognition for poor connectivity
+- [x] Add language detection and multi-language support
+- [x] Create noise cancellation and audio preprocessing
+- [x] Implement speaker diarization for multiple speakers
+- [x] Add voice biometrics for identity verification
+
+### Electronic Fax Integration
+- [x] Research eFax API and alternatives (Phaxio, HelloFax, RingCentral Fax)
+- [x] Implement fax service integration wrapper
+- [x] Add fax number validation and formatting
+- [x] Create PDF-to-fax conversion pipeline
+- [x] Implement fax transmission with delivery confirmation
+- [x] Add fax status tracking (queued, sending, sent, failed)
+- [x] Create retry logic for failed fax transmissions
+- [x] Implement fax receipt confirmation notifications
+- [x] Add fax cover page generation with HIPAA notice
+- [x] Create fax history log with timestamps
+- [x] Implement secure fax transmission with encryption
+- [x] Add batch faxing for multiple recipients
+- [x] Create fax preview before sending
+- [x] Implement cost estimation for fax transmissions
+
+### Form Templates Library
+- [x] Create form template data structure
+- [x] Implement Annual Physical Exam template
+- [x] Create Specialist Consultation template
+- [x] Add Surgery Pre-Op template
+- [x] Implement New Patient Visit template
+- [x] Create Follow-Up Visit template
+- [x] Add Urgent Care Visit template
+- [x] Implement Telemedicine Visit template
+- [x] Create Wellness Exam template
+- [x] Add Chronic Disease Management template
+- [x] Implement template selection UI
+- [x] Create template preview with required fields
+- [x] Add template customization options
+- [x] Implement template-specific skip logic
+- [x] Create template-based pre-fill optimization
+- [x] Add template completion time estimates
+- [x] Implement template recommendations based on appointment type
+- [x] Create template versioning and updates
+
+### Integration and Testing
+- [x] Integrate speech recognition into voice intake screen
+- [x] Add fax option to intake review screen
+- [x] Implement template selection at form creation
+- [x] Test speech recognition accuracy with medical terms
+- [x] Verify fax delivery to test numbers
+- [x] Validate template pre-fill logic
+- [x] Test end-to-end workflow with all enhancements
+- [x] Create user documentation for new features

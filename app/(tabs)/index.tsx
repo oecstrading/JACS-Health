@@ -363,7 +363,7 @@ export default function HomeScreen() {
             title="New Patient Forms"
             icon="doc.text.fill"
             color="primary"
-            onPress={() => router.push("/voice-intake" as any)}
+            onPress={() => router.push("/intake-template-selection" as any)}
           />
         </View>
       </ScrollView>

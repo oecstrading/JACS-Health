@@ -50,13 +50,13 @@ export default function SettingsScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     switch (action) {
       case "emergency":
-        alert("Emergency contacts management coming soon");
+        router.push("/emergency-contacts");
         break;
       case "conditions":
-        alert("Health conditions selection coming soon");
+        router.push("/health-conditions");
         break;
       case "privacy":
-        alert("Privacy settings coming soon");
+        router.push("/privacy-settings");
         break;
       case "account":
         router.push("/account-management");

@@ -32,6 +32,15 @@ const MAPPING = {
   "chart.bar.fill": "bar-chart",
   "exclamationmark.triangle.fill": "warning",
   "phone.fill": "phone",
+  "chevron.left": "chevron-left",
+  "trash": "delete",
+  "envelope.fill": "email",
+  "checkmark": "check",
+  "info.circle.fill": "info",
+  "shield.fill": "shield",
+  "trash.fill": "delete-forever",
+  "document.fill": "description",
+  "sparkles": "auto-awesome",
 } as IconMapping;
 
 type IconSymbolName = keyof typeof MAPPING;

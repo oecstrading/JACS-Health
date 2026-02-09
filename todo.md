@@ -96,10 +96,12 @@
 - [x] Medication reminders toggle
 - [x] Dark mode toggle
 - [x] Text size selector (Small/Medium/Large/Extra Large)
-- [x] Emergency contacts management (add/edit with photos)
-- [x] Health conditions selection (diabetes, hypertension, etc.)
-- [x] Privacy settings
-- [x] Account management
+- [x] Emergency contacts management screen (add/edit/delete contacts)
+- [x] Health conditions selection screen (12 common conditions by category)
+- [x] Privacy settings screen (data sharing, permissions, HIPAA compliance)
+- [x] Account management screen (profile editing)
+- [x] What's New screen (changelog viewer)
+- [x] All Settings tabs now functional (no more "Coming Soon" alerts)
 
 ## Database & Backend
 - [ ] User profile schema
@@ -1992,3 +1994,15 @@
 - [ ] Emergency Contact Name field
 - [ ] Emergency Contact Phone field
 - [ ] Emergency Contact Relationship field
+
+## Bug Fixes - Settings Tab
+
+### Settings Items Functionality
+- [ ] Audit all Settings tab items
+- [ ] Identify non-functional features with "Coming Soon" alerts
+- [ ] Remove all Alert/Coming Soon placeholders
+- [ ] Implement missing Settings screens
+- [ ] Make all Settings items clickable and functional
+- [ ] Test navigation to all Settings screens
+- [ ] Verify all toggles and controls work properly
+- [ ] Ensure consistent UI/UX across all Settings screens

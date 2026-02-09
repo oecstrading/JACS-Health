@@ -1,11 +1,13 @@
 import { ScrollView, Text, View, Pressable, Switch, type ViewStyle } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { router } from "expo-router";
 import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
+import { useLanguage } from "@/lib/language-provider";
+import type { Language } from "@/lib/language-provider";
 
 type TextSize = "small" | "medium" | "large" | "extra-large";
 
@@ -26,6 +28,7 @@ interface SettingItem {
  */
 export default function SettingsScreen() {
   const colors = useColors();
+  const { language, setLanguage, t } = useLanguage();
   const [voiceAssistant, setVoiceAssistant] = useState(true);
   const [medicationReminders, setMedicationReminders] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
@@ -44,6 +47,11 @@ export default function SettingsScreen() {
         setDarkMode(value);
         break;
     }
+  };
+
+  const handleLanguageChange = async (lang: Language) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    await setLanguage(lang);
   };
 
   const handleAction = (action: string) => {
@@ -116,24 +124,24 @@ export default function SettingsScreen() {
   const preferences: SettingItem[] = [
     {
       id: "voice",
-      title: "Voice Assistant",
-      subtitle: "Enable AI voice interaction",
+      title: t("voiceAssistant"),
+      subtitle: t("voiceAssistantDesc"),
       icon: "mic.fill",
       type: "toggle",
       value: voiceAssistant,
     },
     {
       id: "reminders",
-      title: "Medication Reminders",
-      subtitle: "Get notified for medications",
+      title: t("medicationReminders"),
+      subtitle: t("medicationRemindersDesc"),
       icon: "pills.fill",
       type: "toggle",
       value: medicationReminders,
     },
     {
       id: "darkMode",
-      title: "Dark Mode",
-      subtitle: "Reduce eye strain at night",
+      title: t("darkMode"),
+      subtitle: t("darkModeDesc"),
       icon: "gearshape.fill",
       type: "toggle",
       value: darkMode,
@@ -143,15 +151,15 @@ export default function SettingsScreen() {
   const healthSettings: SettingItem[] = [
     {
       id: "emergency",
-      title: "Emergency Contacts",
-      subtitle: "Manage your emergency contacts",
+      title: t("emergencyContacts"),
+      subtitle: t("emergencyContactsDesc"),
       icon: "phone.fill",
       type: "action",
     },
     {
       id: "conditions",
-      title: "Health Conditions",
-      subtitle: "Update your health profile",
+      title: t("healthConditions"),
+      subtitle: t("healthConditionsDesc"),
       icon: "heart.fill",
       type: "action",
     },
@@ -160,22 +168,22 @@ export default function SettingsScreen() {
   const accountSettings: SettingItem[] = [
     {
       id: "whatsNew",
-      title: "What's New",
-      subtitle: "See latest features and updates",
+      title: t("whatsNew"),
+      subtitle: t("whatsNewDesc"),
       icon: "sparkles",
       type: "action",
     },
     {
       id: "privacy",
-      title: "Privacy Settings",
-      subtitle: "Control your data sharing",
+      title: t("privacySettings"),
+      subtitle: t("privacySettingsDesc"),
       icon: "gearshape.fill",
       type: "action",
     },
     {
       id: "account",
-      title: "Account Management",
-      subtitle: "Update your profile",
+      title: t("accountManagement"),
+      subtitle: t("accountManagementDesc"),
       icon: "person.2.fill",
       type: "action",
     },
@@ -186,7 +194,7 @@ export default function SettingsScreen() {
       {/* Header */}
       <View className="px-6 pt-6 pb-4">
         <Text className="text-3xl font-bold text-foreground" style={{ lineHeight: 40 }}>
-          Settings
+          {t("settings")}
         </Text>
         <Text className="text-lg text-muted mt-1" style={{ lineHeight: 26 }}>
           Customize your experience
@@ -197,7 +205,7 @@ export default function SettingsScreen() {
         {/* Preferences Section */}
         <View className="mb-6">
           <Text className="text-xl font-semibold text-foreground mb-4" style={{ lineHeight: 28 }}>
-            Preferences
+            {t("preferences")}
           </Text>
           <View className="gap-4">
             {preferences.map(item => (
@@ -206,10 +214,55 @@ export default function SettingsScreen() {
           </View>
         </View>
 
+        {/* Language Selection */}
+        <View className="mb-6">
+          <Text className="text-xl font-semibold text-foreground mb-4" style={{ lineHeight: 28 }}>
+            {t("language")}
+          </Text>
+          <View className="bg-surface rounded-3xl p-6 border border-border">
+            <View className="gap-3">
+              {(["en", "es"] as Language[]).map(lang => (
+                <Pressable
+                  key={lang}
+                  onPress={() => handleLanguageChange(lang)}
+                  style={({ pressed }) => [
+                    {
+                      transform: [{ scale: pressed ? 0.98 : 1 }],
+                      opacity: pressed ? 0.9 : 1,
+                      backgroundColor: language === lang ? `${colors.primary}20` : "transparent",
+                      paddingVertical: 12,
+                      paddingHorizontal: 16,
+                      borderRadius: 16,
+                      borderWidth: 2,
+                      borderColor: language === lang ? colors.primary : colors.border,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    } as ViewStyle,
+                  ]}
+                >
+                  <Text
+                    className="text-lg font-semibold"
+                    style={{
+                      color: language === lang ? colors.primary : colors.foreground,
+                      lineHeight: 24,
+                    }}
+                  >
+                    {lang === "en" ? "English" : "Español"}
+                  </Text>
+                  {language === lang && (
+                    <IconSymbol name="checkmark.circle.fill" size={24} color={colors.primary} />
+                  )}
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        </View>
+
         {/* Text Size Section */}
         <View className="mb-6">
           <Text className="text-xl font-semibold text-foreground mb-4" style={{ lineHeight: 28 }}>
-            Text Size
+            {t("textSize")}
           </Text>
           <View className="bg-surface rounded-3xl p-6 border border-border">
             <View className="gap-3">
@@ -251,7 +304,7 @@ export default function SettingsScreen() {
         {/* Health Settings Section */}
         <View className="mb-6">
           <Text className="text-xl font-semibold text-foreground mb-4" style={{ lineHeight: 28 }}>
-            Health Settings
+            {t("healthSettings")}
           </Text>
           <View className="gap-4">
             {healthSettings.map(item => (
@@ -263,7 +316,7 @@ export default function SettingsScreen() {
         {/* Account & Privacy Section */}
         <View className="mb-8">
           <Text className="text-xl font-semibold text-foreground mb-4" style={{ lineHeight: 28 }}>
-            Account & Privacy
+            {t("accountPrivacy")}
           </Text>
           <View className="gap-4">
             {accountSettings.map(item => (

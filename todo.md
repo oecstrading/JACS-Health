@@ -1364,3 +1364,111 @@
 - [ ] Verify audit logging
 - [ ] Create user privacy guide
 - [ ] Generate provider compliance manual
+
+## Phase 22: B2B Clinic-Facing Features
+
+### Professional PDF Generator
+- [x] Create clinical-grade PDF export function
+- [x] Implement multi-column layout matching Texas Medical Association intake sheets
+- [x] Add professional header with Patient Name, DOB, and "Self-Reported via HealthMate AI"
+- [x] Include clinic logo placeholder
+- [x] Add footer with page numbers and generation timestamp
+- [x] Implement section headers for each intake category
+- [x] Create clean table layouts for medications and allergies
+- [x] Add signature section with timestamp
+- [x] Include NPP acknowledgment and consent records
+- [x] Generate QR code linking to voice consent recordings
+- [x] Add "Reviewed By" section for clinic staff
+- [x] Implement print-optimized styling (margins, page breaks)
+- [x] Create PDF preview before export
+- [x] Add watermark for draft vs. final versions
+
+### Secure Send to Doctor Protocol
+- [x] Create "Send to Doctor" screen
+- [x] Implement clinic search by name or fax number
+- [x] Add clinic database with local Fulshear/Houston providers
+- [x] Implement HIPAA-compliant Direct Messaging integration
+- [x] Add secure cloud link generation with expiration
+- [x] Create fax delivery option with cover page
+- [x] Implement email delivery with encrypted attachment
+- [x] Add delivery tracking status (queued, sent, received, viewed)
+- [x] Create push notification for delivery confirmation
+- [x] Implement "Resend" functionality
+- [x] Add delivery history log
+- [x] Create "Intake Received by Clinic" confirmation
+- [x] Implement delivery failure alerts with retry options
+- [x] Add "Share with Multiple Providers" option
+
+### Medication Reconciliation Table
+- [ ] Create medication reconciliation data structure
+- [ ] Implement drug class lookup from Health Knowledge Engine
+- [ ] Add "Common Indications" field for each medication
+- [ ] Create cross-reference logic for medication database
+- [ ] Implement drug interaction checking
+- [ ] Add "Medication Purpose" column
+- [ ] Create "Prescribing Doctor" field
+- [ ] Implement "Start Date" and "Duration" tracking
+- [ ] Add "Adherence Status" indicator
+- [ ] Create visual table layout for PDF export
+- [ ] Implement medication grouping by drug class
+- [ ] Add "Discontinued Medications" section
+- [ ] Create "Over-the-Counter" vs. "Prescription" categorization
+- [ ] Implement dosage normalization (e.g., "500mg" vs. "0.5g")
+
+### Secure Storage & Role-Based Access Control
+- [ ] Implement U.S.-based data storage compliance
+- [ ] Create encryption at rest for all intake forms
+- [ ] Implement encryption in transit (TLS 1.3)
+- [ ] Add role-based access control (RBAC) system
+- [ ] Define user roles: Patient, Provider, Admin, Caregiver
+- [ ] Implement permission matrix for each role
+- [ ] Create access audit logging
+- [ ] Add "Who can view this form" configuration
+- [ ] Implement authorized person list management
+- [ ] Create access request/approval workflow
+- [ ] Add data retention policy enforcement
+- [ ] Implement secure deletion (data wiping)
+- [ ] Create backup and disaster recovery procedures
+- [ ] Add breach notification system
+
+### API Key Configuration Settings
+- [ ] Create Settings screen in app
+- [ ] Add "API Keys" section
+- [ ] Implement Google Cloud Speech API key input
+- [ ] Add Azure Speech Service credentials input
+- [ ] Create AWS Transcribe credentials input
+- [ ] Implement eFax/Phaxio API key input
+- [ ] Add Direct Messaging credentials input
+- [ ] Create secure storage for API keys (encrypted)
+- [ ] Implement API key validation
+- [ ] Add "Test Connection" button for each API
+- [ ] Create API usage monitoring
+- [ ] Implement cost tracking for paid APIs
+- [ ] Add API key rotation reminders
+- [ ] Create fallback API configuration
+
+### Spanish Language Support
+- [ ] Translate NPP to Spanish
+- [ ] Create Spanish HIPAA consent text
+- [ ] Translate all intake form questions to Spanish
+- [ ] Implement Spanish voice prompts
+- [ ] Add language selection at app start
+- [ ] Create Spanish PDF export templates
+- [ ] Translate all UI labels and buttons
+- [ ] Implement Spanish speech recognition
+- [ ] Add Spanish medication database
+- [ ] Create bilingual PDF option (English/Spanish side-by-side)
+- [ ] Translate clinic search and send features
+- [ ] Implement Spanish email templates
+- [ ] Add Spanish fax cover pages
+- [ ] Create Spanish help documentation
+
+### Integration & Testing
+- [ ] Integrate PDF generator with intake review screen
+- [ ] Connect secure send to clinic database
+- [ ] Test medication reconciliation with real drug data
+- [ ] Validate RBAC permissions for all user roles
+- [ ] Test API key configuration with real credentials
+- [ ] Verify Spanish translations with native speakers
+- [ ] End-to-end test: intake → PDF → send → tracking
+- [ ] Create user documentation for B2B features

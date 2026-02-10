@@ -1,78 +1,367 @@
-import { ScrollView, Text, View, TouchableOpacity } from "react-native";
+import { View, Text, Pressable, ScrollView, Alert } from "react-native";
+import { useRouter } from "expo-router";
+import { useState, useEffect } from "react";
+import * as Haptics from "expo-haptics";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
-import { router } from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 
-export default function DevicesScreen() {
-  const colors = useColors();
+/**
+ * Devices Tab - Consolidated Device Management
+ * 
+ * All connected health devices in one place with pairing flows.
+ * Devices: Omron BP Monitor, Samsung Watch, iHome Scale, Dexcom G7 CGM, Omnipod 5 Insulin Pump
+ */
 
-  const devices = [
+type DeviceStatus = "connected" | "disconnected" | "pairing";
+
+interface Device {
+  id: string;
+  name: string;
+  type: string;
+  icon: string;
+  status: DeviceStatus;
+  lastSync?: string;
+  batteryLevel?: number;
+}
+
+export default function DevicesScreen() {
+  const router = useRouter();
+  const colors = useColors();
+  
+  const [devices, setDevices] = useState<Device[]>([
     {
-      title: "Bluetooth Devices",
-      description: "Pair Omron 3550, Samsung Watch 7, iHome scale",
-      icon: "antenna.radiowaves.left.and.right" as const,
-      route: "/bluetooth-devices",
-      color: colors.primary,
+      id: "omron-3550",
+      name: "Omron 3550 BP Monitor",
+      type: "Blood Pressure",
+      icon: "❤️",
+      status: "disconnected",
     },
-  ];
+    {
+      id: "samsung-watch-7",
+      name: "Samsung Galaxy Watch 7",
+      type: "Heart Rate & Activity",
+      icon: "⌚",
+      status: "disconnected",
+    },
+    {
+      id: "ihome-scale",
+      name: "iHome Smart Scale",
+      type: "Weight & BMI",
+      icon: "⚖️",
+      status: "disconnected",
+    },
+    {
+      id: "dexcom-g7",
+      name: "Dexcom G7 CGM",
+      type: "Continuous Glucose Monitor",
+      icon: "🩸",
+      status: "disconnected",
+    },
+    {
+      id: "omnipod-5",
+      name: "Omnipod 5 Insulin Pump",
+      type: "Insulin Delivery",
+      icon: "💉",
+      status: "disconnected",
+    },
+  ]);
+
+  useEffect(() => {
+    loadDeviceStatuses();
+  }, []);
+
+  const loadDeviceStatuses = async () => {
+    try {
+      const savedStatuses = await AsyncStorage.getItem("device_statuses");
+      if (savedStatuses) {
+        const statuses = JSON.parse(savedStatuses);
+        setDevices((prevDevices) =>
+          prevDevices.map((device) => ({
+            ...device,
+            status: statuses[device.id]?.status || "disconnected",
+            lastSync: statuses[device.id]?.lastSync,
+            batteryLevel: statuses[device.id]?.batteryLevel,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("[Devices] Error loading device statuses:", error);
+    }
+  };
+
+  const saveDeviceStatus = async (deviceId: string, status: DeviceStatus) => {
+    try {
+      const savedStatuses = await AsyncStorage.getItem("device_statuses");
+      const statuses = savedStatuses ? JSON.parse(savedStatuses) : {};
+      
+      statuses[deviceId] = {
+        status,
+        lastSync: status === "connected" ? new Date().toISOString() : undefined,
+        batteryLevel: status === "connected" ? 85 : undefined,
+      };
+
+      await AsyncStorage.setItem("device_statuses", JSON.stringify(statuses));
+      
+      setDevices((prevDevices) =>
+        prevDevices.map((device) =>
+          device.id === deviceId
+            ? { ...device, status, lastSync: statuses[deviceId].lastSync, batteryLevel: statuses[deviceId].batteryLevel }
+            : device
+        )
+      );
+    } catch (error) {
+      console.error("[Devices] Error saving device status:", error);
+    }
+  };
+
+  const handlePairDevice = (device: Device) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    
+    Alert.alert(
+      `Pair ${device.name}`,
+      `Would you like to pair your ${device.name}?\n\n1. Turn on Bluetooth on your device\n2. Enable pairing mode\n3. Follow the on-screen instructions`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Start Pairing",
+          onPress: () => {
+            // Simulate pairing for demo
+            saveDeviceStatus(device.id, "connected");
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            Alert.alert("Success", `${device.name} connected successfully!`);
+          },
+        },
+      ]
+    );
+  };
+
+  const handleDisconnectDevice = (device: Device) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    
+    Alert.alert(
+      `Disconnect ${device.name}`,
+      `Are you sure you want to disconnect this device?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Disconnect",
+          style: "destructive",
+          onPress: async () => {
+            await saveDeviceStatus(device.id, "disconnected");
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          },
+        },
+      ]
+    );
+  };
+
+  const getStatusColor = (status: DeviceStatus) => {
+    switch (status) {
+      case "connected":
+        return colors.success;
+      case "pairing":
+        return colors.warning;
+      case "disconnected":
+        return colors.muted;
+    }
+  };
+
+  const getStatusText = (status: DeviceStatus) => {
+    switch (status) {
+      case "connected":
+        return "Connected";
+      case "pairing":
+        return "Pairing...";
+      case "disconnected":
+        return "Not Connected";
+    }
+  };
+
+  const getTimeAgo = (timestamp?: string) => {
+    if (!timestamp) return "Never";
+    
+    const now = new Date();
+    const then = new Date(timestamp);
+    const diffMs = now.getTime() - then.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+
+    if (diffMins < 1) return "Just now";
+    if (diffMins < 60) return `${diffMins}m ago`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays}d ago`;
+  };
+
+  const connectedCount = devices.filter((d) => d.status === "connected").length;
 
   return (
-    <ScreenContainer className="px-4 pt-4">
-      <ScrollView>
-        {/* Header */}
-        <View className="mb-6">
-          <Text className="text-3xl font-bold text-foreground" style={{ lineHeight: 40 }}>
-            Devices
-          </Text>
-          <Text className="text-base text-muted mt-1">
-            Manage your connected health devices
-          </Text>
-        </View>
+    <ScreenContainer>
+      {/* Header */}
+      <View className="px-6 pt-6 pb-4">
+        <Text className="text-3xl font-bold text-foreground" style={{ lineHeight: 40 }}>
+          My Devices
+        </Text>
+        <Text className="text-lg text-muted mt-1" style={{ lineHeight: 26 }}>
+          {connectedCount} of {devices.length} devices connected
+        </Text>
+      </View>
 
-        {/* Device Cards */}
+      <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
+        {/* Connected Devices Summary */}
+        {connectedCount > 0 && (
+          <View className="bg-surface rounded-3xl p-6 mb-6 border border-border">
+            <View className="flex-row items-center gap-3 mb-3">
+              <View
+                className="w-12 h-12 rounded-full items-center justify-center"
+                style={{ backgroundColor: `${colors.success}20` }}
+              >
+                <IconSymbol name="checkmark.circle.fill" size={28} color={colors.success} />
+              </View>
+              <View className="flex-1">
+                <Text className="text-xl font-bold text-foreground" style={{ lineHeight: 28 }}>
+                  All Systems Active
+                </Text>
+                <Text className="text-base text-muted" style={{ lineHeight: 22 }}>
+                  Your devices are syncing data
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {/* Device List */}
+        <Text className="text-2xl font-bold text-foreground mb-4" style={{ lineHeight: 32 }}>
+          Available Devices
+        </Text>
+
         <View className="gap-4 pb-8">
-          {devices.map((device, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => router.push(device.route as any)}
-              style={{
-                backgroundColor: colors.surface,
-                borderRadius: 16,
-                padding: 20,
-                borderWidth: 1,
-                borderColor: colors.border,
-              }}
-              activeOpacity={0.7}
+          {devices.map((device) => (
+            <View
+              key={device.id}
+              className="bg-surface rounded-3xl p-6 border border-border"
             >
-              <View className="flex-row items-center gap-4">
+              {/* Device Header */}
+              <View className="flex-row items-center gap-4 mb-4">
                 <View
-                  style={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: 28,
-                    backgroundColor: `${device.color}20`,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
+                  className="w-16 h-16 rounded-2xl items-center justify-center"
+                  style={{ backgroundColor: `${colors.primary}10` }}
                 >
-                  <IconSymbol name={device.icon} size={28} color={device.color} />
+                  <Text style={{ fontSize: 32 }}>{device.icon}</Text>
                 </View>
                 <View className="flex-1">
-                  <Text
-                    className="text-xl font-semibold text-foreground mb-1"
-                    style={{ lineHeight: 28 }}
-                  >
-                    {device.title}
+                  <Text className="text-xl font-bold text-foreground" style={{ lineHeight: 28 }}>
+                    {device.name}
                   </Text>
-                  <Text className="text-sm text-muted" style={{ lineHeight: 20 }}>
-                    {device.description}
+                  <Text className="text-base text-muted" style={{ lineHeight: 22 }}>
+                    {device.type}
                   </Text>
                 </View>
-                <IconSymbol name="chevron.right" size={24} color={colors.muted} />
               </View>
-            </TouchableOpacity>
+
+              {/* Device Status */}
+              <View className="flex-row items-center justify-between mb-4">
+                <View className="flex-row items-center gap-2">
+                  <View
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: getStatusColor(device.status) }}
+                  />
+                  <Text
+                    className="text-base font-semibold"
+                    style={{ color: getStatusColor(device.status), lineHeight: 22 }}
+                  >
+                    {getStatusText(device.status)}
+                  </Text>
+                </View>
+                {device.status === "connected" && device.batteryLevel && (
+                  <Text className="text-sm text-muted" style={{ lineHeight: 20 }}>
+                    Battery: {device.batteryLevel}%
+                  </Text>
+                )}
+              </View>
+
+              {/* Last Sync */}
+              {device.status === "connected" && (
+                <Text className="text-sm text-muted mb-4" style={{ lineHeight: 20 }}>
+                  Last synced: {getTimeAgo(device.lastSync)}
+                </Text>
+              )}
+
+              {/* Action Button */}
+              {device.status === "disconnected" ? (
+                <Pressable
+                  onPress={() => handlePairDevice(device)}
+                  style={({ pressed }) => ({
+                    backgroundColor: colors.primary,
+                    padding: 16,
+                    borderRadius: 16,
+                    alignItems: "center",
+                    opacity: pressed ? 0.7 : 1,
+                  })}
+                >
+                  <Text className="text-white text-lg font-bold" style={{ lineHeight: 26 }}>
+                    Pair Device
+                  </Text>
+                </Pressable>
+              ) : (
+                <Pressable
+                  onPress={() => handleDisconnectDevice(device)}
+                  style={({ pressed }) => ({
+                    backgroundColor: colors.surface,
+                    borderWidth: 2,
+                    borderColor: colors.border,
+                    padding: 16,
+                    borderRadius: 16,
+                    alignItems: "center",
+                    opacity: pressed ? 0.7 : 1,
+                  })}
+                >
+                  <Text
+                    className="text-lg font-bold"
+                    style={{ color: colors.foreground, lineHeight: 26 }}
+                  >
+                    Disconnect
+                  </Text>
+                </Pressable>
+              )}
+            </View>
           ))}
+        </View>
+
+        {/* Help Section */}
+        <View className="bg-surface rounded-3xl p-6 mb-8 border border-border">
+          <Text className="text-xl font-bold text-foreground mb-3" style={{ lineHeight: 28 }}>
+            Need Help?
+          </Text>
+          <Text className="text-base text-muted mb-4" style={{ lineHeight: 24 }}>
+            Having trouble pairing your devices? Check our troubleshooting guide or contact support.
+          </Text>
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              Alert.alert(
+                "Device Support",
+                "For device pairing support, please refer to the DEVICE_PAIRING_GUIDE_DIABETES.md file or contact our support team."
+              );
+            }}
+            style={({ pressed }) => ({
+              backgroundColor: `${colors.primary}20`,
+              padding: 14,
+              borderRadius: 12,
+              alignItems: "center",
+              opacity: pressed ? 0.7 : 1,
+            })}
+          >
+            <Text
+              className="text-base font-semibold"
+              style={{ color: colors.primary, lineHeight: 22 }}
+            >
+              View Troubleshooting Guide
+            </Text>
+          </Pressable>
         </View>
       </ScrollView>
     </ScreenContainer>

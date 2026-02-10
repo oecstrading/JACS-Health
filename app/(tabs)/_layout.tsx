@@ -45,22 +45,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="medications"
         options={{
-          title: "Medications",
+          title: "Meds",
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="pills.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="vitals"
-        options={{
-          title: "Vitals",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="heart.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="family"
-        options={{
-          title: "Family",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.2.fill" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -68,6 +54,19 @@ export default function TabLayout() {
         options={{
           title: "Settings",
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="gearshape.fill" color={color} />,
+        }}
+      />
+      {/* Hidden tabs - accessible via navigation but not shown in tab bar */}
+      <Tabs.Screen
+        name="vitals"
+        options={{
+          href: null, // Hide from tab bar
+        }}
+      />
+      <Tabs.Screen
+        name="family"
+        options={{
+          href: null, // Hide from tab bar
         }}
       />
     </Tabs>

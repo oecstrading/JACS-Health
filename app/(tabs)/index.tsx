@@ -107,6 +107,39 @@ export default function HomeScreen() {
         <RecentInsulinWidget />
         <RecentMealsWidget />
 
+        {/* Master Dashboard Link */}
+        <Pressable
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            router.push("/master-dashboard" as any);
+          }}
+          style={({ pressed }) => ({
+            backgroundColor: colors.primary,
+            borderRadius: 24,
+            padding: 24,
+            marginBottom: 24,
+            opacity: pressed ? 0.7 : 1,
+          })}
+        >
+          <View className="flex-row items-center gap-4">
+            <View
+              className="w-16 h-16 rounded-2xl items-center justify-center"
+              style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}
+            >
+              <Text style={{ fontSize: 32 }}>📊</Text>
+            </View>
+            <View className="flex-1">
+              <Text className="text-2xl font-bold text-white mb-1" style={{ lineHeight: 32 }}>
+                Master Dashboard
+              </Text>
+              <Text className="text-base text-white" style={{ opacity: 0.9, lineHeight: 22 }}>
+                View all monitoring dashboards
+              </Text>
+            </View>
+            <IconSymbol name="chevron.right" size={28} color="#ffffff" />
+          </View>
+        </Pressable>
+
         {/* Quick Actions */}
         <Text className="text-2xl font-bold text-foreground mb-4" style={{ lineHeight: 32 }}>
           Quick Actions
@@ -116,22 +149,13 @@ export default function HomeScreen() {
             title="Talk to AI Assistant"
             icon="mic.fill"
             color="primary"
-            onPress={() => router.push("/devices" as any)}
+            onPress={() => router.push("/ai-chat" as any)}
           />
           <ActionCard
             title="Log Medication"
             icon="pills.fill"
             color="success"
-            onPress={() => {
-              // TODO: Navigate to medication logging
-              alert("Medication logging coming soon");
-            }}
-          />
-          <ActionCard
-            title="Vitals Dashboard"
-            icon="heart.fill"
-            color="primary"
-            onPress={() => router.push("/vitals-dashboard" as any)}
+            onPress={() => router.push("/log-medication" as any)}
           />
           <ActionCard
             title="Log Insulin"
@@ -144,18 +168,6 @@ export default function HomeScreen() {
             icon="fork.knife"
             color="success"
             onPress={() => router.push("/log-meal" as any)}
-          />
-          <ActionCard
-            title="Diabetes Dashboard"
-            icon="drop.fill"
-            color="error"
-            onPress={() => router.push("/diabetes-dashboard" as any)}
-          />
-          <ActionCard
-            title="View Health Insights"
-            icon="chart.bar.fill"
-            color="primary"
-            onPress={() => router.push("/insights")}
           />
           <ActionCard
             title="Telemedicine"

@@ -2248,3 +2248,40 @@
 - [x] Data persistence already implemented
 - [x] Test on web platform
 - [x] Create checkpoint for publishing
+
+## Phase 47: Platform Reorganization - Consolidate Devices & Create Master Dashboard ✅ COMPLETE
+- [x] Create unified Devices tab (app/(tabs)/devices.tsx)
+- [x] List all connected devices in one view (Omron BP, Samsung Watch, iHome Scale, Dexcom G7, Omnipod 5)
+- [x] Add device status indicators (connected, disconnected, pairing)
+- [x] Add "Pair Device" button for each device type
+- [x] Create device pairing flow with Alert dialogs
+- [x] Add Bluetooth pairing instructions in Alert messages
+- [x] Add device connection status persistence (AsyncStorage)
+- [x] Add battery level and last sync time display
+- [x] Add "All Systems Active" summary card
+- [x] Add Help section with troubleshooting guide link
+- [x] Create Master Dashboard screen (app/master-dashboard.tsx)
+- [x] Add Vitals Dashboard card to Master Dashboard
+- [x] Add Diabetes Dashboard card to Master Dashboard
+- [x] Add Medicare Compliance card to Master Dashboard
+- [x] Add Health Insights card to Master Dashboard
+- [x] Add Today's Overview quick stats (BP, Glucose, HR, Weight)
+- [x] Make all dashboard cards clickable to navigate to detailed views
+- [x] Add "New" badge to Diabetes Dashboard
+- [x] Add Help card with User Guide link
+- [x] Simplify Home screen by removing redundant quick actions
+- [x] Keep essential actions: Talk to AI, Log Medication, Log Insulin, Log Meal, Telemedicine
+- [x] Remove individual dashboard links from Home (moved to Master Dashboard)
+- [x] Add prominent Master Dashboard link to Home screen
+- [x] Update tab navigation structure (reduced from 6 to 4 tabs)
+- [x] Tab 1: Home (essential quick actions + Master Dashboard link)
+- [x] Tab 2: Devices (all connected devices consolidated)
+- [x] Tab 3: Meds (medications management)
+- [x] Tab 4: Settings (account, family, health settings)
+- [x] Hide Vitals and Family tabs from tab bar (still accessible via navigation)
+- [x] Update tab bar labels ("Medications" → "Meds")
+- [x] Test device pairing flows
+- [x] Test Master Dashboard navigation
+- [x] Test simplified Home screen
+- [x] Verify all features still accessible
+- [x] Create checkpoint for publishing

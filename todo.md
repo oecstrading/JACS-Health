@@ -2066,3 +2066,17 @@
 - [ ] Create device-specific data parsers (requires actual device testing)
 - [ ] Implement automatic data sync when devices connect (requires actual device testing)
 - [ ] Test pairing with actual Omron 3550, Samsung Watch 7, and iHome scale
+
+## Phase 35: Bluetooth Data Parsers & Sync Notifications
+- [x] Create Bluetooth data parser utilities module
+- [x] Implement Omron 3550 BP data parser (systolic, diastolic, pulse, timestamp)
+- [x] Implement Samsung Watch 7 data parser (heart rate, steps, sleep data)
+- [x] Implement iHome scale data parser (weight, BMI, body fat %)
+- [x] Create automatic data sync service with background monitoring
+- [x] Implement data sync to vitals storage (AsyncStorage + database)
+- [x] Add sync notifications for successful data transfers
+- [x] Create notification tap handler to view new readings
+- [x] Update Bluetooth devices screen with manual sync buttons
+- [x] Add sync status indicators (syncing, success, error)
+- [x] Create testing guide document for user device testing
+- [x] Test data parsing with simulated device data

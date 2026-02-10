@@ -10,10 +10,12 @@ import {
 } from "react-native";
 import { BleManager, Device, State } from "react-native-ble-plx";
 import * as ExpoDevice from "expo-device";
+import * as Haptics from "expo-haptics";
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import { manualSyncDevice } from "@/lib/bluetooth-sync-service";
 
 const bleManager = new BleManager();
 
@@ -22,6 +24,10 @@ interface PairedDevice {
   name: string;
   type: "bp_monitor" | "watch" | "scale";
   lastSync: string;
+}
+
+interface SyncStatus {
+  [deviceId: string]: "syncing" | "success" | "error" | null;
 }
 
 const DEVICE_TYPES = {
@@ -36,6 +42,7 @@ export default function BluetoothDevicesScreen() {
   const [discoveredDevices, setDiscoveredDevices] = useState<Device[]>([]);
   const [pairedDevices, setPairedDevices] = useState<PairedDevice[]>([]);
   const [bluetoothState, setBluetoothState] = useState<State>(State.Unknown);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>({});
 
   useEffect(() => {
     loadPairedDevices();
@@ -185,6 +192,62 @@ export default function BluetoothDevicesScreen() {
     }
   };
 
+  const handleManualSync = async (device: PairedDevice) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    
+    // Set syncing status
+    setSyncStatus((prev) => ({ ...prev, [device.id]: "syncing" }));
+
+    try {
+      const result = await manualSyncDevice(device.id, device.type);
+
+      if (result.success) {
+        // Set success status
+        setSyncStatus((prev) => ({ ...prev, [device.id]: "success" }));
+        
+        // Reload paired devices to update last sync time
+        await loadPairedDevices();
+
+        // Clear success status after 3 seconds
+        setTimeout(() => {
+          setSyncStatus((prev) => ({ ...prev, [device.id]: null }));
+        }, 3000);
+
+        Alert.alert(
+          "Sync Successful",
+          `Data synced from ${device.name}`,
+          [{ text: "OK" }]
+        );
+      } else {
+        // Set error status
+        setSyncStatus((prev) => ({ ...prev, [device.id]: "error" }));
+
+        // Clear error status after 5 seconds
+        setTimeout(() => {
+          setSyncStatus((prev) => ({ ...prev, [device.id]: null }));
+        }, 5000);
+
+        Alert.alert(
+          "Sync Failed",
+          result.error || "Unable to sync data. Please try again.",
+          [{ text: "OK" }]
+        );
+      }
+    } catch (error) {
+      setSyncStatus((prev) => ({ ...prev, [device.id]: "error" }));
+
+      setTimeout(() => {
+        setSyncStatus((prev) => ({ ...prev, [device.id]: null }));
+      }, 5000);
+
+      Alert.alert(
+        "Sync Error",
+        "An error occurred while syncing. Please try again.",
+        [{ text: "OK" }]
+      );
+    }
+  };
+
   const unpairDevice = async (deviceId: string) => {
     Alert.alert(
       "Unpair Device",
@@ -272,7 +335,7 @@ export default function BluetoothDevicesScreen() {
                   className="p-4 rounded-2xl mb-3"
                   style={{ backgroundColor: colors.surface }}
                 >
-                  <View className="flex-row items-center justify-between">
+                  <View className="flex-row items-center justify-between mb-3">
                     <View className="flex-row items-center flex-1">
                       <Text className="text-3xl mr-3">
                         {getDeviceIcon(device.type)}
@@ -284,8 +347,60 @@ export default function BluetoothDevicesScreen() {
                         <Text className="text-sm text-muted">
                           Last sync: {new Date(device.lastSync).toLocaleDateString()}
                         </Text>
+                        {syncStatus[device.id] && (
+                          <Text
+                            className="text-sm mt-1"
+                            style={{
+                              color:
+                                syncStatus[device.id] === "success"
+                                  ? colors.success
+                                  : syncStatus[device.id] === "error"
+                                  ? colors.error
+                                  : colors.primary,
+                            }}
+                          >
+                            {syncStatus[device.id] === "syncing" && "⏳ Syncing..."}
+                            {syncStatus[device.id] === "success" && "✅ Synced successfully"}
+                            {syncStatus[device.id] === "error" && "❌ Sync failed"}
+                          </Text>
+                        )}
                       </View>
                     </View>
+                  </View>
+                  <View className="flex-row gap-2">
+                    <TouchableOpacity
+                      onPress={() => handleManualSync(device)}
+                      disabled={syncStatus[device.id] === "syncing"}
+                      style={{
+                        backgroundColor:
+                          syncStatus[device.id] === "syncing"
+                            ? colors.muted
+                            : colors.primary,
+                        paddingHorizontal: 16,
+                        paddingVertical: 8,
+                        borderRadius: 8,
+                        flex: 1,
+                      }}
+                    >
+                      {syncStatus[device.id] === "syncing" ? (
+                        <View className="flex-row items-center justify-center gap-2">
+                          <ActivityIndicator size="small" color="white" />
+                          <Text style={{ color: "white", fontWeight: "600" }}>
+                            Syncing...
+                          </Text>
+                        </View>
+                      ) : (
+                        <Text
+                          style={{
+                            color: "white",
+                            fontWeight: "600",
+                            textAlign: "center",
+                          }}
+                        >
+                          Sync Now
+                        </Text>
+                      )}
+                    </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => unpairDevice(device.id)}
                       style={{

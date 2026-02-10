@@ -2043,3 +2043,30 @@
 - [x] Add family icon mapping (person.2.fill)
 - [x] Test navigation and functionality
 - [x] Create checkpoint
+
+## Phase 40: Command Center - Apple Health/Google Fit Integration & Clinical Reports
+- [x] Install react-native-health and rn-apple-healthkit packages
+- [x] Create Device Sync module (lib/device-sync.ts)
+- [x] Implement Apple HealthKit integration for iOS
+- [x] Implement Google Fit/Health Connect integration for Android (pending device testing)
+- [x] Request permissions: Blood Pressure, Heart Rate, Weight, Body Fat %, Steps
+- [x] Implement automatic background sync every 15 minutes
+- [x] Create device calibration mapping (Omron → Cardiovascular, iHome → Metabolic, Samsung → Fall Guard)
+- [ ] Build Connected Devices settings page with status and last-sync time (UI pending)
+- [x] Implement AI red flag detection (BP >140, irregular HR/AFib)
+- [x] Add voice notification triggers for critical readings
+- [x] Flag critical entries in red on Caregiver Dashboard
+- [x] Add Context Links to Medical Library for readings
+- [x] Implement manual-to-auto hybrid data merging logic
+- [x] Prioritize device precision, keep voice notes as comments
+- [x] Create Weekly Health Summary module (automated Sunday 6 PM)
+- [x] Aggregate 7-day trends from Omron, iHome, Samsung Watch
+- [x] Highlight significant deviations (5% weight, 10% BP)
+- [x] Design senior-first visualizations with Stoplight system (Green/Yellow/Red)
+- [x] Replace complex graphs with large Trend Ribbons (Rising/Stable/Falling)
+- [x] Ensure 16pt+ font size for PDF summaries
+- [x] Build Doctor-Ready PDF export (1-page Patient Weekly Health Narrative)
+- [x] Include 7-day average table, Patient Voice section, footer with DOB/physician
+- [x] Enable encrypted email to clinic
+- [ ] Test with all three devices (requires physical devices)
+- [x] Create checkpoint

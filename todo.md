@@ -2016,110 +2016,16 @@
 - [x] Update marketing webpage with investor-focused highlights
 - [x] Test language switching across all screens
 
-## Phase 31: AARP AgeTech Collaborative Pitch Deck
-- [ ] Create 10-12 slide investor pitch deck
-- [ ] Emphasize empowerment and independence messaging
-- [ ] Highlight 60-70% time savings and $420K ARR projection
-- [ ] Focus on voice-first, senior-built solution
-- [ ] Include predictive stability and conversational documentation
-- [ ] Tailor content for AARP AgeTech Collaborative audience
-
-## Phase 31: AARP AgeTech Collaborative Pitch Deck
-- [x] Prepare slide content based on AARP pitch script
-- [x] Create 12-slide pitch deck emphasizing empowerment and independence
-- [x] Focus on voice-first solution built by senior for seniors
-- [x] Highlight $420K ARR projection and 60-70% time savings
-- [x] Include clear ask for AARP partnership (design insights, strategic partners, Houston pilot)
-- [x] Present pitch deck to user
-
-## Phase 32: Technical Investor Pitch Deck
-- [x] Prepare technical slide content focusing on architecture and scalability
-- [x] Create 8-slide technical pitch deck for engineering-focused investors
-- [x] Highlight React Native + Expo SDK 54, TypeScript, tRPC, PostgreSQL stack
-- [x] Showcase zero TypeScript errors, production-ready codebase
-- [x] Include system architecture diagrams and API integration details
-- [x] Export to PDF and add to marketing platform
-- [x] Present technical pitch deck to user
-
-## Phase 33: Marketing Platform Link Fixes
-- [x] Review all clickable links in marketing platform HTML
-- [x] Fix "View Documentation" link (README.md 404 error)
-- [x] Verify all PDF download links work
-- [x] Test all external links
-- [x] Verify all links work correctly
-
-## Phase 34: Bluetooth Device Pairing (Omron 3550, Samsung Watch 7, iHome Scale)
-- [x] Research Bluetooth protocols for Omron 3550 BP monitor
-- [x] Research Bluetooth protocols for Samsung Galaxy Watch 7
-- [x] Research Bluetooth protocols for iHome scale
-- [x] Install react-native-ble-plx for Bluetooth Low Energy
-- [x] Create Bluetooth device discovery screen
-- [x] Implement device pairing flow with user-friendly UI
-- [x] Add device type identification (Omron, Samsung, iHome)
-- [x] Implement automatic device discovery with 10-second scan
-- [x] Add device management screen (paired devices list)
-- [x] Show connection status indicators
-- [x] Implement device unpair functionality
-- [x] Add Bluetooth permissions to app.config.ts
-- [x] Add Bluetooth Devices link to Settings screen
-- [x] Add icon mapping for Bluetooth icon
-- [ ] Create device-specific data parsers (requires actual device testing)
-- [ ] Implement automatic data sync when devices connect (requires actual device testing)
-- [ ] Test pairing with actual Omron 3550, Samsung Watch 7, and iHome scale
-
-## Phase 35: Bluetooth Data Parsers & Sync Notifications
-- [x] Create Bluetooth data parser utilities module
-- [x] Implement Omron 3550 BP data parser (systolic, diastolic, pulse, timestamp)
-- [x] Implement Samsung Watch 7 data parser (heart rate, steps, sleep data)
-- [x] Implement iHome scale data parser (weight, BMI, body fat %)
-- [x] Create automatic data sync service with background monitoring
-- [x] Implement data sync to vitals storage (AsyncStorage + database)
-- [x] Add sync notifications for successful data transfers
-- [x] Create notification tap handler to view new readings
-- [x] Update Bluetooth devices screen with manual sync buttons
-- [x] Add sync status indicators (syncing, success, error)
-- [x] Create testing guide document for user device testing
-- [x] Test data parsing with simulated device data
-
-## Phase 36: Vitals Dashboard & AI Health Insights
-- [x] Create Vitals Dashboard screen (app/vitals-dashboard.tsx)
-- [x] Add blood pressure chart with systolic/diastolic trends
-- [x] Add heart rate chart with resting HR trends
-- [x] Add weight chart with BMI overlay
-- [x] Implement time range selector (7-day, 30-day, 90-day tabs)
-- [x] Add summary cards showing latest readings and averages
-- [x] Create Health Insights AI analysis module (lib/health-insights-ai.ts)
-- [x] Implement pattern detection for blood pressure trends
-- [x] Implement heart rate variability analysis
-- [x] Implement weight trend analysis
-- [x] Create Health Insights screen (app/health-insights.tsx)
-- [x] Display AI-generated insights with severity indicators
-- [x] Add personalized recommendations based on patterns
-- [x] Add "Learn More" links for each insight
-- [x] Add Vitals Dashboard to Home screen Quick Actions
-- [x] Add Health Insights to Home screen Quick Actions
-- [x] Add lightbulb icon mapping for Health Insights
-- [x] Test with synced device data
+## Phase 38: Platform Reorganization - Logical Tab Structure
+- [x] Review current tab structure (Home, Assistant, Health, Family, Settings)
+- [x] Review current Quick Actions on Home screen
+- [x] Design new 5-tab structure: Home, Devices, Medications, Vitals, Settings
+- [x] Rename assistant.tsx to devices.tsx
+- [x] Rename caregiver.tsx to medications.tsx
+- [x] Rename health.tsx to vitals.tsx
+- [x] Update tab bar layout with new logical tabs
+- [x] Add icon mappings for new tabs (antenna for devices, pills for medications, heart for vitals)
+- [x] Fix TypeScript errors in Home screen navigation
+- [x] Update navigation paths to use new tab structure
+- [x] Test navigation flow across all tabs
 - [x] Create checkpoint
-
-## Phase 37: Medication Tracking, Trend Alerts & PDF Export
-- [x] Create medication tracking data model (medication name, dosage, frequency, time)
-- [x] Implement medication log storage (AsyncStorage)
-- [x] Create medication tracking module (lib/medication-tracking.ts)
-- [x] Add medication-vitals correlation analysis
-- [x] Detect if BP/HR changes correlate with medication adherence
-- [x] Create trend alert monitoring service (lib/trend-alerts.ts)
-- [x] Implement threshold detection (BP >140/90, HR >100/<60, rapid weight change)
-- [x] Add push notifications for threshold violations
-- [x] Create notification scheduling for consecutive threshold violations (3+ days)
-- [x] Implement PDF export functionality (lib/pdf-export.ts)
-- [x] Generate vitals report with HTML format and sharing
-- [x] Add date range selection based on time range (7/30/90 days)
-- [x] Add "Export to PDF" button to Vitals Dashboard
-- [x] Add "Export Report" button to Health Insights screen
-- [ ] Create medication logging screen (app/medication-log.tsx) for UI
-- [ ] Update Home screen to add Medication Tracking quick action
-- [ ] Test medication tracking and vitals correlation
-- [ ] Test trend alerts and notifications
-- [ ] Test PDF export with various date ranges
-- [ ] Create checkpoint

@@ -36,24 +36,24 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="assistant"
+        name="devices"
         options={{
-          title: "Assistant",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="mic.fill" color={color} />,
+          title: "Devices",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="antenna.radiowaves.left.and.right" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="health"
+        name="medications"
         options={{
-          title: "Health",
+          title: "Medications",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="pills.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="vitals"
+        options={{
+          title: "Vitals",
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="heart.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="caregiver"
-        options={{
-          title: "Family",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.2.fill" color={color} />,
         }}
       />
       <Tabs.Screen

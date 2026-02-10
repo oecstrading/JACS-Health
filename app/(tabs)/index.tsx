@@ -106,7 +106,7 @@ export default function HomeScreen() {
             title="Talk to AI Assistant"
             icon="mic.fill"
             color="primary"
-            onPress={() => router.push("/assistant")}
+            onPress={() => router.push("/devices" as any)}
           />
           <ActionCard
             title="Log Medication"
@@ -121,19 +121,13 @@ export default function HomeScreen() {
             title="Record Vitals"
             icon="heart.fill"
             color="primary"
-            onPress={() => router.push("/health")}
+            onPress={() => router.push("/vitals" as any)}
           />
           <ActionCard
-            title="Vitals Dashboard"
+            title="View Health Insights"
             icon="chart.bar.fill"
             color="primary"
-            onPress={() => router.push("/vitals-dashboard" as any)}
-          />
-          <ActionCard
-            title="Health Insights"
-            icon="lightbulb.fill"
-            color="warning"
-            onPress={() => router.push("/health-insights" as any)}
+            onPress={() => router.push("/insights")}
           />
           <ActionCard
             title="Telemedicine"

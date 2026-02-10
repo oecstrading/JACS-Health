@@ -64,7 +64,14 @@ const config: ExpoConfig = {
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: env.androidPackage,
-    permissions: ["POST_NOTIFICATIONS"],
+    permissions: [
+      "POST_NOTIFICATIONS",
+      "BLUETOOTH",
+      "BLUETOOTH_ADMIN",
+      "BLUETOOTH_CONNECT",
+      "BLUETOOTH_SCAN",
+      "ACCESS_FINE_LOCATION"
+    ],
     intentFilters: [
       {
         action: "VIEW",
@@ -86,6 +93,14 @@ const config: ExpoConfig = {
   },
   plugins: [
     "expo-router",
+    [
+      "react-native-ble-plx",
+      {
+        isBackgroundEnabled: true,
+        modes: ["peripheral", "central"],
+        bluetoothAlwaysPermission: "Allow $(PRODUCT_NAME) to connect to Bluetooth devices for health data syncing."
+      }
+    ],
     [
       "expo-audio",
       {

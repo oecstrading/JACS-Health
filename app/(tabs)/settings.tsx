@@ -63,6 +63,9 @@ export default function SettingsScreen() {
       case "conditions":
         router.push("/health-conditions");
         break;
+      case "bluetooth":
+        router.push("/bluetooth-devices" as any);
+        break;
       case "privacy":
         router.push("/privacy-settings");
         break;
@@ -161,6 +164,13 @@ export default function SettingsScreen() {
       title: t("healthConditions"),
       subtitle: t("healthConditionsDesc"),
       icon: "heart.fill",
+      type: "action",
+    },
+    {
+      id: "bluetooth",
+      title: "Bluetooth Devices",
+      subtitle: "Connect health devices for automatic data syncing",
+      icon: "antenna.radiowaves.left.and.right",
       type: "action",
     },
   ];

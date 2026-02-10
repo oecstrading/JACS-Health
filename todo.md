@@ -2015,3 +2015,54 @@
 - [x] Update project README with Phase 29 features
 - [x] Update marketing webpage with investor-focused highlights
 - [x] Test language switching across all screens
+
+## Phase 31: AARP AgeTech Collaborative Pitch Deck
+- [ ] Create 10-12 slide investor pitch deck
+- [ ] Emphasize empowerment and independence messaging
+- [ ] Highlight 60-70% time savings and $420K ARR projection
+- [ ] Focus on voice-first, senior-built solution
+- [ ] Include predictive stability and conversational documentation
+- [ ] Tailor content for AARP AgeTech Collaborative audience
+
+## Phase 31: AARP AgeTech Collaborative Pitch Deck
+- [x] Prepare slide content based on AARP pitch script
+- [x] Create 12-slide pitch deck emphasizing empowerment and independence
+- [x] Focus on voice-first solution built by senior for seniors
+- [x] Highlight $420K ARR projection and 60-70% time savings
+- [x] Include clear ask for AARP partnership (design insights, strategic partners, Houston pilot)
+- [x] Present pitch deck to user
+
+## Phase 32: Technical Investor Pitch Deck
+- [x] Prepare technical slide content focusing on architecture and scalability
+- [x] Create 8-slide technical pitch deck for engineering-focused investors
+- [x] Highlight React Native + Expo SDK 54, TypeScript, tRPC, PostgreSQL stack
+- [x] Showcase zero TypeScript errors, production-ready codebase
+- [x] Include system architecture diagrams and API integration details
+- [x] Export to PDF and add to marketing platform
+- [x] Present technical pitch deck to user
+
+## Phase 33: Marketing Platform Link Fixes
+- [x] Review all clickable links in marketing platform HTML
+- [x] Fix "View Documentation" link (README.md 404 error)
+- [x] Verify all PDF download links work
+- [x] Test all external links
+- [x] Verify all links work correctly
+
+## Phase 34: Bluetooth Device Pairing (Omron 3550, Samsung Watch 7, iHome Scale)
+- [x] Research Bluetooth protocols for Omron 3550 BP monitor
+- [x] Research Bluetooth protocols for Samsung Galaxy Watch 7
+- [x] Research Bluetooth protocols for iHome scale
+- [x] Install react-native-ble-plx for Bluetooth Low Energy
+- [x] Create Bluetooth device discovery screen
+- [x] Implement device pairing flow with user-friendly UI
+- [x] Add device type identification (Omron, Samsung, iHome)
+- [x] Implement automatic device discovery with 10-second scan
+- [x] Add device management screen (paired devices list)
+- [x] Show connection status indicators
+- [x] Implement device unpair functionality
+- [x] Add Bluetooth permissions to app.config.ts
+- [x] Add Bluetooth Devices link to Settings screen
+- [x] Add icon mapping for Bluetooth icon
+- [ ] Create device-specific data parsers (requires actual device testing)
+- [ ] Implement automatic data sync when devices connect (requires actual device testing)
+- [ ] Test pairing with actual Omron 3550, Samsung Watch 7, and iHome scale

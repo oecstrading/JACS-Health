@@ -81,6 +81,9 @@ export default function SettingsScreen() {
       case "bluetooth":
         router.push("/bluetooth-devices" as any);
         break;
+      case "communication":
+        router.push("/communication-log" as any);
+        break;
     }
   };
 
@@ -170,6 +173,13 @@ export default function SettingsScreen() {
       title: "Medical Library",
       subtitle: "Health education from trusted sources",
       icon: "lightbulb.fill",
+      type: "action",
+    },
+    {
+      id: "communication",
+      title: "Doctor Communication Log",
+      subtitle: "Track interactions for Medicare billing",
+      icon: "phone.fill",
       type: "action",
     },
     {

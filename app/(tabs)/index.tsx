@@ -2,10 +2,11 @@ import { ScrollView, Text, View, Pressable, type ViewStyle } from "react-native"
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 
-import { ScreenContainer } from "@/components/screen-container";
-import { ActionCard } from "@/components/action-card";
+import { ScreenContainer } from '@/components/screen-container';
+import { useColors } from '@/hooks/use-colors';
+import { ComplianceDashboard } from '@/components/compliance-dashboard';
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useColors } from "@/hooks/use-colors";
+import { ActionCard } from '@/components/action-card';
 
 /**
  * Home Screen - Health Dashboard
@@ -96,6 +97,9 @@ export default function HomeScreen() {
             </View>
           </View>
         </View>
+
+        {/* Medicare Compliance Dashboard */}
+        <ComplianceDashboard />
 
         {/* Quick Actions */}
         <Text className="text-2xl font-bold text-foreground mb-4" style={{ lineHeight: 32 }}>

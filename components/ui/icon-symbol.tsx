@@ -42,6 +42,7 @@ const MAPPING = {
   "document.fill": "description",
   "sparkles": "auto-awesome",
   "antenna.radiowaves.left.and.right": "bluetooth",
+  "lightbulb.fill": "lightbulb",
 } as IconMapping;
 
 type IconSymbolName = keyof typeof MAPPING;

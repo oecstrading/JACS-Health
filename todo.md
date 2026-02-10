@@ -2080,3 +2080,24 @@
 - [x] Add sync status indicators (syncing, success, error)
 - [x] Create testing guide document for user device testing
 - [x] Test data parsing with simulated device data
+
+## Phase 36: Vitals Dashboard & AI Health Insights
+- [x] Create Vitals Dashboard screen (app/vitals-dashboard.tsx)
+- [x] Add blood pressure chart with systolic/diastolic trends
+- [x] Add heart rate chart with resting HR trends
+- [x] Add weight chart with BMI overlay
+- [x] Implement time range selector (7-day, 30-day, 90-day tabs)
+- [x] Add summary cards showing latest readings and averages
+- [x] Create Health Insights AI analysis module (lib/health-insights-ai.ts)
+- [x] Implement pattern detection for blood pressure trends
+- [x] Implement heart rate variability analysis
+- [x] Implement weight trend analysis
+- [x] Create Health Insights screen (app/health-insights.tsx)
+- [x] Display AI-generated insights with severity indicators
+- [x] Add personalized recommendations based on patterns
+- [x] Add "Learn More" links for each insight
+- [x] Add Vitals Dashboard to Home screen Quick Actions
+- [x] Add Health Insights to Home screen Quick Actions
+- [x] Add lightbulb icon mapping for Health Insights
+- [x] Test with synced device data
+- [x] Create checkpoint

@@ -17,6 +17,8 @@ const MAPPING = {
   "paperplane.fill": "send",
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
+  "syringe.fill": "medication",
+  "fork.knife": "restaurant",
   "drop.fill": "water-drop",
   "heart.fill": "favorite",
   "mic.fill": "mic",

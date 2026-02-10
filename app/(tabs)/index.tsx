@@ -7,6 +7,8 @@ import { useColors } from '@/hooks/use-colors';
 import { ComplianceDashboard } from '@/components/compliance-dashboard';
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { ActionCard } from '@/components/action-card';
+import { RecentInsulinWidget } from '@/components/recent-insulin-widget';
+import { RecentMealsWidget } from '@/components/recent-meals-widget';
 
 /**
  * Home Screen - Health Dashboard
@@ -101,6 +103,10 @@ export default function HomeScreen() {
         {/* Medicare Compliance Dashboard */}
         <ComplianceDashboard />
 
+        {/* Recent Insulin & Meals */}
+        <RecentInsulinWidget />
+        <RecentMealsWidget />
+
         {/* Quick Actions */}
         <Text className="text-2xl font-bold text-foreground mb-4" style={{ lineHeight: 32 }}>
           Quick Actions
@@ -126,6 +132,18 @@ export default function HomeScreen() {
             icon="heart.fill"
             color="primary"
             onPress={() => router.push("/vitals-dashboard" as any)}
+          />
+          <ActionCard
+            title="Log Insulin"
+            icon="syringe.fill"
+            color="warning"
+            onPress={() => router.push("/log-insulin" as any)}
+          />
+          <ActionCard
+            title="Log Meal"
+            icon="fork.knife"
+            color="success"
+            onPress={() => router.push("/log-meal" as any)}
           />
           <ActionCard
             title="Diabetes Dashboard"

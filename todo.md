@@ -2207,3 +2207,29 @@
 - [x] Update Latest Updates section with Phase 43-44 highlights
 - [x] Update Roadmap section with completed phases
 - [x] Create checkpoint for publishing
+
+## Phase 45: Quick Insulin & Meal Logging from Main Dashboard ✅ COMPLETE
+- [x] Add "Log Insulin" quick action button to Home screen
+- [x] Create insulin logging screen with dose type (bolus/basal), amount, timestamp
+- [x] Add insulin type selector (rapid-acting, short-acting, intermediate, long-acting)
+- [x] Add quick amount buttons (1U, 2U, 5U, 10U, 15U, 20U)
+- [x] Add "Log Meal" quick action button to Home screen
+- [x] Create meal logging screen with meal type, carbs, food items, timestamp
+- [x] Add quick carb estimation buttons (15g, 30g, 45g, 60g, 75g, 90g)
+- [x] Add common foods database (10 foods with carb counts)
+- [x] Add custom food input
+- [x] Create "Recent Insulin" widget for dashboard
+- [x] Display last 3 insulin doses with type, amount, time ago
+- [x] Create "Recent Meals" widget for dashboard
+- [x] Display last 3 meals with carbs, foods, time ago
+- [x] Save data to AsyncStorage (insulin_doses, meals)
+- [x] Add "View All" links to Diabetes Dashboard
+- [x] Add success alerts after logging
+- [x] Add icon mappings for insulin (syringe.fill) and meal (fork.knife) buttons
+- [x] Widgets auto-hide when no data
+- [x] Time ago formatting (Just now, Xm ago, Xh ago, Xd ago)
+- [x] Input validation (amount > 0, carbs >= 0, max limits)
+- [x] Test insulin logging flow end-to-end
+- [x] Test meal logging flow end-to-end
+- [x] Verify data appears in Diabetes Dashboard
+- [x] Create checkpoint for publishing

@@ -1,4 +1,4 @@
-import { ScrollView, Text, View, TextInput, Pressable, Alert } from "react-native";
+import { View, Text, TextInput, Pressable, ScrollView, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { useState } from "react";
 import { router } from "expo-router";
 import * as Haptics from "expo-haptics";
@@ -149,7 +149,12 @@ export default function AccountManagementScreen() {
         </View>
       </View>
 
-      <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
+      <KeyboardAvoidingView 
+        className="flex-1"
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={100}
+      >
+        <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
         {/* Personal Information */}
         <View className="mb-6">
           <Text className="text-2xl font-bold text-foreground mb-4" style={{ lineHeight: 32 }}>
@@ -264,6 +269,7 @@ export default function AccountManagementScreen() {
           )}
         </View>
       </ScrollView>
+      </KeyboardAvoidingView>
     </ScreenContainer>
   );
 }

@@ -72,6 +72,15 @@ export default function SettingsScreen() {
       case "whatsNew":
         router.push("/whats-new");
         break;
+      case "devices":
+        router.push("/connected-devices" as any);
+        break;
+      case "library":
+        router.push("/medical-library" as any);
+        break;
+      case "bluetooth":
+        router.push("/bluetooth-devices" as any);
+        break;
     }
   };
 
@@ -149,6 +158,20 @@ export default function SettingsScreen() {
   ];
 
   const healthSettings: SettingItem[] = [
+    {
+      id: "devices",
+      title: "Connected Devices",
+      subtitle: "Manage Omron, Samsung Watch, iHome Scale sync",
+      icon: "antenna.radiowaves.left.and.right",
+      type: "action",
+    },
+    {
+      id: "library",
+      title: "Medical Library",
+      subtitle: "Health education from trusted sources",
+      icon: "lightbulb.fill",
+      type: "action",
+    },
     {
       id: "emergency",
       title: t("emergencyContacts"),

@@ -2070,3 +2070,30 @@
 - [x] Enable encrypted email to clinic
 - [ ] Test with all three devices (requires physical devices)
 - [x] Create checkpoint
+
+## Phase 41: Connected Devices UI, Caregiver Alerts & Medical Library
+- [x] Create Connected Devices settings screen (app/connected-devices.tsx)
+- [x] Display device sync status (Omron 3550, Samsung Watch 7, iHome Scale)
+- [x] Show last-sync timestamps with relative time (e.g., "2 hours ago")
+- [x] Add manual sync buttons for each device
+- [x] Display sync progress indicators
+- [x] Show data count for each device
+- [x] Implement Caregiver Real-Time Alert system (lib/caregiver-alerts.ts)
+- [x] Send push notifications to caregivers when red flags detected
+- [x] Add configurable alert preferences (critical only, all warnings)
+- [x] Implement acknowledgment system for caregiver alerts
+- [x] Create alert history log for caregivers
+- [x] Build Medical Library module (lib/medical-library.ts)
+- [x] Create health education content for hypertension
+- [x] Create health education content for tachycardia/bradycardia
+- [x] Create health education content for weight management
+- [x] Create health education content for atrial fibrillation
+- [x] Integrate context links into red flag notifications
+- [ ] Add "Learn More" buttons in Health Insights screen (pending UI integration)
+- [x] Create Medical Library screen (app/medical-library.tsx)
+- [x] Add search functionality for health topics
+- [x] Link to AHA/CDC/Mayo Clinic resources
+- [x] Add Connected Devices link to Settings screen
+- [x] Add Medical Library link to Settings screen
+- [x] Test all features
+- [x] Create checkpoint

@@ -16,6 +16,8 @@ import {
   getSeverityIcon,
   type HealthInsight,
 } from "@/lib/health-insights-ai";
+import { generateVitalsReport, getDateRange, type VitalsReportData } from "@/lib/pdf-export";
+import * as Haptics from "expo-haptics";
 
 export default function HealthInsightsScreen() {
   const colors = useColors();
@@ -25,6 +27,45 @@ export default function HealthInsightsScreen() {
   useEffect(() => {
     loadHealthInsights();
   }, []);
+
+  const handleExportPDF = async () => {
+    try {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      
+      // Get last 30 days
+      const dateRange = getDateRange(30);
+
+      // Load vitals data
+      const [bpJson, hrJson, weightJson] = await Promise.all([
+        AsyncStorage.getItem("vitals_blood_pressure"),
+        AsyncStorage.getItem("vitals_heart_rate"),
+        AsyncStorage.getItem("vitals_weight"),
+      ]);
+
+      const bloodPressure = bpJson ? JSON.parse(bpJson) : [];
+      const heartRate = hrJson ? JSON.parse(hrJson) : [];
+      const weight = weightJson ? JSON.parse(weightJson) : [];
+
+      // Prepare report data
+      const reportData: VitalsReportData = {
+        dateRange,
+        bloodPressure,
+        heartRate,
+        weight,
+        insights: insights.map((i) => ({
+          title: i.title,
+          description: i.description,
+          severity: i.severity,
+        })),
+      };
+
+      await generateVitalsReport(reportData);
+      alert("Report with insights generated successfully!");
+    } catch (error) {
+      console.error("Error exporting PDF:", error);
+      alert("Failed to generate report. Please try again.");
+    }
+  };
 
   const loadHealthInsights = async () => {
     setLoading(true);
@@ -88,10 +129,29 @@ export default function HealthInsightsScreen() {
           <Text className="text-3xl font-bold text-foreground">
             Health Insights
           </Text>
-          <Text className="text-base text-muted mt-1">
-            AI-powered analysis of your health trends
-          </Text>
-        </View>
+            <Text className="text-base text-muted mt-1">
+              AI-powered analysis of your health trends
+            </Text>
+            {/* Export PDF Button */}
+            {insights.length > 0 && (
+              <TouchableOpacity
+                onPress={handleExportPDF}
+                style={{
+                  backgroundColor: colors.primary,
+                  paddingHorizontal: 20,
+                  paddingVertical: 12,
+                  borderRadius: 12,
+                  marginTop: 12,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                }}
+              >
+                <Text style={{ color: "white", fontWeight: "600", fontSize: 16 }}>📄 Export Report</Text>
+              </TouchableOpacity>
+            )}
+          </View>
 
         {loading ? (
           <View className="items-center justify-center py-20">

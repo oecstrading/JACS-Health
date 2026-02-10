@@ -2101,3 +2101,25 @@
 - [x] Add lightbulb icon mapping for Health Insights
 - [x] Test with synced device data
 - [x] Create checkpoint
+
+## Phase 37: Medication Tracking, Trend Alerts & PDF Export
+- [x] Create medication tracking data model (medication name, dosage, frequency, time)
+- [x] Implement medication log storage (AsyncStorage)
+- [x] Create medication tracking module (lib/medication-tracking.ts)
+- [x] Add medication-vitals correlation analysis
+- [x] Detect if BP/HR changes correlate with medication adherence
+- [x] Create trend alert monitoring service (lib/trend-alerts.ts)
+- [x] Implement threshold detection (BP >140/90, HR >100/<60, rapid weight change)
+- [x] Add push notifications for threshold violations
+- [x] Create notification scheduling for consecutive threshold violations (3+ days)
+- [x] Implement PDF export functionality (lib/pdf-export.ts)
+- [x] Generate vitals report with HTML format and sharing
+- [x] Add date range selection based on time range (7/30/90 days)
+- [x] Add "Export to PDF" button to Vitals Dashboard
+- [x] Add "Export Report" button to Health Insights screen
+- [ ] Create medication logging screen (app/medication-log.tsx) for UI
+- [ ] Update Home screen to add Medication Tracking quick action
+- [ ] Test medication tracking and vitals correlation
+- [ ] Test trend alerts and notifications
+- [ ] Test PDF export with various date ranges
+- [ ] Create checkpoint

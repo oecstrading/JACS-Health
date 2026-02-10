@@ -11,6 +11,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
 import { router } from "expo-router";
+import { generateVitalsReport, getDateRange, type VitalsReportData } from "@/lib/pdf-export";
+import { analyzeHealthData, type HealthInsight } from "@/lib/health-insights-ai";
+import * as Haptics from "expo-haptics";
 
 type TimeRange = "7d" | "30d" | "90d";
 
@@ -47,6 +50,38 @@ export default function VitalsDashboardScreen() {
   useEffect(() => {
     loadVitalsData();
   }, [timeRange]);
+
+  const handleExportPDF = async () => {
+    try {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      
+      // Get date range based on selected time range
+      const days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90;
+      const dateRange = getDateRange(days);
+
+      // Generate insights
+      const insights = analyzeHealthData(vitalsData);
+
+      // Prepare report data
+      const reportData: VitalsReportData = {
+        dateRange,
+        bloodPressure: vitalsData.bloodPressure,
+        heartRate: vitalsData.heartRate,
+        weight: vitalsData.weight,
+        insights: insights.map((i) => ({
+          title: i.title,
+          description: i.description,
+          severity: i.severity,
+        })),
+      };
+
+      await generateVitalsReport(reportData);
+      alert("Report generated successfully!");
+    } catch (error) {
+      console.error("Error exporting PDF:", error);
+      alert("Failed to generate report. Please try again.");
+    }
+  };
 
   const loadVitalsData = async () => {
     setLoading(true);
@@ -209,6 +244,23 @@ export default function VitalsDashboardScreen() {
           <Text className="text-base text-muted mt-1">
             Track your health metrics over time
           </Text>
+          {/* Export PDF Button */}
+          <TouchableOpacity
+            onPress={handleExportPDF}
+            style={{
+              backgroundColor: colors.primary,
+              paddingHorizontal: 20,
+              paddingVertical: 12,
+              borderRadius: 12,
+              marginTop: 12,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+            }}
+          >
+            <Text style={{ color: "white", fontWeight: "600", fontSize: 16 }}>📄 Export to PDF</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Time Range Selector */}

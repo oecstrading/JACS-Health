@@ -122,10 +122,16 @@ export default function HomeScreen() {
             }}
           />
           <ActionCard
-            title="Record Vitals"
+            title="Vitals Dashboard"
             icon="heart.fill"
             color="primary"
-            onPress={() => router.push("/vitals" as any)}
+            onPress={() => router.push("/vitals-dashboard" as any)}
+          />
+          <ActionCard
+            title="Diabetes Dashboard"
+            icon="drop.fill"
+            color="error"
+            onPress={() => router.push("/diabetes-dashboard" as any)}
           />
           <ActionCard
             title="View Health Insights"

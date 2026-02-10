@@ -18,16 +18,20 @@ export type HealthDataType =
   | "heartRate"
   | "weight"
   | "bodyFatPercentage"
-  | "steps";
+  | "steps"
+  | "glucose"
+  | "insulin";
 
 export interface SyncedHealthData {
   type: HealthDataType;
   value: number;
   systolic?: number; // For BP
   diastolic?: number; // For BP
+  trend?: string; // For glucose (rising_fast, rising, stable, falling, falling_fast)
+  insulinType?: string; // For insulin (basal, bolus, correction)
   unit: string;
   timestamp: string;
-  source: string; // "Omron 3550", "iHome Scale", "Samsung Watch 7"
+  source: string; // "Omron 3550", "iHome Scale", "Samsung Watch 7", "Dexcom G7", "Omnipod 5"
   deviceId?: string;
 }
 

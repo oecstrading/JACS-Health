@@ -17,6 +17,7 @@ const MAPPING = {
   "paperplane.fill": "send",
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
+  "drop.fill": "water-drop",
   "heart.fill": "favorite",
   "mic.fill": "mic",
   "person.2.fill": "people",

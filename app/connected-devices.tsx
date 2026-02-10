@@ -98,6 +98,10 @@ export default function ConnectedDevicesScreen() {
         return "⌚";
       case "ihome":
         return "⚖️";
+      case "dexcom_g7":
+        return "💉";
+      case "omnipod_5":
+        return "💊";
       default:
         return "📱";
     }

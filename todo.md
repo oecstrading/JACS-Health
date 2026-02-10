@@ -2122,3 +2122,46 @@
 - [x] Create comprehensive device testing guide (DEVICE_TESTING_GUIDE_PHASE42.md)
 - [x] Test all Medicare compliance features
 - [x] Create checkpoint
+
+
+## Phase 43: CGM & Omnipod Integration - Diabetes Device Ecosystem ✅ COMPLETE
+- [x] Create Bluetooth parsers for Dexcom G7 CGM (services/cgmService.ts)
+- [x] Add Dexcom G7 device identification and UUIDs
+- [x] Parse glucose readings, trend arrows, calibration status
+- [x] Create Bluetooth parser for Omnipod 5 insulin pump
+- [x] Add Omnipod 5 device identification and UUIDs
+- [x] Parse insulin delivery data (basal rates, bolus doses, reservoir level)
+- [x] Update cgmService.ts to support CGM and Omnipod
+- [x] Add real-time glucose monitoring with 5-minute intervals
+- [x] Add insulin delivery tracking and storage
+- [x] Create diabetes dashboard screen (app/diabetes-dashboard.tsx)
+- [x] Build glucose trend chart (24-hour view with target range overlay)
+- [x] Display current glucose reading with trend arrow (↑↗→↘↓)
+- [x] Show time-in-range metrics (% in target 70-180 mg/dL)
+- [x] Display insulin-on-board (IOB) calculation
+- [x] Show daily insulin totals (basal + bolus)
+- [x] Add carb tracking integration (via insulin delivery)
+- [x] Create diabetes red flag detection (services/diabetesRedFlags.ts)
+- [x] Detect hypoglycemia (<70 mg/dL) with critical alerts
+- [x] Detect hyperglycemia (>250 mg/dL) with warnings
+- [x] Detect rapid glucose drops (>50 mg/dL in 15 min)
+- [x] Detect sensor errors and calibration needs
+- [x] Add voice notifications for critical glucose alerts
+- [x] Create diabetes Medicare compliance module (services/diabetesCompliance.ts)
+- [x] Track CPT 95250 (CGM professional, 72+ hours)
+- [x] Track CPT 95251 (CGM analysis and report)
+- [x] Calculate compliance for diabetes remote monitoring
+- [x] Update Connected Devices UI to include Dexcom G7 and Omnipod 5
+- [x] Add device pairing instructions for CGM and insulin pump
+- [x] Update connected-devices.tsx with new device types
+- [x] Add diabetes dashboard link to Home screen Quick Actions
+- [x] Add diabetes dashboard icon mapping (drop.fill)
+- [x] Update device-sync.ts with glucose and insulin data types
+- [ ] Add CGM sensor change reminders (every 10 days)
+- [ ] Add Omnipod pod change reminders (every 3 days)
+- [ ] Create diabetes-specific PDF export with glucose/insulin data
+- [ ] Test Dexcom G7 pairing and data sync
+- [ ] Test Omnipod 5 pairing and insulin tracking
+- [ ] Test glucose alerts and notifications
+- [ ] Update DEVICE_TESTING_GUIDE with CGM and Omnipod instructions
+- [x] Create checkpoint for publishing

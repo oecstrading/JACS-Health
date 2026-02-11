@@ -4,7 +4,11 @@ import { BackButton } from "@/components/back-button";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import * as Haptics from "expo-haptics";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import * as XLSX from "xlsx";
+import * as FileSystem from "expo-file-system/legacy";
+import * as Sharing from "expo-sharing";
+import { Platform } from "react-native";
 
 export default function NurseLeaderDashboardScreen() {
   // KPI Data (mock - to be replaced with tRPC queries)
@@ -46,6 +50,73 @@ export default function NurseLeaderDashboardScreen() {
     );
   };
 
+  const handleExportLeaderboard = async (format: "excel" | "pdf") => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+    try {
+      if (format === "excel") {
+        // Create Excel workbook
+        const ws_data = [
+          ["Nurse Leader Performance Report"],
+          ["Generated:", new Date().toLocaleDateString()],
+          [],
+          ["Rank", "Clinician Name", "Accuracy %", "Total Visits", "Status"],
+          ...staffLeaderboard.map((staff) => [
+            staff.rank,
+            staff.name,
+            `${staff.accuracy}%`,
+            staff.visits,
+            staff.accuracy >= 98 ? "Excellent" : staff.accuracy >= 95 ? "Good" : "Needs Improvement",
+          ]),
+          [],
+          ["KPI Summary"],
+          ["Documentation Accuracy:", `${kpiData.documentationAccuracy}%`],
+          ["Avg HIS Submission Time:", `${kpiData.avgSubmissionTime} days`],
+          ["Gap in Care Alerts:", kpiData.gapInCareAlerts],
+          ["Telehealth Ratio:", `${kpiData.telehealthRatio}%`],
+        ];
+
+        const ws = XLSX.utils.aoa_to_sheet(ws_data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Staff Performance");
+
+        // Generate Excel file
+        const wbout = XLSX.write(wb, { type: "base64", bookType: "xlsx" });
+        const fileUri = `${FileSystem.documentDirectory}nurse_performance_${new Date().getTime()}.xlsx`;
+
+        await FileSystem.writeAsStringAsync(fileUri, wbout, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+
+        // Share the file
+        if (Platform.OS === "web") {
+          // For web, trigger download
+          const link = document.createElement("a");
+          link.href = `data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,${wbout}`;
+          link.download = `nurse_performance_${new Date().getTime()}.xlsx`;
+          link.click();
+          Alert.alert("Success", "Excel file downloaded successfully!");
+        } else {
+          // For mobile, use sharing
+          await Sharing.shareAsync(fileUri, {
+            mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            dialogTitle: "Export Staff Performance Report",
+          });
+        }
+      } else {
+        // PDF export (simplified - would use a PDF library in production)
+        Alert.alert(
+          "PDF Export",
+          "PDF export feature requires additional setup. Use Excel export for now.",
+          [{ text: "OK" }]
+        );
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to export report. Please try again.");
+      console.error("Export error:", error);
+    }
+  };
+
   const handleBulkQAApproval = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     Alert.alert(
@@ -76,6 +147,49 @@ export default function NurseLeaderDashboardScreen() {
       default: return "#9CA3AF";
     }
   };
+
+  // Real-time 120-hour gap alert system
+  useEffect(() => {
+    // Check for patients approaching 120-hour threshold
+    const checkGapAlerts = () => {
+      const criticalPatients = gapInCarePatients.filter(
+        (patient) => patient.hoursSinceVisit >= 115 && patient.hoursSinceVisit < 120
+      );
+
+      if (criticalPatients.length > 0) {
+        // Trigger alert for QA leads
+        const patientNames = criticalPatients.map((p) => p.name).join(", ");
+        Alert.alert(
+          "⚠️ Critical Gap Alert",
+          `${criticalPatients.length} patient(s) approaching 120-hour visit threshold:\n\n${patientNames}\n\nImmediate action required to schedule skilled nursing visit.`,
+          [
+            {
+              text: "View Details",
+              onPress: () => {
+                // In production, would navigate to detailed patient view
+                Haptics.notificationAsync(
+                  Haptics.NotificationFeedbackType.Warning
+                );
+              },
+            },
+            { text: "Dismiss", style: "cancel" },
+          ]
+        );
+
+        // Haptic feedback for critical alert
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      }
+    };
+
+    // Check immediately on mount
+    checkGapAlerts();
+
+    // Set up interval to check every 30 minutes (in production)
+    // For demo purposes, checking every 5 minutes
+    const interval = setInterval(checkGapAlerts, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [gapInCarePatients]);
 
   return (
     <ScreenContainer className="bg-background">
@@ -212,7 +326,18 @@ export default function NurseLeaderDashboardScreen() {
               <Text className="text-lg font-bold text-foreground">
                 Compliance Accuracy Leaderboard
               </Text>
-              <Ionicons name="trophy" size={24} color="#F59E0B" />
+              <View className="flex-row items-center gap-2">
+                <TouchableOpacity
+                  onPress={() => handleExportLeaderboard("excel")}
+                  className="bg-primary px-4 py-2 rounded-lg flex-row items-center active:opacity-70"
+                >
+                  <Ionicons name="download" size={16} color="#FFFFFF" />
+                  <Text className="text-white text-sm font-semibold ml-2">
+                    Export Excel
+                  </Text>
+                </TouchableOpacity>
+                <Ionicons name="trophy" size={24} color="#F59E0B" />
+              </View>
             </View>
             <View className="bg-surface rounded-2xl p-5 border border-border">
               {staffLeaderboard.map((staff, index) => (

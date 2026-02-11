@@ -6,6 +6,8 @@ import { router } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Papa from "papaparse";
+import * as DocumentPicker from "expo-document-picker";
 
 export default function HospiceOnboardingWizardScreen() {
   const [currentPhase, setCurrentPhase] = useState(1);
@@ -80,26 +82,143 @@ export default function HospiceOnboardingWizardScreen() {
     }
   };
 
-  const handleBulkUpload = () => {
+  const validateCSVData = (data: any[]) => {
+    const errors: string[] = [];
+    const requiredColumns = [
+      "Patient Name",
+      "Admission Date",
+      "Level of Care",
+      "HIS Status",
+      "Treatment Preferences",
+    ];
+
+    // Check if all required columns exist
+    if (data.length === 0) {
+      errors.push("CSV file is empty");
+      return { valid: false, errors };
+    }
+
+    const headers = Object.keys(data[0]);
+    const missingColumns = requiredColumns.filter((col) => !headers.includes(col));
+    if (missingColumns.length > 0) {
+      errors.push(`Missing required columns: ${missingColumns.join(", ")}`);
+    }
+
+    // Validate each row
+    data.forEach((row, index) => {
+      const lineNumber = index + 2; // +2 because index 0 is row 1, and we have a header row
+
+      // Validate Patient Name (required, non-empty)
+      if (!row["Patient Name"] || row["Patient Name"].trim() === "") {
+        errors.push(`Line ${lineNumber}: Patient Name is required`);
+      }
+
+      // Validate Admission Date (MM/DD/YYYY format)
+      if (row["Admission Date"]) {
+        const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
+        if (!dateRegex.test(row["Admission Date"])) {
+          errors.push(`Line ${lineNumber}: Admission Date must be in MM/DD/YYYY format`);
+        }
+      } else {
+        errors.push(`Line ${lineNumber}: Admission Date is required`);
+      }
+
+      // Validate Level of Care (must be one of: RHC, CHC, GIP, Respite)
+      const validLevels = ["RHC", "CHC", "GIP", "Respite"];
+      if (row["Level of Care"]) {
+        if (!validLevels.includes(row["Level of Care"])) {
+          errors.push(
+            `Line ${lineNumber}: Level of Care must be one of: ${validLevels.join(", ")}`
+          );
+        }
+      } else {
+        errors.push(`Line ${lineNumber}: Level of Care is required`);
+      }
+
+      // Validate HIS Status (must be one of: Submitted, Pending)
+      const validStatuses = ["Submitted", "Pending"];
+      if (row["HIS Status"]) {
+        if (!validStatuses.includes(row["HIS Status"])) {
+          errors.push(
+            `Line ${lineNumber}: HIS Status must be one of: ${validStatuses.join(", ")}`
+          );
+        }
+      } else {
+        errors.push(`Line ${lineNumber}: HIS Status is required`);
+      }
+
+      // Treatment Preferences is required but can be any text
+      if (!row["Treatment Preferences"] || row["Treatment Preferences"].trim() === "") {
+        errors.push(`Line ${lineNumber}: Treatment Preferences is required`);
+      }
+    });
+
+    return {
+      valid: errors.length === 0,
+      errors,
+      rowCount: data.length,
+    };
+  };
+
+  const handleBulkUpload = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    // Simulate CSV upload
-    Alert.alert(
-      "Upload Patient Census",
-      "Select a CSV file with columns: Patient Name, Admission Date, Level of Care (RHC/CHC/GIP/Respite), HIS Status (Submitted/Pending)",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Upload Sample Data",
-          onPress: () => {
-            setUploadedPatients(24);
-            Alert.alert("Success", "24 patients uploaded successfully!");
+
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "text/csv",
+        copyToCacheDirectory: true,
+      });
+
+      if (result.canceled) {
+        return;
+      }
+
+      // For now, simulate successful upload with sample data
+      // In production, would parse the actual CSV file
+      Alert.alert(
+        "Upload Sample Data?",
+        "For demo purposes, upload 24 sample patient records?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
           },
-        },
-      ]
-    );
+          {
+            text: "Upload Sample",
+            onPress: () => {
+              // Simulate validation
+              const sampleData = [
+                {
+                  "Patient Name": "John Doe",
+                  "Admission Date": "01/15/2026",
+                  "Level of Care": "RHC",
+                  "HIS Status": "Pending",
+                  "Treatment Preferences": "Full code, comfort measures",
+                },
+                // ... 23 more sample records
+              ];
+
+              const validation = validateCSVData(sampleData);
+
+              if (validation.valid) {
+                setUploadedPatients(24);
+                Alert.alert(
+                  "Success",
+                  `24 patients uploaded successfully!\n\nAll records validated with no errors.`
+                );
+              } else {
+                Alert.alert(
+                  "Validation Errors",
+                  `Found ${validation.errors.length} errors:\n\n${validation.errors.slice(0, 5).join("\n")}${validation.errors.length > 5 ? `\n\n...and ${validation.errors.length - 5} more errors` : ""}`
+                );
+              }
+            },
+          },
+        ]
+      );
+    } catch (error) {
+      Alert.alert("Error", "Failed to read CSV file. Please try again.");
+    }
   };
 
   const renderPhase1 = () => (

@@ -48,6 +48,9 @@ const MAPPING = {
   "calendar.badge.clock": "event",
   "dollarsign.circle.fill": "attach-money",
   "cross.fill": "local-hospital",
+  "chart.line.uptrend.xyaxis": "trending-up",
+  "book.fill": "menu-book",
+  "antenna.radiowaves.left.and.right": "wifi",
 } as IconMapping;
 
 type IconSymbolName = keyof typeof MAPPING;

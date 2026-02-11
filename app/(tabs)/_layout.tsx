@@ -28,6 +28,7 @@ export default function TabLayout() {
         },
       }}
     >
+      {/* Module I: Patient Command Center */}
       <Tabs.Screen
         name="index"
         options={{
@@ -35,13 +36,17 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
+      
+      {/* Module II: Clinical Monitoring */}
       <Tabs.Screen
-        name="devices"
+        name="tracking"
         options={{
-          title: "Devices",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="antenna.radiowaves.left.and.right" color={color} />,
+          title: "Tracking",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.line.uptrend.xyaxis" color={color} />,
         }}
       />
+      
+      {/* Module III: Pharmacy & Med-Tech */}
       <Tabs.Screen
         name="medications"
         options={{
@@ -49,31 +54,54 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="pills.fill" color={color} />,
         }}
       />
+      
+      {/* Module IV: Provider & Compliance */}
+      <Tabs.Screen
+        name="care-team"
+        options={{
+          title: "Care Team",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.2.fill" color={color} />,
+        }}
+      />
+      
+      {/* Module V: Health Navigation */}
+      <Tabs.Screen
+        name="resources"
+        options={{
+          title: "Resources",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="book.fill" color={color} />,
+        }}
+      />
+      
+      {/* Hidden tabs - accessible via navigation but not shown in tab bar */}
+      <Tabs.Screen
+        name="devices"
+        options={{
+          href: null,
+        }}
+      />
       <Tabs.Screen
         name="hospices"
         options={{
-          title: "Hospices",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="cross.fill" color={color} />,
+          href: null,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Settings",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="gearshape.fill" color={color} />,
+          href: null,
         }}
       />
-      {/* Hidden tabs - accessible via navigation but not shown in tab bar */}
       <Tabs.Screen
         name="vitals"
         options={{
-          href: null, // Hide from tab bar
+          href: null,
         }}
       />
       <Tabs.Screen
         name="family"
         options={{
-          href: null, // Hide from tab bar
+          href: null,
         }}
       />
     </Tabs>

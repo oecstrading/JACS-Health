@@ -158,6 +158,24 @@ export default function ProviderCompliance() {
               </View>
               <IconSymbol name="chevron.right" size={24} color={colors.muted} />
             </Pressable>
+
+            <Pressable
+              onPress={() => router.push('/hospice-revenue-command')}
+              className="flex-row items-center bg-background rounded-2xl p-4 border border-success/20"
+              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+            >
+              <View
+                className="w-12 h-12 rounded-full items-center justify-center mr-4"
+                style={{ backgroundColor: `${colors.success}20` }}
+              >
+                <IconSymbol name={"shield.checkmark.fill" as any} size={24} color={colors.success} />
+              </View>
+              <View className="flex-1">
+                <Text className="text-lg font-semibold text-foreground">Revenue Command</Text>
+                <Text className="text-sm text-muted">APU tracking & compliance dashboard</Text>
+              </View>
+              <IconSymbol name="chevron.right" size={24} color={colors.muted} />
+            </Pressable>
           </View>
         </View>
 

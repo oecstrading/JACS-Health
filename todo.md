@@ -2696,3 +2696,28 @@
 - [x] Test navigation flow across all 5 modules
 - [x] Ensure back buttons work in all tabs
 - [x] Create checkpoint
+
+## Phase 64: Hospice Compliance & Revenue Command Dashboard
+- [x] Create app/(tabs)/hospice-revenue-command.tsx screen
+- [x] Build At-Risk Revenue Header component with real-time APU status (96% threshold tracking)
+- [x] Add countdown timer to end of reporting period
+- [x] Implement "Resolve Alerts" button linking to missing records
+- [x] Create HIS/HOPE Submission Queue (left column) with vertical patient list
+- [x] Implement color-coded status indicators (Green: <15 days, Yellow: 15-20 days, Red: 21+ days)
+- [x] Add "Days Since Event" calculation for each patient
+- [x] Implement one-click "iQIES Export" button for each patient
+- [x] Build CAHPS Caregiver Tracker (center column) with monthly calendar view
+- [x] Add eligibility counter showing current month decedent count
+- [x] Implement vendor sync status display (last data push timestamp)
+- [x] Create "Generate Monthly CAHPS File" button with CSV export
+- [x] Build Cost Report Smart-Folders (right column) with 4 interactive tiles
+- [x] Create Tile 1: Labor Costs (Nursing/Therapy/SW salaries)
+- [x] Create Tile 2: Telehealth Expenses (aggregated minutes)
+- [x] Create Tile 3: Administrative & General (overhead costs)
+- [x] Create Tile 4: Level of Care Revenue (RHC, CHC, GIP, Respite days)
+- [x] Implement "Compliance Gap Alert" for patients with 7+ day visit gaps
+- [x] Add navigation link from hospices.tsx to revenue command
+- [x] Add navigation link from care-team.tsx hospice portal to revenue command
+- [x] Test three-column responsive layout
+- [x] Test all interactive elements and alerts
+- [x] Create checkpoint

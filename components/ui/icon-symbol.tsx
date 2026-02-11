@@ -41,6 +41,7 @@ const MAPPING = {
   "checkmark": "check",
   "info.circle.fill": "info",
   "shield.fill": "shield",
+  "shield.checkmark.fill": "verified-user",
   "trash.fill": "delete-forever",
   "document.fill": "description",
   "sparkles": "auto-awesome",

@@ -28,6 +28,13 @@ export default function HospicesScreen() {
 
   const quickActions = [
     {
+      title: "Revenue Command",
+      description: "APU tracking & compliance dashboard",
+      icon: "shield.checkmark.fill" as const,
+      route: "/hospice-revenue-command",
+      color: "#10B981", // Green
+    },
+    {
       title: "Patient List",
       description: "View all active hospice patients",
       icon: "person.2.fill" as const,
@@ -179,8 +186,7 @@ export default function HospicesScreen() {
                 <TouchableOpacity
                   key={index}
                   onPress={() => {
-                    // TODO: Navigate to actual screens when implemented
-                    console.log(`Navigate to ${action.route}`);
+                    router.push(action.route as any);
                   }}
                   className="p-4 rounded-2xl flex-row items-center gap-4"
                   style={{ backgroundColor: colors.surface }}
@@ -196,7 +202,7 @@ export default function HospicesScreen() {
                       justifyContent: "center",
                     }}
                   >
-                    <IconSymbol name={action.icon} size={24} color={action.color} />
+                    <IconSymbol name={action.icon as any} size={24} color={action.color} />
                   </View>
                   <View className="flex-1">
                     <Text

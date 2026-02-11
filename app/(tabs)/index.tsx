@@ -9,6 +9,7 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { ActionCard } from '@/components/action-card';
 import { RecentInsulinWidget } from '@/components/recent-insulin-widget';
 import { RecentMealsWidget } from '@/components/recent-meals-widget';
+import { GlucoseWidget, BloodPressureWidget, WeightWidget } from '@/components/dashboard-widgets';
 
 /**
  * Home Screen - Health Dashboard
@@ -102,6 +103,14 @@ export default function HomeScreen() {
 
         {/* Medicare Compliance Dashboard */}
         <ComplianceDashboard />
+
+        {/* Dashboard Preview Widgets */}
+        <Text className="text-2xl font-bold text-foreground mb-4 mt-6" style={{ lineHeight: 32 }}>
+          Latest Readings
+        </Text>
+        <GlucoseWidget />
+        <BloodPressureWidget />
+        <WeightWidget />
 
         {/* Recent Insulin & Meals */}
         <RecentInsulinWidget />

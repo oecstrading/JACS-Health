@@ -2285,3 +2285,38 @@
 - [x] Test simplified Home screen
 - [x] Verify all features still accessible
 - [x] Create checkpoint for publishing
+
+## Phase 48: Device Auto-Discovery, Home Widgets, & Onboarding Tutorial ✅ COMPLETE
+- [x] Implement Bluetooth device auto-discovery in Devices tab
+- [x] Add "Scan for Devices" button to Devices tab
+- [x] Create scanning animation with ActivityIndicator
+- [x] Detect nearby Bluetooth devices (mock simulation for 3 devices)
+- [x] Filter devices by health device manufacturers (Omron, Samsung, Dexcom)
+- [x] Display discovered devices with signal strength (RSSI)
+- [x] Add "Pair" button for each discovered device
+- [x] Handle device not found scenario with Alert
+- [x] Add signal strength indicator (Excellent, Good, Fair, Weak)
+- [x] Add dashboard preview widgets to Home screen
+- [x] Create glucose preview widget (latest reading, trend arrow, time ago)
+- [x] Create blood pressure preview widget (latest systolic/diastolic, time ago)
+- [x] Create weight preview widget (latest weight, change from last week)
+- [x] Make widgets clickable to navigate to respective dashboards
+- [x] Show mock data for demonstration (105 mg/dL glucose, 120/80 BP, 180 lbs weight)
+- [x] Add status badges (OK, +/- lbs change)
+- [x] Create onboarding tutorial for first-time users
+- [x] Create onboarding check helper (_layout_onboarding.tsx)
+- [x] Detect first-time app launch (AsyncStorage "onboarding_completed" flag)
+- [x] Create onboarding screen 1: Welcome & app overview (5 features)
+- [x] Create onboarding screen 2: Device pairing guide (5 steps)
+- [x] Create onboarding screen 3: Master Dashboard navigation (5 dashboards)
+- [x] Create onboarding screen 4: Logging medications/meals/insulin (5 actions)
+- [x] Add "Skip Tutorial" button in top-right
+- [x] Add "Next" and "Back" navigation buttons
+- [x] Add progress bar indicator with step counter
+- [x] Add dots indicator at bottom
+- [x] Save onboarding completion flag to AsyncStorage on complete/skip
+- [x] Add "View Tutorial Again" option in Settings
+- [x] Test device auto-discovery
+- [x] Test dashboard widgets
+- [x] Test onboarding tutorial flow
+- [x] Create checkpoint for publishing

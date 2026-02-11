@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ScrollView, Alert } from "react-native";
+import { View, Text, Pressable, ScrollView, Alert, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import { useState, useEffect } from "react";
 import * as Haptics from "expo-haptics";
@@ -27,9 +27,17 @@ interface Device {
   batteryLevel?: number;
 }
 
+interface DiscoveredDevice {
+  id: string;
+  name: string;
+  rssi: number; // Signal strength
+}
+
 export default function DevicesScreen() {
   const router = useRouter();
   const colors = useColors();
+  const [isScanning, setIsScanning] = useState(false);
+  const [discoveredDevices, setDiscoveredDevices] = useState<DiscoveredDevice[]>([]);
   
   const [devices, setDevices] = useState<Device[]>([
     {
@@ -196,6 +204,66 @@ export default function DevicesScreen() {
     return `${diffDays}d ago`;
   };
 
+  const handleScanDevices = async () => {
+    setIsScanning(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    
+    // Simulate Bluetooth scanning (in production, use actual Bluetooth API)
+    setTimeout(() => {
+      const mockDiscovered: DiscoveredDevice[] = [
+        { id: "omron-3550-nearby", name: "Omron 3550 (Nearby)", rssi: -45 },
+        { id: "samsung-watch-7-nearby", name: "Galaxy Watch 7", rssi: -52 },
+        { id: "dexcom-g7-nearby", name: "Dexcom G7 Sensor", rssi: -38 },
+      ];
+      
+      setDiscoveredDevices(mockDiscovered);
+      setIsScanning(false);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      
+      if (mockDiscovered.length === 0) {
+        Alert.alert(
+          "No Devices Found",
+          "No nearby health devices detected. Make sure your devices are powered on and in pairing mode."
+        );
+      }
+    }, 3000); // 3 second scan
+  };
+
+  const handlePairDiscoveredDevice = (discoveredDevice: DiscoveredDevice) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    
+    // Find matching device in our device list
+    const matchingDevice = devices.find((d) => 
+      discoveredDevice.name.toLowerCase().includes(d.id.split("-")[0])
+    );
+    
+    if (matchingDevice) {
+      Alert.alert(
+        `Pair ${discoveredDevice.name}?`,
+        `Connect to this device?`,
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Pair",
+            onPress: async () => {
+              await saveDeviceStatus(matchingDevice.id, "connected");
+              setDiscoveredDevices([]);
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+              Alert.alert("Success", `${discoveredDevice.name} connected successfully!`);
+            },
+          },
+        ]
+      );
+    }
+  };
+
+  const getSignalStrength = (rssi: number) => {
+    if (rssi > -50) return "Excellent";
+    if (rssi > -60) return "Good";
+    if (rssi > -70) return "Fair";
+    return "Weak";
+  };
+
   const connectedCount = devices.filter((d) => d.status === "connected").length;
 
   return (
@@ -211,6 +279,85 @@ export default function DevicesScreen() {
       </View>
 
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
+        {/* Scan for Devices Button */}
+        <Pressable
+          onPress={handleScanDevices}
+          disabled={isScanning}
+          style={({ pressed }) => ({
+            backgroundColor: isScanning ? colors.muted : colors.primary,
+            borderRadius: 20,
+            padding: 20,
+            marginBottom: 24,
+            opacity: pressed ? 0.7 : 1,
+          })}
+        >
+          <View className="flex-row items-center justify-center gap-3">
+            {isScanning ? (
+              <>
+                <ActivityIndicator size="small" color="#ffffff" />
+                <Text className="text-lg font-bold text-white" style={{ lineHeight: 26 }}>
+                  Scanning for devices...
+                </Text>
+              </>
+            ) : (
+              <>
+                <IconSymbol name="antenna.radiowaves.left.and.right" size={24} color="#ffffff" />
+                <Text className="text-lg font-bold text-white" style={{ lineHeight: 26 }}>
+                  Scan for Nearby Devices
+                </Text>
+              </>
+            )}
+          </View>
+        </Pressable>
+
+        {/* Discovered Devices */}
+        {discoveredDevices.length > 0 && (
+          <View className="mb-6">
+            <Text className="text-2xl font-bold text-foreground mb-4" style={{ lineHeight: 32 }}>
+              Nearby Devices ({discoveredDevices.length})
+            </Text>
+            <View className="gap-4">
+              {discoveredDevices.map((discovered) => (
+                <View
+                  key={discovered.id}
+                  className="bg-surface rounded-3xl p-6 border border-border"
+                >
+                  <View className="flex-row items-center gap-4">
+                    <View
+                      className="w-14 h-14 rounded-2xl items-center justify-center"
+                      style={{ backgroundColor: `${colors.success}20` }}
+                    >
+                      <IconSymbol name="antenna.radiowaves.left.and.right" size={28} color={colors.success} />
+                    </View>
+                    <View className="flex-1">
+                      <Text className="text-lg font-bold text-foreground" style={{ lineHeight: 26 }}>
+                        {discovered.name}
+                      </Text>
+                      <Text className="text-sm text-muted" style={{ lineHeight: 20 }}>
+                        Signal: {getSignalStrength(discovered.rssi)}
+                      </Text>
+                    </View>
+                    <Pressable
+                      onPress={() => handlePairDiscoveredDevice(discovered)}
+                      style={({ pressed }) => ({
+                        backgroundColor: colors.primary,
+                        paddingHorizontal: 20,
+                        paddingVertical: 10,
+                        borderRadius: 12,
+                        opacity: pressed ? 0.7 : 1,
+                      })}
+                    >
+                      <Text className="text-base font-bold text-white" style={{ lineHeight: 22 }}>
+                        Pair
+                      </Text>
+                    </Pressable>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
         {/* Connected Devices Summary */}
         {connectedCount > 0 && (
           <View className="bg-surface rounded-3xl p-6 mb-6 border border-border">

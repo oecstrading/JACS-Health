@@ -78,6 +78,9 @@ export default function SettingsScreen() {
       case "library":
         router.push("/medical-library" as any);
         break;
+      case "tutorial":
+        router.push("/onboarding" as any);
+        break;
       case "bluetooth":
         router.push("/bluetooth-devices" as any);
         break;
@@ -173,6 +176,13 @@ export default function SettingsScreen() {
       title: "Medical Library",
       subtitle: "Health education from trusted sources",
       icon: "lightbulb.fill",
+      type: "action",
+    },
+    {
+      id: "tutorial",
+      title: "View Tutorial Again",
+      subtitle: "Replay the onboarding guide",
+      icon: "questionmark.circle.fill",
       type: "action",
     },
     {

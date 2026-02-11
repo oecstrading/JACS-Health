@@ -2610,3 +2610,25 @@
 - [x] Add navigation from hospice dashboard to all 8 screens
 - [x] Test all hospice screens end-to-end
 - [x] Create checkpoint
+
+## Phase 60: Hospice Database Integration, iQIES API & Compliance Alerts
+- [x] Create tRPC API endpoints for hospice patient CRUD operations
+- [x] Create tRPC API endpoints for hospice assessments CRUD operations
+- [x] Create tRPC API endpoints for hospice visits CRUD operations
+- [x] Create tRPC API endpoints for hospice expenses CRUD operations
+- [x] Create tRPC API endpoints for hospice caregivers CRUD operations
+- [x] Create tRPC API endpoints for hospice compliance alerts CRUD operations
+- [x] Update Patient List screen to use database queries instead of mock data
+- [x] Update Compliance Tracker to use database queries instead of mock data
+- [x] Update HOPE/HIS Form to save data to database
+- [x] Update Visit Log to use database queries instead of mock data
+- [x] Update CAHPS Export to use database queries instead of mock data
+- [x] Update Cost Report to use database queries instead of mock data
+- [x] Build iQIES XML formatter for HOPE/HIS assessments
+- [x] Create iQIES API submission endpoint with authentication
+- [x] Add submission status tracking and confirmation
+- [x] Implement daily background job to check assessment due dates
+- [x] Create push notification system for 20-day compliance alerts
+- [x] Add notification preferences and alert history
+- [x] Test end-to-end workflow from patient admission to iQIES submission
+- [x] Create checkpoint

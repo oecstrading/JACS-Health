@@ -501,6 +501,40 @@ export default function HipReplacementJourney() {
               <IconSymbol name="chevron.right" size={24} color={colors.muted} />
             </View>
           </Pressable>
+
+          {/* Surgeon Communication */}
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push("/surgeon-communication");
+            }}
+            style={({ pressed }) => ({
+              backgroundColor: colors.surface,
+              borderRadius: 24,
+              padding: 20,
+              borderWidth: 1,
+              borderColor: colors.border,
+              opacity: pressed ? 0.7 : 1,
+            })}
+          >
+            <View className="flex-row items-center gap-4">
+              <View
+                className="w-16 h-16 rounded-2xl items-center justify-center"
+                style={{ backgroundColor: `${colors.primary}20` }}
+              >
+                <Text style={{ fontSize: 32 }}>👨‍⚕️</Text>
+              </View>
+              <View className="flex-1">
+                <Text className="text-xl font-bold text-foreground mb-1" style={{ lineHeight: 28 }}>
+                  Contact Surgeon
+                </Text>
+                <Text className="text-base text-muted" style={{ lineHeight: 22 }}>
+                  Send updates and ask questions
+                </Text>
+              </View>
+              <IconSymbol name="chevron.right" size={24} color={colors.muted} />
+            </View>
+          </Pressable>
         </View>
       </ScrollView>
     </ScreenContainer>

@@ -247,6 +247,40 @@ export default function HipHealthDashboard() {
             </View>
           </Pressable>
 
+          {/* Hip Device Dashboard */}
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push("/hip-device-dashboard");
+            }}
+            style={({ pressed }) => ({
+              backgroundColor: colors.surface,
+              borderRadius: 24,
+              padding: 20,
+              borderWidth: 1,
+              borderColor: colors.border,
+              opacity: pressed ? 0.7 : 1,
+            })}
+          >
+            <View className="flex-row items-center gap-4">
+              <View
+                className="w-16 h-16 rounded-2xl items-center justify-center"
+                style={{ backgroundColor: `${colors.primary}20` }}
+              >
+                <Text style={{ fontSize: 32 }}>📊</Text>
+              </View>
+              <View className="flex-1">
+                <Text className="text-xl font-bold text-foreground mb-1" style={{ lineHeight: 28 }}>
+                  Hip Device Data
+                </Text>
+                <Text className="text-base text-muted" style={{ lineHeight: 22 }}>
+                  Gait sensors, smart walker, pressure insoles
+                </Text>
+              </View>
+              <IconSymbol name="chevron.right" size={24} color={colors.muted} />
+            </View>
+          </Pressable>
+
           {/* Hip Health Library */}
           <Pressable
             onPress={() => {

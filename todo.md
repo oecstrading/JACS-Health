@@ -2399,3 +2399,35 @@
 - [ ] Display live hip device data in Hip Health Dashboard
 - [ ] Add badge unlock notifications with haptic feedback
 - [ ] Create full achievements screen with earned/locked badges
+
+## Phase 51: Achievements Screen, Hip Device Dashboard, & Surgeon Communication ✅ COMPLETE
+- [x] Create full achievements screen (app/achievements.tsx)
+- [x] Display all 14 badges in grid layout
+- [x] Show earned badges with unlock date
+- [x] Show locked badges with progress bars (with percentage and current/target)
+- [x] Add rarity color coding (Common, Rare, Epic, Legendary)
+- [x] Add category tabs (All, Mobility, Milestones, Exercise, Progress)
+- [x] Add achievement detail Alert with unlock criteria
+- [x] Add total achievements counter (3/14 earned)
+- [x] Create hip device dashboard (app/hip-device-dashboard.tsx)
+- [x] Display gait sensor data (step count, gait symmetry, cadence, stride length)
+- [x] Display smart walker data (weight distribution, distance, support level)
+- [x] Display pressure insole data (weight-bearing %, left/right foot pressure)
+- [x] Add gait symmetry improvement indicator
+- [x] Add weight-bearing progression indicator
+- [x] Add device status cards (connected status, last sync time)
+- [x] Add "Sync Devices" button with loading state
+- [x] Create surgeon communication module (app/surgeon-communication.tsx)
+- [x] Add surgeon contact card (Dr. Sarah Smith with phone, email, office address)
+- [x] Add pre-op questions section (6 common questions with send button)
+- [x] Add post-op recovery updates section (2 timeline updates with photo counts)
+- [x] Add photo sharing button (incision healing progress)
+- [x] Add message composer for custom questions
+- [x] Add emergency contact button with confirmation dialog
+- [x] Update Hip Replacement Journey to link to achievements screen (3/14 badge)
+- [x] Update Hip Health Dashboard to link to device dashboard
+- [x] Update Hip Replacement Journey to link to surgeon communication
+- [x] Test achievements screen navigation and progress display
+- [x] Test hip device dashboard sync
+- [x] Test surgeon communication messaging
+- [x] Create checkpoint for publishing

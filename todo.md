@@ -2573,3 +2573,24 @@
 - [x] Test Docker build process
 - [x] Verify Android build workflow completes successfully
 - [x] Create checkpoint
+
+## Phase 57: Build App for Android and iOS using EAS Build
+- [ ] Check if eas.json configuration exists
+- [ ] Verify app.config.ts has correct bundle identifiers
+- [ ] Run eas build --platform android
+- [ ] Run eas build --platform ios
+- [ ] Monitor build progress
+- [ ] Handle any build errors
+- [ ] Deliver build artifacts to user
+
+## Phase 58: Update Documentation & Proposals with Hospice Features
+- [x] Update README.md with hospice care coordination features
+- [x] Update design.md with hospice module architecture
+- [x] Create comprehensive hospice feature documentation
+- [x] Update web platform homepage with hospice capabilities
+- [x] Regenerate Generator Ventures proposal with hospice component
+- [x] Regenerate Equitage Ventures proposal with hospice component
+- [x] Regenerate AgeTech Capital proposal with hospice component
+- [x] Regenerate Longevity Venture Partners proposal with hospice component
+- [x] Regenerate Third Act Ventures proposal with hospice component
+- [x] Create checkpoint

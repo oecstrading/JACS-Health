@@ -2778,3 +2778,32 @@
 - [x] Build QA lead notification workflow with 5-minute interval checking
 - [x] Test all three enhancements (CSV validator, Excel export, gap alerts)
 - [x] Create checkpoint
+
+## Phase 67: Pilot Preparation & Financial Planning
+- [x] Create pilot participation agreement for Agency A (Suburban Hospice Partners)
+- [x] Create pilot participation agreement for Agency B (Rural Community Hospice Network)
+- [x] Include BAA (Business Associate Agreement) terms for HIPAA compliance
+- [x] Define pilot scope, timeline, and success metrics in agreements
+- [x] Add data ownership and export rights clauses
+- [x] Include subscription pricing and discount terms (20% Year 1 discount)
+- [x] Develop pilot team organizational chart (included in financial plan)
+- [x] Define roles and responsibilities (Product Manager, Technical Lead, Customer Success Manager, QA Engineer)
+- [x] Allocate $147K pilot budget across personnel, services, technology, travel
+- [x] Create hiring plan for Customer Success Manager (40% FTE)
+- [x] Develop investor outreach campaign strategy (included in financial plan Section 6)
+- [x] Identify target VC firms (healthcare tech, B2B SaaS, AgeTech focus)
+- [x] Create investor pitch deck framework with pilot plan as proof of GTM strategy
+- [x] Schedule preliminary meetings strategy for pre-seed conversations
+- [x] Set June 15, 2026 pitch date with validated pilot results
+- [x] Build revenue model for Hospice compliance tools (Section 2.1)
+- [x] Build revenue model for consumer health companion app (Section 2.2)
+- [x] Build revenue model for enterprise integrations and white-label (Section 2.3)
+- [x] Create 5-year proforma income statement (Section 4)
+- [x] Create 5-year proforma balance sheet (Section 8)
+- [x] Create 5-year proforma cash flow statement (Section 5.1)
+- [x] Develop monthly cash flow projections for Year 1-2 (Section 5.2-5.3)
+- [x] Calculate unit economics (CAC, LTV, payback period) (Section 7)
+- [x] Model fundraising scenarios (seed $2.5M, Series A $8M) (Section 6)
+- [x] Create sensitivity analysis for key assumptions (Section 7.2)
+- [x] Deliver comprehensive financial plan document (HealthMate_5Year_Financial_Plan.md)
+- [x] Create checkpoint

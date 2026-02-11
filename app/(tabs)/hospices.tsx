@@ -31,28 +31,28 @@ export default function HospicesScreen() {
       title: "Patient List",
       description: "View all active hospice patients",
       icon: "person.2.fill" as const,
-      route: "/hospice-patients",
+      route: "/hospice-patient-list",
       color: colors.primary,
     },
     {
       title: "Compliance Tracker",
       description: "Monitor HQRP submission deadlines",
       icon: "checkmark.circle.fill" as const,
-      route: "/hospice-compliance",
+      route: "/hospice-compliance-tracker",
       color: "#10B981", // Green
     },
     {
       title: "HOPE/HIS Assessments",
       description: "Complete admission & discharge forms",
       icon: "doc.text.fill" as const,
-      route: "/hospice-assessment",
+      route: "/hospice-hope-his-form",
       color: "#3B82F6", // Blue
     },
     {
       title: "Visit Log",
       description: "Track skilled nursing visits",
       icon: "calendar.badge.clock" as const,
-      route: "/hospice-visits",
+      route: "/hospice-visit-log",
       color: "#8B5CF6", // Purple
     },
     {

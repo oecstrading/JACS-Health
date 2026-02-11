@@ -35,6 +35,72 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
+// Medical Records Tables
+export const medicalRecords = mysqlTable("medical_records", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  documentType: mysqlEnum("document_type", [
+    "lab_report",
+    "radiology_report",
+    "prescription",
+    "discharge_summary",
+    "consultation_note",
+    "insurance_card",
+    "vaccination_record",
+    "other",
+  ]).notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  filePath: text("file_path").notNull(),
+  fileType: varchar("file_type", { length: 50 }).notNull(), // pdf, jpg, png, etc.
+  fileSize: int("file_size").notNull(), // in bytes
+  documentDate: timestamp("document_date"),
+  uploadDate: timestamp("upload_date").defaultNow().notNull(),
+  category: varchar("category", { length: 100 }), // e.g., "Cardiology", "Endocrinology"
+  tags: json("tags").$type<string[]>(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+export const imagingAnalyses = mysqlTable("imaging_analyses", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  medicalRecordId: varchar("medical_record_id", { length: 128 }), // link to medical_records if uploaded there
+  imagingType: mysqlEnum("imaging_type", [
+    "xray",
+    "ct_scan",
+    "mri",
+    "ultrasound",
+    "pet_scan",
+    "mammogram",
+    "other",
+  ]).notNull(),
+  bodyPart: varchar("body_part", { length: 100 }).notNull(),
+  studyDate: timestamp("study_date"),
+  imagePaths: json("image_paths").$type<string[]>().notNull(), // array of S3 URLs
+  aiAnalysis: json("ai_analysis").$type<{
+    findings: string[];
+    impressions: string[];
+    recommendations: string[];
+    criticalFindings: string[];
+    confidence: number;
+  }>(),
+  reportText: text("report_text"), // full structured report
+  radiologistReview: text("radiologist_review"), // if reviewed by human
+  status: mysqlEnum("status", [
+    "pending_analysis",
+    "analyzed",
+    "reviewed",
+  ]).notNull().default("pending_analysis"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+export type MedicalRecord = typeof medicalRecords.$inferSelect;
+export type InsertMedicalRecord = typeof medicalRecords.$inferInsert;
+export type ImagingAnalysis = typeof imagingAnalyses.$inferSelect;
+export type InsertImagingAnalysis = typeof imagingAnalyses.$inferInsert;
+
 // Hospice Tables
 export const hospicePatients = mysqlTable("hospice_patients", {
   id: varchar("id", { length: 128 }).primaryKey(),

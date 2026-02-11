@@ -257,6 +257,18 @@ export default function HomeScreen() {
             onPress={() => router.push("/pill-identifier")}
           />
           <ActionCard
+            title="Medical Records"
+            icon="doc.fill"
+            color="primary"
+            onPress={() => router.push("/medical-records" as any)}
+          />
+          <ActionCard
+            title="Imaging Analysis"
+            icon="brain.head.profile"
+            color="success"
+            onPress={() => router.push("/imaging-analysis" as any)}
+          />
+          <ActionCard
             title="Insurance Scanner"
             icon="creditcard.fill"
             color="success"

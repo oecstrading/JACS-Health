@@ -15,6 +15,13 @@
       "when": 1770775274590,
       "tag": "0001_flimsy_sentry",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1770810337621,
+      "tag": "0002_overconfident_silhouette",
+      "breakpoints": true
     }
   ]
 }

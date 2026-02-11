@@ -2632,3 +2632,21 @@
 - [x] Add notification preferences and alert history
 - [x] Test end-to-end workflow from patient admission to iQIES submission
 - [x] Create checkpoint
+
+## Phase 61: Medical Records Upload & AI Imaging Analysis Features
+- [x] Design database schema for medical_records table (document type, file path, upload date, category)
+- [x] Design database schema for imaging_analyses table (image paths, AI analysis, report, findings)
+- [x] Create tRPC API endpoints for medical records CRUD operations
+- [x] Create tRPC API endpoints for imaging analysis operations
+- [x] Implement file upload service with S3 storage integration
+- [x] Implement AI imaging analysis service using multimodal LLM
+- [x] Create Medical Records screen with upload interface
+- [x] Create document viewer for PDF/image medical records
+- [x] Create Medical Imaging Analysis screen with upload and analysis interface
+- [x] Implement radiology report generation with structured findings
+- [x] Add Medical Records to Home screen quick actions
+- [x] Add Medical Imaging Analysis to Home screen quick actions
+- [x] Add icon mappings for new features
+- [x] Install expo-document-picker package
+- [x] Install expo-image-picker package
+- [x] Create checkpoint

@@ -2487,3 +2487,77 @@
 - [x] Add back buttons to exercise.tsx
 - [x] Fix "Log Medication" quick action on Home screen to navigate to /medication-log
 - [x] Verify medication-log.tsx screen exists and is functional
+
+## Phase 55: Add Hospice Tab & Features
+
+### Hospice Tab Navigation
+- [x] Add "Hospices" tab to bottom tab navigation with appropriate icon
+- [x] Create hospice main screen with dashboard overview
+- [x] Add hospice-specific color theme and branding
+
+### HQRP Compliance Tracking
+- [ ] Build Hospice Compliance Dashboard tracking all active patient files
+- [ ] Implement logic gate flagging admission/discharge records not submitted within 20 days (10-day buffer for 30-day deadline)
+- [ ] Create Red-Yellow-Green timeliness tracking system for 30-day HIS/HOPE submission window
+- [ ] Add checklist for Hospice Comprehensive Assessment at Admission (HIS CBE #3235)
+- [ ] Make mandatory fields: pain screening, dyspnea treatment, treatment preferences
+- [ ] Add "Ready for Submission" status marker
+
+### HOPE/HIS Automated Validator
+- [ ] Build real-time scrubbing of clinical documentation
+- [ ] Ensure all seven care processes are captured (pain screening, dyspnea, etc.)
+- [ ] Create validation rules before submission to CMS iQIES system
+- [ ] Add error highlighting and correction suggestions
+- [ ] Implement admission and discharge data entry forms
+
+### CAHPS Hospice Survey Integration
+- [ ] Develop automated data export tool for CAHPS vendors
+- [ ] Filter for decedents aged 18+ who died at least 48 hours after admission
+- [ ] Verify caregiver of record exists
+- [ ] Generate monthly CSV file matching CMS-approved vendor data specifications
+- [ ] Include: decedent/caregiver names, addresses, date of death
+- [ ] Add one-click export to approved survey vendors (Press Ganey, etc.)
+
+### Medicare Cost Report Tools
+- [ ] Configure financial module aligned with Form CMS-1984-14 (Hospice Cost Report)
+- [ ] Create Cost Centers: Direct Patient Care (Nursing, Therapy, Social Work), General Services
+- [ ] Implement separate tracking for telehealth expenses (salaries, equipment)
+- [ ] Build Cost Report Summary export aggregating totals by level of care:
+  - [ ] Routine Home Care
+  - [ ] Continuous Home Care
+  - [ ] Inpatient Respite
+  - [ ] General Inpatient (GIP)
+- [ ] Create "Smart-Folder" for continuous automated expense categorization into CMS Worksheets (A, B, C, F)
+- [ ] Add annual export functionality for 5-month post-fiscal year submission
+
+### Clinical Gap Alerts
+- [ ] Implement real-time alerts for gaps in skilled nursing visits (greater than 7 days)
+- [ ] Create quality red flag warning system
+- [ ] Add visit scheduling recommendations
+- [ ] Build care continuity tracking dashboard
+
+### Database Schema
+- [x] Create hospice_patients table (patient demographics, admission date, level of care, status)
+- [x] Create hospice_assessments table (HIS/HOPE data, submission status, timestamps)
+- [x] Create hospice_visits table (visit type, date, clinician, duration, notes)
+- [x] Create hospice_expenses table (cost center, amount, date, level of care, CMS worksheet category)
+- [x] Create hospice_caregivers table (name, address, relationship, CAHPS eligibility)
+- [x] Create hospice_compliance_alerts table (alert type, patient_id, due date, status)
+
+### UI Screens
+- [x] Hospice Dashboard (main screen with compliance overview)
+- [ ] Patient List (active hospice patients with status indicators)
+- [ ] Patient Detail (comprehensive patient record with assessments)
+- [ ] Compliance Tracker (Red-Yellow-Green timeliness dashboard)
+- [ ] HOPE/HIS Data Entry Form (admission and discharge assessments)
+- [ ] Visit Log (skilled nursing visit tracking)
+- [ ] Cost Report Dashboard (financial tracking by cost center)
+- [ ] CAHPS Export Screen (monthly survey data generation)
+- [ ] Clinical Gaps Report (visit gap alerts and recommendations)
+
+### Revenue Features
+- [ ] Add subscription tier indicators for premium features
+- [ ] Implement usage tracking for per-patient record billing
+- [ ] Create admin/executive tier access controls
+- [ ] Add monthly integration fee tracking for CAHPS export
+- [ ] Build annual financial module add-on access

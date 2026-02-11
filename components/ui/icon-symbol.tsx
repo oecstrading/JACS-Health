@@ -44,6 +44,10 @@ const MAPPING = {
   "trash.fill": "delete-forever",
   "document.fill": "description",
   "sparkles": "auto-awesome",
+  "doc.text.fill": "description",
+  "calendar.badge.clock": "event",
+  "dollarsign.circle.fill": "attach-money",
+  "cross.fill": "local-hospital",
 } as IconMapping;
 
 type IconSymbolName = keyof typeof MAPPING;

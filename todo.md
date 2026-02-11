@@ -2721,3 +2721,35 @@
 - [x] Test three-column responsive layout
 - [x] Test all interactive elements and alerts
 - [x] Create checkpoint
+
+## Phase 65: Hospice Onboarding Wizard & Nurse Leader Dashboard
+- [x] Create app/hospice-onboarding-wizard.tsx screen
+- [x] Build Phase 1: Regulatory & Financial Configuration form
+- [x] Add fiscal year-end date input
+- [x] Add cost center mapping interface (Nursing, Social Work, Chaplains, Bereavement → CMS Worksheets A, B, C)
+- [x] Add CAHPS vendor integration (API endpoint or SFTP credentials input)
+- [x] Build Phase 2: Clinical Data Migration form
+- [x] Create bulk patient census upload tool (CSV import)
+- [x] Add patient data fields (name, admission date, level of care: RHC, CHC, GIP, Respite)
+- [x] Add HIS/HOPE status sync (Submitted/Pending)
+- [x] Add treatment preferences upload (HIS Section F)
+- [x] Build Phase 3: Operational Workflow Setup form
+- [x] Add gatekeeper role assignment (QA lead designation)
+- [x] Add telehealth identifier configuration
+- [x] Add gap in care alert configuration (5-day threshold)
+- [x] Create HQRP Timeliness Tracker with automatic 30-day deadline calculation
+- [x] Build Missing Data Report for mandatory HIS elements (Pain Screening, Dyspnea Treatment, Treatment Preferences)
+- [x] Create app/nurse-leader-dashboard.tsx screen
+- [x] Build Documentation Accuracy Score widget (>98% target)
+- [x] Build HIS Submission Timeliness widget (<3 days target)
+- [x] Build Visit Frequency Monitor widget (0 red flags target)
+- [x] Build Telehealth vs In-Person Ratio widget
+- [x] Create Compliance Accuracy Scorecard by clinician
+- [x] Build staff leaderboard ranked by compliance accuracy
+- [x] Create drill-down capability for red flag alerts
+- [x] Build bulk QA approval workflow (batch sign records)
+- [x] Create Gap in Care heat map (120-hour threshold)
+- [x] Add navigation links from hospices.tsx to onboarding wizard and nurse leader dashboard
+- [x] Test all onboarding wizard phases
+- [x] Test all nurse leader dashboard widgets
+- [x] Create checkpoint

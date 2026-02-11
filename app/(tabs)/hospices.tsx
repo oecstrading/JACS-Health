@@ -35,6 +35,20 @@ export default function HospicesScreen() {
       color: "#10B981", // Green
     },
     {
+      title: "Onboarding Wizard",
+      description: "Setup new agency configuration",
+      icon: "sparkles" as const,
+      route: "/hospice-onboarding-wizard",
+      color: "#8B5CF6", // Purple
+    },
+    {
+      title: "Nurse Leader Dashboard",
+      description: "Staff performance & compliance monitoring",
+      icon: "person.2.fill" as const,
+      route: "/nurse-leader-dashboard",
+      color: "#3B82F6", // Blue
+    },
+    {
       title: "Patient List",
       description: "View all active hospice patients",
       icon: "person.2.fill" as const,

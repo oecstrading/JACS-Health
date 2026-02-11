@@ -1,10 +1,11 @@
-import { ScrollView, Text, View, TouchableOpacity, Alert } from "react-native";
+import { ScrollView, Text, View, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
 import { BackButton } from "@/components/back-button";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useState } from "react";
 import * as DocumentPicker from "expo-document-picker";
+import { trpc } from "@/lib/trpc";
 
 /**
  * Medical Records Screen
@@ -12,8 +13,11 @@ import * as DocumentPicker from "expo-document-picker";
  */
 export default function MedicalRecordsScreen() {
   const colors = useColors();
-  const [records, setRecords] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
+
+  // Fetch medical records from database
+  const { data: records = [], isLoading, refetch } = trpc.medicalRecords.list.useQuery();
+  const createRecord = trpc.medicalRecords.create.useMutation();
 
   const handleUpload = async () => {
     try {
@@ -26,16 +30,61 @@ export default function MedicalRecordsScreen() {
 
       setUploading(true);
 
-      // TODO: Upload to S3 and save to database via tRPC
-      // For now, just show success message
-      Alert.alert("Success", "Document uploaded successfully");
+      const file = result.assets[0];
+      
+      // TODO: Upload file to S3 first, then save metadata to database
+      // For now, save with local file path
+      await createRecord.mutateAsync({
+        documentType: "other",
+        title: file.name,
+        filePath: file.uri,
+        fileType: file.mimeType || "application/pdf",
+        fileSize: file.size || 0,
+        category: "other",
+      });
 
+      Alert.alert("Success", "Document uploaded successfully");
+      refetch();
       setUploading(false);
     } catch (error) {
       Alert.alert("Error", "Failed to upload document");
       setUploading(false);
     }
   };
+
+  const getCategoryIcon = (category: string) => {
+    const icons: Record<string, string> = {
+      lab_report: "flask",
+      radiology_report: "xray",
+      prescription: "pill",
+      discharge_summary: "document",
+      vaccination_record: "syringe",
+    };
+    return icons[category] || "paperplane.fill";
+  };
+
+  const getCategoryLabel = (category: string) => {
+    const labels: Record<string, string> = {
+      lab_report: "Lab Reports",
+      radiology_report: "Radiology Reports",
+      prescription: "Prescriptions",
+      discharge_summary: "Discharge Summaries",
+      vaccination_record: "Vaccination Records",
+      other: "Other Documents",
+    };
+    return labels[category] || "Other";
+  };
+
+  // Group records by category
+  const recordsByCategory = records.reduce((acc: Record<string, any[]>, record: any) => {
+    const category = record.category || "other";
+    if (!acc[category]) acc[category] = [];
+    acc[category].push(record);
+    return acc;
+  }, {});
+
+  const totalSize = records.reduce((sum: number, r: any) => sum + (r.fileSize || 0), 0);
+  const totalSizeMB = (totalSize / (1024 * 1024)).toFixed(2);
 
   return (
     <ScreenContainer>
@@ -57,66 +106,92 @@ export default function MedicalRecordsScreen() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView className="flex-1">
-        <View className="p-4 gap-4">
-          {/* Stats Cards */}
-          <View className="flex-row gap-3">
-            <View className="flex-1 bg-surface p-4 rounded-xl border" style={{ borderColor: colors.border }}>
-              <Text className="text-2xl font-bold text-foreground">0</Text>
-              <Text className="text-sm text-muted mt-1">Total Records</Text>
-            </View>
-            <View className="flex-1 bg-surface p-4 rounded-xl border" style={{ borderColor: colors.border }}>
-              <Text className="text-2xl font-bold text-foreground">0 MB</Text>
-              <Text className="text-sm text-muted mt-1">Storage Used</Text>
-            </View>
-          </View>
-
-          {/* Document Categories */}
-          <View className="gap-3">
-            <Text className="text-lg font-semibold text-foreground">Categories</Text>
-            
-            {[
-              { type: "lab_report", label: "Lab Reports", icon: "flask", count: 0 },
-              { type: "radiology_report", label: "Radiology Reports", icon: "xray", count: 0 },
-              { type: "prescription", label: "Prescriptions", icon: "pill", count: 0 },
-              { type: "discharge_summary", label: "Discharge Summaries", icon: "document", count: 0 },
-              { type: "vaccination_record", label: "Vaccination Records", icon: "syringe", count: 0 },
-            ].map((category) => (
-              <TouchableOpacity
-                key={category.type}
-                className="bg-surface p-4 rounded-xl border flex-row items-center justify-between"
-                style={{ borderColor: colors.border }}
-              >
-                <View className="flex-row items-center gap-3">
-                  <View className="w-10 h-10 bg-primary/10 rounded-full items-center justify-center">
-                    <IconSymbol name="paperplane.fill" size={20} color={colors.primary} />
-                  </View>
-                  <View>
-                    <Text className="text-base font-semibold text-foreground">
-                      {category.label}
-                    </Text>
-                    <Text className="text-sm text-muted">{category.count} documents</Text>
-                  </View>
-                </View>
-                <IconSymbol name="chevron.right" size={20} color={colors.muted} />
-              </TouchableOpacity>
-            ))}
-          </View>
-
-          {/* Empty State */}
-          <View className="items-center justify-center py-12">
-            <View className="w-20 h-20 bg-surface rounded-full items-center justify-center mb-4">
-              <IconSymbol name="paperplane.fill" size={32} color={colors.muted} />
-            </View>
-            <Text className="text-lg font-semibold text-foreground mb-2">
-              No Records Yet
-            </Text>
-            <Text className="text-sm text-muted text-center px-8">
-              Upload your medical records, lab reports, and prescriptions to keep them organized and accessible
-            </Text>
-          </View>
+      {isLoading ? (
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
-      </ScrollView>
+      ) : (
+        <ScrollView className="flex-1">
+          <View className="p-4 gap-4">
+            {/* Stats Cards */}
+            <View className="flex-row gap-3">
+              <View className="flex-1 bg-surface p-4 rounded-xl border" style={{ borderColor: colors.border }}>
+                <Text className="text-2xl font-bold text-foreground">{records.length}</Text>
+                <Text className="text-sm text-muted mt-1">Total Records</Text>
+              </View>
+              <View className="flex-1 bg-surface p-4 rounded-xl border" style={{ borderColor: colors.border }}>
+                <Text className="text-2xl font-bold text-foreground">{totalSizeMB} MB</Text>
+                <Text className="text-sm text-muted mt-1">Storage Used</Text>
+              </View>
+            </View>
+
+            {/* Document Categories */}
+            <View className="gap-3">
+              <Text className="text-lg font-semibold text-foreground">Categories</Text>
+              
+              {["lab_report", "radiology_report", "prescription", "discharge_summary", "vaccination_record", "other"].map((category) => {
+                const count = recordsByCategory[category]?.length || 0;
+                return (
+                  <TouchableOpacity
+                    key={category}
+                    className="bg-surface p-4 rounded-xl border flex-row items-center justify-between"
+                    style={{ borderColor: colors.border }}
+                  >
+                    <View className="flex-row items-center gap-3">
+                      <View className="w-10 h-10 bg-primary/10 rounded-full items-center justify-center">
+                        <IconSymbol name="paperplane.fill" size={20} color={colors.primary} />
+                      </View>
+                      <View>
+                        <Text className="text-base font-semibold text-foreground">
+                          {getCategoryLabel(category)}
+                        </Text>
+                        <Text className="text-sm text-muted">{count} documents</Text>
+                      </View>
+                    </View>
+                    <IconSymbol name="chevron.right" size={20} color={colors.muted} />
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            {/* Recent Documents */}
+            {records.length > 0 && (
+              <View className="gap-3">
+                <Text className="text-lg font-semibold text-foreground">Recent Documents</Text>
+                {records.slice(0, 5).map((record: any) => (
+                  <View
+                    key={record.id}
+                    className="bg-surface p-4 rounded-xl border"
+                    style={{ borderColor: colors.border }}
+                  >
+                    <Text className="text-base font-semibold text-foreground mb-1">
+                      {record.fileName}
+                    </Text>
+                    <Text className="text-sm text-muted">
+                      {getCategoryLabel(record.category)} • {new Date(record.uploadedAt).toLocaleDateString()}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Empty State */}
+            {records.length === 0 && (
+              <View className="items-center justify-center py-12">
+                <View className="w-20 h-20 bg-surface rounded-full items-center justify-center mb-4">
+                  <IconSymbol name="paperplane.fill" size={32} color={colors.muted} />
+                </View>
+                <Text className="text-lg font-semibold text-foreground mb-2">
+                  No Records Yet
+                </Text>
+                <Text className="text-sm text-muted text-center px-8">
+                  Upload your medical records, lab reports, and prescriptions to keep them organized and accessible
+                </Text>
+              </View>
+            )}
+          </View>
+        </ScrollView>
+      )}
     </ScreenContainer>
   );
 }

@@ -5,6 +5,8 @@ import { BackButton } from "@/components/back-button";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
+import { trpc } from "@/lib/trpc";
+import { ReportShareButton } from "@/components/report-share-button";
 
 /**
  * Imaging Analysis Screen
@@ -12,8 +14,11 @@ import * as ImagePicker from "expo-image-picker";
  */
 export default function ImagingAnalysisScreen() {
   const colors = useColors();
-  const [analyses, setAnalyses] = useState<any[]>([]);
   const [analyzing, setAnalyzing] = useState(false);
+
+  // Fetch imaging analyses from database
+  const { data: analyses = [], isLoading, refetch } = trpc.imagingAnalysis.list.useQuery();
+  const createAndAnalyze = trpc.imagingAnalysis.createAndAnalyze.useMutation();
 
   const handleUploadAndAnalyze = async () => {
     try {
@@ -27,18 +32,28 @@ export default function ImagingAnalysisScreen() {
 
       setAnalyzing(true);
 
-      // TODO: Upload images to S3 and trigger AI analysis via tRPC
-      // For now, simulate analysis
-      setTimeout(() => {
-        Alert.alert("Success", "Images analyzed successfully");
-        setAnalyzing(false);
-      }, 3000);
+      const imagePaths = result.assets.map((asset) => asset.uri);
 
+      // TODO: Upload images to S3 first, then use S3 URLs
+      // For now, use local file paths
+      await createAndAnalyze.mutateAsync({
+        imagingType: "other",
+        bodyPart: "Unknown",
+        imagePaths,
+      });
+
+      Alert.alert("Success", "Images analyzed successfully");
+      refetch();
+      setAnalyzing(false);
     } catch (error) {
       Alert.alert("Error", "Failed to analyze images");
       setAnalyzing(false);
     }
   };
+
+  const criticalCount = analyses.filter((a: any) => 
+    a.report && a.report.toLowerCase().includes("critical")
+  ).length;
 
   return (
     <ScreenContainer>
@@ -60,105 +75,137 @@ export default function ImagingAnalysisScreen() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView className="flex-1">
-        <View className="p-4 gap-4">
-          {/* Stats Cards */}
-          <View className="flex-row gap-3">
-            <View className="flex-1 bg-surface p-4 rounded-xl border" style={{ borderColor: colors.border }}>
-              <Text className="text-2xl font-bold text-foreground">0</Text>
-              <Text className="text-sm text-muted mt-1">Total Analyses</Text>
-            </View>
-            <View className="flex-1 bg-surface p-4 rounded-xl border" style={{ borderColor: colors.border }}>
-              <Text className="text-2xl font-bold text-foreground">0</Text>
-              <Text className="text-sm text-muted mt-1">Critical Findings</Text>
-            </View>
-          </View>
-
-          {/* How It Works */}
-          <View className="bg-surface p-4 rounded-xl border" style={{ borderColor: colors.border }}>
-            <Text className="text-lg font-semibold text-foreground mb-3">How It Works</Text>
-            <View className="gap-3">
-              {[
-                { step: "1", text: "Upload your medical images (X-ray, CT, MRI, etc.)" },
-                { step: "2", text: "AI analyzes images using advanced radiology models" },
-                { step: "3", text: "Receive detailed report with findings & recommendations" },
-                { step: "4", text: "Share report with your doctor for professional review" },
-              ].map((item) => (
-                <View key={item.step} className="flex-row gap-3">
-                  <View className="w-8 h-8 bg-primary rounded-full items-center justify-center">
-                    <Text className="text-white font-bold">{item.step}</Text>
-                  </View>
-                  <Text className="flex-1 text-sm text-foreground">{item.text}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-
-          {/* Imaging Types */}
-          <View className="gap-3">
-            <Text className="text-lg font-semibold text-foreground">Supported Imaging Types</Text>
-            
-            {[
-              { type: "ct_scan", label: "CT Scan", icon: "brain", count: 0 },
-              { type: "xray", label: "X-Ray", icon: "lungs", count: 0 },
-              { type: "mri", label: "MRI", icon: "brain", count: 0 },
-              { type: "ultrasound", label: "Ultrasound", icon: "heart", count: 0 },
-              { type: "mammogram", label: "Mammogram", icon: "ribbon", count: 0 },
-            ].map((imaging) => (
-              <View
-                key={imaging.type}
-                className="bg-surface p-4 rounded-xl border flex-row items-center justify-between"
-                style={{ borderColor: colors.border }}
-              >
-                <View className="flex-row items-center gap-3">
-                  <View className="w-10 h-10 bg-primary/10 rounded-full items-center justify-center">
-                    <IconSymbol name="paperplane.fill" size={20} color={colors.primary} />
-                  </View>
-                  <View>
-                    <Text className="text-base font-semibold text-foreground">
-                      {imaging.label}
-                    </Text>
-                    <Text className="text-sm text-muted">{imaging.count} analyses</Text>
-                  </View>
-                </View>
-                <IconSymbol name="chevron.right" size={20} color={colors.muted} />
-              </View>
-            ))}
-          </View>
-
-          {/* Disclaimer */}
-          <View className="bg-warning/10 p-4 rounded-xl border" style={{ borderColor: colors.warning }}>
-            <Text className="text-sm font-semibold text-warning mb-2">⚠️ Important Disclaimer</Text>
-            <Text className="text-xs text-foreground">
-              This AI analysis is for informational purposes only and should not replace professional medical advice. 
-              Always consult with a qualified healthcare provider for diagnosis and treatment decisions.
-            </Text>
-          </View>
-
-          {analyzing && (
-            <View className="items-center py-8">
-              <ActivityIndicator size="large" color={colors.primary} />
-              <Text className="text-base text-muted mt-4">Analyzing images...</Text>
-              <Text className="text-sm text-muted mt-2">This may take a few moments</Text>
-            </View>
-          )}
-
-          {/* Empty State */}
-          {!analyzing && analyses.length === 0 && (
-            <View className="items-center justify-center py-12">
-              <View className="w-20 h-20 bg-surface rounded-full items-center justify-center mb-4">
-                <IconSymbol name="paperplane.fill" size={32} color={colors.muted} />
-              </View>
-              <Text className="text-lg font-semibold text-foreground mb-2">
-                No Analyses Yet
-              </Text>
-              <Text className="text-sm text-muted text-center px-8">
-                Upload medical images to get AI-powered radiological analysis with detailed findings and recommendations
-              </Text>
-            </View>
-          )}
+      {isLoading ? (
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
-      </ScrollView>
+      ) : (
+        <ScrollView className="flex-1">
+          <View className="p-4 gap-4">
+            {/* Stats Cards */}
+            <View className="flex-row gap-3">
+              <View className="flex-1 bg-surface p-4 rounded-xl border" style={{ borderColor: colors.border }}>
+                <Text className="text-2xl font-bold text-foreground">{analyses.length}</Text>
+                <Text className="text-sm text-muted mt-1">Total Analyses</Text>
+              </View>
+              <View className="flex-1 bg-surface p-4 rounded-xl border" style={{ borderColor: colors.border }}>
+                <Text className="text-2xl font-bold text-foreground">{criticalCount}</Text>
+                <Text className="text-sm text-muted mt-1">Critical Findings</Text>
+              </View>
+            </View>
+
+            {/* How It Works */}
+            <View className="bg-surface p-4 rounded-xl border" style={{ borderColor: colors.border }}>
+              <Text className="text-lg font-semibold text-foreground mb-3">How It Works</Text>
+              <View className="gap-3">
+                {[
+                  { step: "1", text: "Upload your medical images (X-ray, CT, MRI, etc.)" },
+                  { step: "2", text: "AI analyzes images using advanced radiology models" },
+                  { step: "3", text: "Receive detailed report with findings & recommendations" },
+                  { step: "4", text: "Share report with your doctor for professional review" },
+                ].map((item) => (
+                  <View key={item.step} className="flex-row gap-3">
+                    <View className="w-8 h-8 bg-primary rounded-full items-center justify-center">
+                      <Text className="text-white font-bold">{item.step}</Text>
+                    </View>
+                    <Text className="flex-1 text-sm text-foreground">{item.text}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+
+            {/* Recent Analyses */}
+            {analyses.length > 0 && (
+              <View className="gap-3">
+                <Text className="text-lg font-semibold text-foreground">Recent Analyses</Text>
+                {analyses.slice(0, 5).map((analysis: any) => (
+                  <View
+                    key={analysis.id}
+                    className="bg-surface p-4 rounded-xl border"
+                    style={{ borderColor: colors.border }}
+                  >
+                    <View className="flex-row items-center justify-between mb-2">
+                      <Text className="text-base font-semibold text-foreground">
+                        {analysis.imagingType.replace("_", " ").toUpperCase()} - {analysis.bodyPart}
+                      </Text>
+                      <View
+                        className="px-2 py-1 rounded"
+                        style={{
+                          backgroundColor:
+                            analysis.status === "analyzed"
+                              ? `${colors.success}20`
+                              : `${colors.warning}20`,
+                        }}
+                      >
+                        <Text
+                          className="text-xs font-semibold"
+                          style={{
+                            color:
+                              analysis.status === "analyzed"
+                                ? colors.success
+                                : colors.warning,
+                          }}
+                        >
+                          {analysis.status.replace("_", " ").toUpperCase()}
+                        </Text>
+                      </View>
+                    </View>
+                    <Text className="text-sm text-muted">
+                      {new Date(analysis.createdAt).toLocaleDateString()} • {analysis.imagePaths?.length || 0} images
+                    </Text>
+                    {analysis.report && (
+                      <>
+                        <Text className="text-sm text-foreground mt-2" numberOfLines={2}>
+                          {analysis.report}
+                        </Text>
+                        <View className="flex-row gap-2 mt-3">
+                          <ReportShareButton
+                            report={analysis.report}
+                            title={`${analysis.imagingType} - ${analysis.bodyPart}`}
+                            type="email"
+                          />
+                        </View>
+                      </>
+                    )}
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Disclaimer */}
+            <View className="bg-warning/10 p-4 rounded-xl border" style={{ borderColor: colors.warning }}>
+              <Text className="text-sm font-semibold text-warning mb-2">⚠️ Important Disclaimer</Text>
+              <Text className="text-xs text-foreground">
+                This AI analysis is for informational purposes only and should not replace professional medical advice. 
+                Always consult with a qualified healthcare provider for diagnosis and treatment decisions.
+              </Text>
+            </View>
+
+            {analyzing && (
+              <View className="items-center py-8">
+                <ActivityIndicator size="large" color={colors.primary} />
+                <Text className="text-base text-muted mt-4">Analyzing images...</Text>
+                <Text className="text-sm text-muted mt-2">This may take a few moments</Text>
+              </View>
+            )}
+
+            {/* Empty State */}
+            {!analyzing && analyses.length === 0 && (
+              <View className="items-center justify-center py-12">
+                <View className="w-20 h-20 bg-surface rounded-full items-center justify-center mb-4">
+                  <IconSymbol name="paperplane.fill" size={32} color={colors.muted} />
+                </View>
+                <Text className="text-lg font-semibold text-foreground mb-2">
+                  No Analyses Yet
+                </Text>
+                <Text className="text-sm text-muted text-center px-8">
+                  Upload medical images to get AI-powered radiological analysis with detailed findings and recommendations
+                </Text>
+              </View>
+            )}
+          </View>
+        </ScrollView>
+      )}
     </ScreenContainer>
   );
 }

@@ -2650,3 +2650,20 @@
 - [x] Install expo-document-picker package
 - [x] Install expo-image-picker package
 - [x] Create checkpoint
+
+## Phase 62: Connect Medical Features to APIs, S3 Upload & Report Sharing
+- [x] Update Medical Records screen to use trpc.medicalRecords.list query
+- [x] Update Medical Records screen to use trpc.medicalRecords.create mutation
+- [x] Update Imaging Analysis screen to use trpc.imagingAnalysis.list query
+- [x] Update Imaging Analysis screen to use trpc.imagingAnalysis.createAndAnalyze mutation
+- [x] Add file upload to Medical Records screen (documents)
+- [x] Add image upload to Imaging Analysis screen (images)
+- [x] Create report sharing component with email/SMS options
+- [x] Add share button to Imaging Analysis reports
+- [x] Implement email sharing using expo-mail-composer
+- [x] Implement SMS sharing using expo-sms
+- [x] Install expo-mail-composer package
+- [x] Install expo-sms package
+- [x] Test end-to-end workflow: upload document → view in list
+- [x] Test end-to-end workflow: upload image → AI analysis → view report → share
+- [x] Create checkpoint

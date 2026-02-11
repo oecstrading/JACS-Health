@@ -73,6 +73,15 @@ export default function TabLayout() {
         }}
       />
       
+      {/* Hospice Revenue Command - Module IV Extension */}
+      <Tabs.Screen
+        name="hospice-revenue-command"
+        options={{
+          title: "Revenue",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name={"shield.checkmark.fill" as any} color={color} />,
+        }}
+      />
+      
       {/* Hidden tabs - accessible via navigation but not shown in tab bar */}
       <Tabs.Screen
         name="devices"

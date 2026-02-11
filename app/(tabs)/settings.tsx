@@ -82,7 +82,7 @@ export default function SettingsScreen() {
         router.push("/onboarding" as any);
         break;
       case "bluetooth":
-        router.push("/bluetooth-devices" as any);
+        router.push("/connected-devices" as any);
         break;
       case "communication":
         router.push("/communication-log" as any);

@@ -158,13 +158,13 @@ export default function HomeScreen() {
             title="Talk to AI Assistant"
             icon="mic.fill"
             color="primary"
-            onPress={() => router.push("/ai-chat" as any)}
+            onPress={() => router.push("/symptom-checker" as any)}
           />
           <ActionCard
             title="Log Medication"
             icon="pills.fill"
             color="success"
-            onPress={() => router.push("/log-medication" as any)}
+            onPress={() => router.push("/(tabs)/medications" as any)}
           />
           <ActionCard
             title="Log Insulin"

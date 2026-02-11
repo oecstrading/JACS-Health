@@ -243,7 +243,7 @@ export default function MasterDashboardScreen() {
           <Pressable
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              router.push("/health-library" as any);
+              router.push("/medical-library" as any);
             }}
             style={({ pressed }) => ({
               backgroundColor: `${colors.primary}20`,

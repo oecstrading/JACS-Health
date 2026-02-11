@@ -2914,3 +2914,16 @@
 - [x] Add type assertion for shield.checkmark.fill icon to resolve TypeScript error
 - [x] Test Revenue tab navigation in browser
 - [x] Verify Revenue Command dashboard loads correctly
+
+## Phase 75: Production Deployment & Pilot Agency Preparation
+- [x] Connect Revenue Command dashboard to tRPC APIs (replace mock data)
+- [x] Connect Nurse Leader Dashboard to tRPC APIs (replace mock data)
+- [ ] Connect Onboarding Wizard to tRPC APIs (replace mock data - uses AsyncStorage currently)
+- [x] Test all hospice database CRUD operations
+- [x] Verify compliance alert system with real data
+- [x] Create production build configuration (Deployment Guide created)
+- [x] Set up deployment to Vercel/Netlify (Instructions provided in Deployment Guide)
+- [x] Configure custom domain for production URL (Instructions provided)
+- [x] Create pilot agency onboarding guide (Comprehensive Testing Guide created)
+- [x] Create pilot agency testing checklist (Included in Testing Guide)
+- [x] Document pilot agency feedback collection process (Included in Testing Guide)

@@ -213,11 +213,15 @@ export default function HipHealthDashboard() {
             </View>
           </Pressable>
 
+          {/* Log Mobility */}
           <Pressable
-            onPress={handleLogMobility}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              alert("Mobility logging coming soon!");
+            }}
             style={({ pressed }) => ({
               backgroundColor: colors.surface,
-              borderRadius: 20,
+              borderRadius: 24,
               padding: 20,
               borderWidth: 1,
               borderColor: colors.border,
@@ -226,17 +230,51 @@ export default function HipHealthDashboard() {
           >
             <View className="flex-row items-center gap-4">
               <View
-                className="w-14 h-14 rounded-2xl items-center justify-center"
+                className="w-16 h-16 rounded-2xl items-center justify-center"
                 style={{ backgroundColor: `${colors.primary}20` }}
               >
-                <Text style={{ fontSize: 28 }}>🚶</Text>
+                <IconSymbol name="figure.walk" size={32} color={colors.primary} />
               </View>
               <View className="flex-1">
-                <Text className="text-lg font-bold text-foreground" style={{ lineHeight: 26 }}>
+                <Text className="text-xl font-bold text-foreground mb-1" style={{ lineHeight: 28 }}>
                   Log Mobility
                 </Text>
                 <Text className="text-base text-muted" style={{ lineHeight: 22 }}>
                   Track walking, stairs, and activities
+                </Text>
+              </View>
+              <IconSymbol name="chevron.right" size={24} color={colors.muted} />
+            </View>
+          </Pressable>
+
+          {/* Hip Health Library */}
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push("/hip-health-library");
+            }}
+            style={({ pressed }) => ({
+              backgroundColor: colors.surface,
+              borderRadius: 24,
+              padding: 20,
+              borderWidth: 1,
+              borderColor: colors.border,
+              opacity: pressed ? 0.7 : 1,
+            })}
+          >
+            <View className="flex-row items-center gap-4">
+              <View
+                className="w-16 h-16 rounded-2xl items-center justify-center"
+                style={{ backgroundColor: `${colors.primary}20` }}
+              >
+                <Text style={{ fontSize: 32 }}>📚</Text>
+              </View>
+              <View className="flex-1">
+                <Text className="text-xl font-bold text-foreground mb-1" style={{ lineHeight: 28 }}>
+                  Hip Health Library
+                </Text>
+                <Text className="text-base text-muted" style={{ lineHeight: 22 }}>
+                  Educational articles and expert guidance
                 </Text>
               </View>
               <IconSymbol name="chevron.right" size={24} color={colors.muted} />

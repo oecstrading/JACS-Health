@@ -452,6 +452,56 @@ export default function HipReplacementJourney() {
             </Text>
           </Pressable>
         </View>
+
+        {/* Recovery Achievements */}
+        <View className="mt-8 mb-8">
+          <Text className="text-2xl font-bold text-foreground mb-4" style={{ lineHeight: 32 }}>
+            Recovery Achievements
+          </Text>
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              Alert.alert(
+                "Recovery Achievements",
+                "Track your recovery milestones and earn badges for progress! Achievements include: First Steps, 1000 Steps, Stair Climber, Walker Free, 30 Days Post-Op, and more."
+              );
+            }}
+            style={({ pressed }) => ({
+              backgroundColor: colors.surface,
+              borderRadius: 24,
+              padding: 20,
+              borderWidth: 1,
+              borderColor: colors.border,
+              opacity: pressed ? 0.7 : 1,
+            })}
+          >
+            <View className="flex-row items-center gap-4">
+              <View
+                className="w-16 h-16 rounded-2xl items-center justify-center"
+                style={{ backgroundColor: `${colors.primary}20` }}
+              >
+                <Text style={{ fontSize: 32 }}>🏆</Text>
+              </View>
+              <View className="flex-1">
+                <Text className="text-xl font-bold text-foreground mb-1" style={{ lineHeight: 28 }}>
+                  View Achievements
+                </Text>
+                <Text className="text-base text-muted" style={{ lineHeight: 22 }}>
+                  Track milestones and earn badges
+                </Text>
+              </View>
+              <View
+                className="px-4 py-2 rounded-full"
+                style={{ backgroundColor: `${colors.primary}20` }}
+              >
+                <Text className="text-base font-bold" style={{ color: colors.primary, lineHeight: 22 }}>
+                  3/14
+                </Text>
+              </View>
+              <IconSymbol name="chevron.right" size={24} color={colors.muted} />
+            </View>
+          </Pressable>
+        </View>
       </ScrollView>
     </ScreenContainer>
   );

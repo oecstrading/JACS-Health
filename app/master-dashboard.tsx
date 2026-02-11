@@ -35,7 +35,7 @@ export default function MasterDashboardScreen() {
       title: "Vitals Dashboard",
       description: "Blood pressure, heart rate, weight trends",
       icon: "❤️",
-      route: "/vitals-dashboard",
+      route: "/bp-dashboard",
       color: colors.error,
     },
     {
@@ -60,7 +60,7 @@ export default function MasterDashboardScreen() {
       title: "Medicare Compliance",
       description: "CPT code eligibility, billing statements",
       icon: "📋",
-      route: "/compliance-dashboard",
+      route: "/medicare-compliance",
       color: colors.success,
     },
     {
@@ -68,7 +68,7 @@ export default function MasterDashboardScreen() {
       title: "Health Insights",
       description: "AI-powered analysis and recommendations",
       icon: "💡",
-      route: "/health-insights",
+      route: "/insights",
       color: colors.warning,
     },
   ];

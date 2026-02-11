@@ -179,6 +179,12 @@ export default function HomeScreen() {
             onPress={() => router.push("/log-meal" as any)}
           />
           <ActionCard
+            title="Log Hip Pain"
+            icon="bandage.fill"
+            color="error"
+            onPress={() => router.push("/hip-health-dashboard" as any)}
+          />
+          <ActionCard
             title="Telemedicine"
             icon="video.fill"
             color="primary"

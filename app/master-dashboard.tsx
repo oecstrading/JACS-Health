@@ -45,6 +45,14 @@ export default function MasterDashboardScreen() {
       icon: "🩸",
       route: "/diabetes-dashboard",
       color: colors.primary,
+    },
+    {
+      id: "hip-health",
+      title: "Hip Health Dashboard",
+      description: "Pain tracking, mobility scores, PT exercises",
+      icon: "🦴",
+      route: "/hip-health-dashboard",
+      color: colors.warning,
       badge: "New",
     },
     {

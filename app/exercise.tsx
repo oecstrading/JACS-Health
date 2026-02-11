@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Pressable, Alert } from "react-native";
 import { router } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
+import { BackButton } from "@/components/back-button";
 
 interface Exercise {
   id: string;
@@ -202,14 +203,9 @@ export default function ExerciseScreen() {
   return (
     <ScreenContainer className="p-6">
       <ScrollView showsVerticalScrollIndicator={false}>
+        <BackButton />
         {/* Header */}
         <View className="flex-row items-center justify-between mb-6">
-          <Pressable
-            onPress={() => router.back()}
-            style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-          >
-            <Text className="text-lg text-primary">← Back</Text>
-          </Pressable>
           <Text className="text-2xl font-bold text-foreground">Exercise</Text>
           <View className="w-12" />
         </View>

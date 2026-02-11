@@ -12,6 +12,7 @@ import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
+import { BackButton } from '@/components/back-button';
 import {
   getCommunicationLog,
   addCommunicationEntry,
@@ -178,15 +179,9 @@ export default function CommunicationLogScreen() {
   return (
     <ScreenContainer>
       <ScrollView className="flex-1 p-4">
+        <BackButton />
         {/* Header */}
         <View className="mb-6">
-          <TouchableOpacity
-            onPress={() => router.back()}
-            className="mb-4"
-          >
-            <Text className="text-primary text-base">← Back</Text>
-          </TouchableOpacity>
-
           <Text className="text-3xl font-bold text-foreground mb-2">
             Doctor Communication Log
           </Text>

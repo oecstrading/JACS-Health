@@ -164,7 +164,7 @@ export default function HomeScreen() {
             title="Log Medication"
             icon="pills.fill"
             color="success"
-            onPress={() => router.push("/(tabs)/medications" as any)}
+            onPress={() => router.push("/medication-log" as any)}
           />
           <ActionCard
             title="Log Insulin"

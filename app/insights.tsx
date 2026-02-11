@@ -5,6 +5,7 @@ import { LineChart, BarChart } from "react-native-chart-kit";
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
+import { BackButton } from "@/components/back-button";
 import { getVitals, getMedications, type Vital } from "@/lib/storage";
 
 /**
@@ -107,8 +108,11 @@ export default function InsightsScreen() {
 
   return (
     <ScreenContainer>
+      <View className="px-6 pt-6">
+        <BackButton />
+      </View>
       {/* Header */}
-      <View className="px-6 pt-6 pb-4">
+      <View className="px-6 pb-4">
         <Text className="text-3xl font-bold text-foreground" style={{ lineHeight: 40 }}>
           Health Insights
         </Text>

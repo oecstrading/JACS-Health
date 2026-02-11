@@ -43,8 +43,7 @@ export default function MedicationsScreen() {
             <TouchableOpacity
               key={index}
               onPress={() => {
-                // TODO: Implement medication screens
-                alert(`${feature.title} coming soon`);
+                router.push(feature.route as any);
               }}
               style={{
                 backgroundColor: colors.surface,

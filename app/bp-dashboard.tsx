@@ -5,6 +5,7 @@ import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
+import { BackButton } from "@/components/back-button";
 
 interface BPReading {
   id: string;
@@ -148,14 +149,9 @@ export default function BPDashboardScreen() {
   return (
     <ScreenContainer className="p-6">
       <ScrollView showsVerticalScrollIndicator={false}>
+        <BackButton />
         {/* Header */}
         <View className="flex-row items-center justify-between mb-6">
-          <Pressable
-            onPress={() => router.back()}
-            style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-          >
-            <Text className="text-lg text-primary">← Back</Text>
-          </Pressable>
           <Text className="text-2xl font-bold text-foreground">Blood Pressure</Text>
           <Pressable
             onPress={() => setShowAddForm(!showAddForm)}

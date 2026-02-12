@@ -82,6 +82,15 @@ export default function TabLayout() {
         }}
       />
       
+      {/* Features Tab - All HealthMate Features */}
+      <Tabs.Screen
+        name="features"
+        options={{
+          title: "Features",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+        }}
+      />
+      
       {/* Hidden tabs - accessible via navigation but not shown in tab bar */}
       <Tabs.Screen
         name="devices"

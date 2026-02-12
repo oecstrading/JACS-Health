@@ -28,9 +28,9 @@ export default function PatientCommandCenter() {
 
   const handleQuickLog = (type: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (type === 'medication') router.push('/medication-log');
-    else if (type === 'insulin') router.push('/log-insulin');
-    else if (type === 'meal') router.push('/log-meal');
+    if (type === 'medication') router.push('/medication-tracker');
+    else if (type === 'insulin') router.push('/medication-tracker');
+    else if (type === 'meal') router.push('/food-scan');
   };
 
   return (
@@ -73,7 +73,7 @@ export default function PatientCommandCenter() {
           <View className="flex-row justify-between gap-3">
             {/* Glucose */}
             <Pressable
-              onPress={() => router.push('/diabetes-dashboard')}
+              onPress={() => router.push('/vitals-tracker')}
               className="flex-1 bg-background rounded-2xl p-4 border border-border"
               style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
             >
@@ -87,7 +87,7 @@ export default function PatientCommandCenter() {
 
             {/* Blood Pressure */}
             <Pressable
-              onPress={() => router.push('/bp-dashboard')}
+              onPress={() => router.push('/vitals-tracker')}
               className="flex-1 bg-background rounded-2xl p-4 border border-border"
               style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
             >
@@ -101,7 +101,7 @@ export default function PatientCommandCenter() {
 
             {/* Weight */}
             <Pressable
-              onPress={() => router.push('/vitals')}
+              onPress={() => router.push('/vitals-tracker')}
               className="flex-1 bg-background rounded-2xl p-4 border border-border"
               style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
             >

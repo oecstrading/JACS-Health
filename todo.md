@@ -2998,3 +2998,16 @@
 - [x] Integrate AI Voice Assistant with server LLM endpoint
 - [x] Test all three features end-to-end
 - [x] Test category filtering and search functionality
+
+## Phase 81: Fix Broken Card Links in All Tabs
+- [x] Review Home tab (index.tsx) to identify all card links
+- [x] Fix broken links in Home tab Quick Log cards
+- [x] Fix broken links in Home tab Vitals cards
+- [x] Fix broken link in Master Dashboard card
+- [x] Review Features tab card links (already fixed in Phase 79)
+- [x] Review Revenue Command tab card links
+- [x] Review other tabs for card navigation issues (Settings, Family, Care Team)
+- [x] Create 7 missing screens (emergency-contacts, health-conditions, privacy-settings, connected-devices, medical-library, communication-log, hospice-compliance-tracker)
+- [x] Ensure all card routes point to existing screens
+- [x] Test each card click to verify no "Unmatched Route" errors
+- [x] Verify back button navigation works from all screens

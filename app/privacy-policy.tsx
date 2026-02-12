@@ -28,7 +28,7 @@ export default function PrivacyPolicyScreen() {
             1. Introduction
           </Text>
           <Text className="text-base text-foreground leading-relaxed">
-            HealthMate is committed to protecting your health information and privacy. This Privacy Policy explains how we collect, use, store, and protect your personal health information (PHI) in compliance with the Health Insurance Portability and Accountability Act (HIPAA), the General Data Protection Regulation (GDPR), and Texas data privacy laws.
+            JACS Medical Monitoring System is committed to protecting your health information and privacy. This Privacy Policy explains how we collect, use, store, and protect your personal health information (PHI) in compliance with the Health Insurance Portability and Accountability Act (HIPAA), the General Data Protection Regulation (GDPR), and Texas data privacy laws.
           </Text>
         </View>
 

@@ -28,7 +28,7 @@ interface OnboardingStep {
 const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     id: 1,
-    title: "Welcome to HealthMate",
+    title: "Welcome to JACS Medical Monitoring System",
     description: "Your personal health companion for managing chronic conditions and staying connected with your care team.",
     icon: "👋",
     details: [

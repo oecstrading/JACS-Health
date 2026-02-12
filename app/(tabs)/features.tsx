@@ -345,7 +345,7 @@ export default function FeaturesScreen() {
       <View className="mb-4">
         <Text className="text-3xl font-bold text-foreground">Features</Text>
         <Text className="mt-1 text-base text-muted">
-          Explore all HealthMate features
+          Explore all JACS Medical Monitoring System features
         </Text>
       </View>
 

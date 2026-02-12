@@ -33,7 +33,7 @@ interface OnboardingTourProps {
   onComplete?: () => void;
 }
 
-const ONBOARDING_KEY = "@healthmate_onboarding_completed";
+const ONBOARDING_KEY = "@jacs_medical_onboarding_completed";
 
 export function OnboardingTour({ steps, onComplete }: OnboardingTourProps) {
   const colors = useColors();
@@ -276,11 +276,11 @@ export async function resetOnboarding() {
   }
 }
 
-// Default onboarding steps for HealthMate
+// Default onboarding steps for JACS Medical Monitoring System
 export const DEFAULT_ONBOARDING_STEPS: OnboardingStep[] = [
   {
     id: "welcome",
-    title: "Welcome to HealthMate",
+    title: "Welcome to JACS Medical Monitoring System",
     description:
       "Your comprehensive AI-driven medical monitoring platform. Let's take a quick tour of the key features.",
     icon: "👋",

@@ -222,7 +222,7 @@ export default function WatchComplicationsScreen() {
                     3. Tap "Complications"
                   </Text>
                   <Text className="text-base text-muted">
-                    4. Select "HealthMate" from the list
+                    4. Select "JACS Medical Monitoring System" from the list
                   </Text>
                   <Text className="text-base text-muted">
                     5. Choose which complications to display

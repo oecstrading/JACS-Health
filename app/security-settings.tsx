@@ -388,7 +388,7 @@ export default function SecuritySettingsScreen() {
             🛡️ HIPAA Compliance
           </Text>
           <Text className="text-xs text-muted leading-relaxed">
-            HealthMate is HIPAA-compliant. All your health data is encrypted with AES-256 encryption at rest and TLS 1.3 in transit. We never sell your data. For more information, view our Privacy Policy above.
+            JACS Medical Monitoring System is HIPAA-compliant. All your health data is encrypted with AES-256 encryption at rest and TLS 1.3 in transit. We never sell your data. For more information, view our Privacy Policy above.
           </Text>
         </View>
       </ScrollView>

@@ -82,7 +82,7 @@ export default function TabLayout() {
         }}
       />
       
-      {/* Features Tab - All HealthMate Features */}
+      {/* Features Tab - All JACS Medical Monitoring System Features */}
       <Tabs.Screen
         name="features"
         options={{

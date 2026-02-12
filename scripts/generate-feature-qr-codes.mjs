@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Generate QR codes for deep links to specific HealthMate features
+ * Generate QR codes for deep links to specific JACS Medical Monitoring System features
  * 
  * Usage: node scripts/generate-feature-qr-codes.mjs
  * 
@@ -103,7 +103,7 @@ async function generateQRCode(feature) {
 }
 
 async function generateAllQRCodes() {
-  console.log('Generating feature-specific QR codes for HealthMate...\n');
+  console.log('Generating feature-specific QR codes for JACS Medical Monitoring System...\n');
   console.log(`Deep link scheme: ${SCHEME}\n`);
   
   for (const feature of FEATURES) {
@@ -112,7 +112,7 @@ async function generateAllQRCodes() {
   
   console.log('Done! QR codes saved to:', OUTPUT_DIR);
   console.log('\nTo use these QR codes:');
-  console.log('1. Scan with Expo Go app to open HealthMate');
+  console.log('1. Scan with Expo Go app to open JACS Medical Monitoring System');
   console.log('2. App will automatically navigate to the specific feature');
   console.log('3. QR codes can be printed on marketing materials, posters, etc.');
 }

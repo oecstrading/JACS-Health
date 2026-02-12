@@ -247,7 +247,7 @@ export default function WhatsNewScreen() {
             {/* Footer */}
             <View className="items-center mb-8">
               <Text className="text-base text-muted text-center" style={{ lineHeight: 22 }}>
-                Thank you for using HealthMate!
+                Thank you for using JACS Medical Monitoring System!
               </Text>
               <Text className="text-sm text-muted text-center mt-2" style={{ lineHeight: 18 }}>
                 Your AI Health Companion

@@ -371,7 +371,7 @@ export default function SettingsScreen() {
         {/* App Info */}
         <View className="mb-8 items-center">
           <Text className="text-base text-muted" style={{ lineHeight: 22 }}>
-            HealthMate v1.0.0
+            JACS Medical Monitoring System v1.0.0
           </Text>
           <Text className="text-sm text-muted mt-1" style={{ lineHeight: 18 }}>
             Your AI Health Companion

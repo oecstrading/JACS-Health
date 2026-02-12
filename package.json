@@ -1,5 +1,5 @@
 {
-  "name": "app-template",
+  "name": "jacs-medical-monitoring-system",
   "version": "1.0.0",
   "private": true,
   "main": "expo-router/entry",

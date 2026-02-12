@@ -3,7 +3,7 @@ import { useState } from "react";
 import * as Haptics from "expo-haptics";
 
 /**
- * HealthMate Marketing Landing Page
+ * JACS Medical Monitoring System Marketing Landing Page
  * 
  * Professional landing page targeting hospice agency executives
  * Showcases Revenue Shield value proposition, pilot program, and ROI calculator
@@ -138,13 +138,13 @@ export default function MarketingLandingPage() {
       <View className="px-6 py-16 md:px-12 md:py-20">
         <View className="max-w-4xl mx-auto">
           <Text className="text-blue-600 font-semibold text-sm uppercase tracking-wide mb-4">
-            The HealthMate Solution
+            The JACS Medical Monitoring System Solution
           </Text>
           <Text className="text-gray-900 text-4xl font-bold mb-6">
             Compliance at the Point of Care, Not the End of the Month
           </Text>
           <Text className="text-gray-700 text-lg leading-relaxed mb-12">
-            HealthMate's mobile-first compliance platform automates HQRP submissions, CAHPS reporting, 
+            JACS Medical Monitoring System's mobile-first compliance platform automates HQRP submissions, CAHPS reporting, 
             and Medicare Cost Report preparation—delivering $796,000 in annual ROI per agency while 
             reducing nurse documentation time by 42%.
           </Text>
@@ -206,7 +206,7 @@ export default function MarketingLandingPage() {
             How Much Could Your Agency Save?
           </Text>
           <Text className="text-gray-700 text-lg leading-relaxed mb-8">
-            Enter your annual Medicare revenue to see your potential savings with HealthMate.
+            Enter your annual Medicare revenue to see your potential savings with JACS Medical Monitoring System.
           </Text>
 
           <View className="bg-white rounded-xl p-8 shadow-lg">
@@ -237,7 +237,7 @@ export default function MarketingLandingPage() {
                 <Text className="text-blue-600 font-bold text-2xl">{roiData.totalValue}</Text>
               </View>
               <View className="flex-row justify-between">
-                <Text className="text-gray-600">HealthMate Subscription (Professional Tier)</Text>
+                <Text className="text-gray-600">JACS Medical Monitoring System Subscription (Professional Tier)</Text>
                 <Text className="text-gray-900 font-semibold text-lg">{roiData.subscription}</Text>
               </View>
               <View className="bg-blue-100 rounded-lg p-4 flex-row justify-between items-center">
@@ -259,7 +259,7 @@ export default function MarketingLandingPage() {
             Validate Results Before You Commit
           </Text>
           <Text className="text-gray-700 text-lg leading-relaxed mb-8">
-            We're so confident in HealthMate's value that we offer a 90-day pilot program with 20% discount. 
+            We're so confident in JACS Medical Monitoring System's value that we offer a 90-day pilot program with 20% discount. 
             Achieve 95%+ APU, reduce nurse documentation time by 40%, and see measurable ROI—or walk away 
             with no long-term commitment.
           </Text>
@@ -315,7 +315,7 @@ export default function MarketingLandingPage() {
             Ready to Protect Your Revenue?
           </Text>
           <Text className="text-blue-100 text-lg mb-8 text-center">
-            Join two pilot agencies (180 combined census) already validating HealthMate. 
+            Join two pilot agencies (180 combined census) already validating JACS Medical Monitoring System. 
             We'll contact you within 24 hours to discuss your pilot program.
           </Text>
 
@@ -385,7 +385,7 @@ export default function MarketingLandingPage() {
             </Pressable>
 
             <Text className="text-gray-500 text-sm text-center mt-2">
-              By submitting, you agree to receive communications from HealthMate. 
+              By submitting, you agree to receive communications from JACS Medical Monitoring System. 
               We respect your privacy and will never share your information.
             </Text>
           </View>
@@ -397,7 +397,7 @@ export default function MarketingLandingPage() {
         <View className="max-w-4xl mx-auto">
           <View className="flex-row justify-between mb-8">
             <View className="flex-1">
-              <Text className="text-white font-bold text-2xl mb-4">HealthMate</Text>
+              <Text className="text-white font-bold text-2xl mb-4">JACS Medical Monitoring System</Text>
               <Text className="text-gray-400 text-sm leading-relaxed">
                 Your 4% Revenue Shield for hospice compliance automation.
               </Text>
@@ -411,7 +411,7 @@ export default function MarketingLandingPage() {
           </View>
           <View className="border-t border-gray-800 pt-6">
             <Text className="text-gray-500 text-sm text-center">
-              © 2026 HealthMate, Inc. All rights reserved. | Florida, USA
+              © 2026 JACS Medical Monitoring System, Inc. All rights reserved. | Florida, USA
             </Text>
           </View>
         </View>

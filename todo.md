@@ -3080,4 +3080,18 @@
 - [x] Add deep link handler in app/_layout.tsx
 - [x] Test onboarding tour on first app launch
 - [x] Test deep links by scanning QR codes to specific features
-- [ ] Save checkpoint with onboarding and deep linking
+- [x] Save checkpoint with onboarding and deep linking
+
+## Phase 88: Rebrand to JACS Medical Monitoring System
+- [x] Update app name in app.config.ts
+- [x] Update app name in package.json
+- [x] Update onboarding tour component with new name
+- [x] Update home screen welcome message
+- [x] Update all UI text references to HealthMate
+- [x] Regenerate QR codes with new app name
+- [x] Update QR code generator script
+- [x] Update all documentation files with new name
+- [x] Rename all documentation files from HealthMate to JACS
+- [x] Search and replace all "HealthMate" references in codebase
+- [x] Test app with new branding
+- [ ] Save checkpoint with rebranding

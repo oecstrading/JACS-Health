@@ -49,14 +49,14 @@ export default function PatientCommandCenter() {
         window.open(pdfUrl, '_blank');
       } else {
         // On native, download and share
-        const fileUri = FileSystem.documentDirectory + 'HealthMate_Platform_Presentation.pdf';
+        const fileUri = FileSystem.documentDirectory + 'JACS Medical Monitoring System_Platform_Presentation.pdf';
         const downloadResult = await FileSystem.downloadAsync(pdfUrl, fileUri);
         
         if (downloadResult.uri) {
           if (await Sharing.isAvailableAsync()) {
             await Sharing.shareAsync(downloadResult.uri, {
               mimeType: 'application/pdf',
-              dialogTitle: 'HealthMate Platform Presentation',
+              dialogTitle: 'JACS Medical Monitoring System Platform Presentation',
             });
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           } else {
@@ -83,14 +83,14 @@ export default function PatientCommandCenter() {
         window.open(pdfUrl, '_blank');
       } else {
         // On native, download and share
-        const fileUri = FileSystem.documentDirectory + 'HealthMate_Hospice_Edition.pdf';
+        const fileUri = FileSystem.documentDirectory + 'JACS Medical Monitoring System_Hospice_Edition.pdf';
         const downloadResult = await FileSystem.downloadAsync(pdfUrl, fileUri);
         
         if (downloadResult.uri) {
           if (await Sharing.isAvailableAsync()) {
             await Sharing.shareAsync(downloadResult.uri, {
               mimeType: 'application/pdf',
-              dialogTitle: 'HealthMate Hospice Edition',
+              dialogTitle: 'JACS Medical Monitoring System Hospice Edition',
             });
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           } else {

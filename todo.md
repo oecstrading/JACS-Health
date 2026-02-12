@@ -3036,3 +3036,10 @@
 - [x] Add PDF download functionality using expo-sharing and expo-file-system/legacy
 - [x] Style button to match app design
 - [x] Test presentation download on mobile
+
+## Phase 84: Fix Presentation Download on Web
+- [x] Update download function to detect platform (web vs native)
+- [x] Use window.open() for web browsers to open PDF in new tab
+- [x] Keep FileSystem API for native mobile apps
+- [x] Test download on web browser
+- [ ] Test download on mobile device

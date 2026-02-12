@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, Pressable, type ViewStyle } from 'react-native';
+import { ScrollView, View, Text, Pressable, type ViewStyle, Platform } from 'react-native';
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import * as Sharing from "expo-sharing";
@@ -36,23 +36,31 @@ export default function PatientCommandCenter() {
   };
 
   const handleDownloadPresentation = async () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    
     try {
       const pdfUrl = 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663129142386/mTCKjTTSeiMtQkHN.pdf';
-      const fileUri = FileSystem.documentDirectory + 'HealthMate_Platform_Presentation.pdf';
       
-      // Download PDF from hosted URL
-      const downloadResult = await FileSystem.downloadAsync(pdfUrl, fileUri);
-      
-      if (downloadResult.uri) {
-        if (await Sharing.isAvailableAsync()) {
-          await Sharing.shareAsync(downloadResult.uri, {
-            mimeType: 'application/pdf',
-            dialogTitle: 'HealthMate Platform Presentation',
-          });
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        } else {
-          alert('Sharing is not available on this device');
+      if (Platform.OS === 'web') {
+        // On web, open PDF in new tab
+        window.open(pdfUrl, '_blank');
+      } else {
+        // On native, download and share
+        const fileUri = FileSystem.documentDirectory + 'HealthMate_Platform_Presentation.pdf';
+        const downloadResult = await FileSystem.downloadAsync(pdfUrl, fileUri);
+        
+        if (downloadResult.uri) {
+          if (await Sharing.isAvailableAsync()) {
+            await Sharing.shareAsync(downloadResult.uri, {
+              mimeType: 'application/pdf',
+              dialogTitle: 'HealthMate Platform Presentation',
+            });
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          } else {
+            alert('Sharing is not available on this device');
+          }
         }
       }
     } catch (error) {

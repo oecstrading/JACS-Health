@@ -295,3 +295,66 @@ export type NewHospiceCaregiver = typeof hospiceCaregivers.$inferInsert;
 
 export type HospiceComplianceAlert = typeof hospiceComplianceAlerts.$inferSelect;
 export type NewHospiceComplianceAlert = typeof hospiceComplianceAlerts.$inferInsert;
+
+// Medication Tracker Tables
+export const medications = mysqlTable("medications", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  name: text("name").notNull(),
+  dosage: varchar("dosage", { length: 255 }).notNull(),
+  frequency: varchar("frequency", { length: 255 }).notNull(), // e.g., "Once daily", "Twice daily", "Every 8 hours"
+  instructions: text("instructions"),
+  prescribedBy: text("prescribed_by"),
+  pharmacy: text("pharmacy"),
+  refillsRemaining: int("refills_remaining"),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date"),
+  isActive: boolean("is_active").notNull().default(true),
+  reminderEnabled: boolean("reminder_enabled").notNull().default(true),
+  reminderTimes: json("reminder_times"), // Array of time strings like ["08:00", "20:00"]
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+export const medicationLogs = mysqlTable("medication_logs", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  medicationId: varchar("medication_id", { length: 128 }).notNull(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  takenAt: timestamp("taken_at").notNull(),
+  status: mysqlEnum("status", ["taken", "skipped", "missed"]).notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Vitals Tracker Tables
+export const vitals = mysqlTable("vitals", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  vitalType: mysqlEnum("vital_type", [
+    "blood_pressure",
+    "heart_rate",
+    "blood_glucose",
+    "weight",
+    "temperature",
+    "oxygen_saturation",
+  ]).notNull(),
+  systolic: int("systolic"), // For blood pressure
+  diastolic: int("diastolic"), // For blood pressure
+  value: decimal("value", { precision: 10, scale: 2 }), // For other vitals
+  unit: varchar("unit", { length: 50 }), // e.g., "bpm", "mg/dL", "lbs", "°F", "%"
+  notes: text("notes"),
+  recordedAt: timestamp("recorded_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+// Type exports
+export type Medication = typeof medications.$inferSelect;
+export type NewMedication = typeof medications.$inferInsert;
+
+export type MedicationLog = typeof medicationLogs.$inferSelect;
+export type NewMedicationLog = typeof medicationLogs.$inferInsert;
+
+export type Vital = typeof vitals.$inferSelect;
+export type NewVital = typeof vitals.$inferInsert;

@@ -2981,3 +2981,20 @@
 - [x] Test each feature card click to ensure no 404 errors
 - [x] Verify back button navigation works from detail screens
 - [x] Ensure all 34 features are accessible and functional
+
+## Phase 80: Priority Features & Category/Search Implementation
+- [x] Add feature categories to Features tab (Hospice, Health Tracking, AI Tools, Social, etc.)
+- [x] Implement search bar in Features tab with real-time filtering
+- [x] Add category filter chips/buttons for quick filtering
+- [x] Design Medication Tracker UI with medication list and add/edit forms
+- [x] Implement medication database schema and tRPC endpoints
+- [x] Build medication CRUD operations (add, edit, delete, view)
+- [x] Add medication logging (taken/skipped/missed)
+- [x] Implement medication adherence tracking
+- [x] Design Vitals Tracker UI with vitals history
+- [x] Implement vitals database schema and tRPC endpoints
+- [x] Build vitals logging for BP, glucose, weight, heart rate, temp, O2
+- [x] Design AI Voice Assistant UI with chat interface
+- [x] Integrate AI Voice Assistant with server LLM endpoint
+- [x] Test all three features end-to-end
+- [x] Test category filtering and search functionality

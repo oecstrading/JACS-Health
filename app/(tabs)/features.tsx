@@ -1,5 +1,6 @@
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View, TextInput } from "react-native";
 import { router } from "expo-router";
+import { useState, useMemo } from "react";
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -10,7 +11,10 @@ interface Feature {
   description: string;
   icon: string;
   route: string;
+  category: string;
 }
+
+type Category = "All" | "Hospice" | "Health Tracking" | "AI Tools" | "Social" | "Clinical" | "Pharmacy";
 
 const FEATURES: Feature[] = [
   {
@@ -19,6 +23,7 @@ const FEATURES: Feature[] = [
     description: "Real-time APU monitoring, HIS/HOPE submission tracking, and iQIES export",
     icon: "house.fill",
     route: "/hospice-revenue-command",
+    category: "Hospice",
   },
   {
     id: "nurse-leader",
@@ -26,6 +31,7 @@ const FEATURES: Feature[] = [
     description: "Staff performance leaderboards and documentation excellence tracking",
     icon: "house.fill",
     route: "/nurse-leader-dashboard",
+    category: "Hospice",
   },
   {
     id: "onboarding",
@@ -33,6 +39,7 @@ const FEATURES: Feature[] = [
     description: "30-minute setup wizard for census migration and compliance configuration",
     icon: "house.fill",
     route: "/onboarding-wizard",
+    category: "Hospice",
   },
   {
     id: "medication-tracker",
@@ -40,6 +47,7 @@ const FEATURES: Feature[] = [
     description: "Track medications, set reminders, and monitor adherence",
     icon: "house.fill",
     route: "/medication-tracker",
+    category: "Pharmacy",
   },
   {
     id: "vitals-tracker",
@@ -47,6 +55,7 @@ const FEATURES: Feature[] = [
     description: "Log blood pressure, heart rate, weight, and blood glucose",
     icon: "house.fill",
     route: "/vitals-tracker",
+    category: "Health Tracking",
   },
   {
     id: "ai-assistant",
@@ -54,6 +63,7 @@ const FEATURES: Feature[] = [
     description: "Natural language health assistant with voice and text support",
     icon: "house.fill",
     route: "/ai-assistant",
+    category: "AI Tools",
   },
   {
     id: "health-insights",
@@ -61,6 +71,7 @@ const FEATURES: Feature[] = [
     description: "Predictive alerts, health score, and personalized recommendations",
     icon: "house.fill",
     route: "/health-insights",
+    category: "Health Tracking",
   },
   {
     id: "caregiver-connection",
@@ -68,6 +79,7 @@ const FEATURES: Feature[] = [
     description: "Share health data and communicate with family caregivers",
     icon: "house.fill",
     route: "/caregiver-connection",
+    category: "Social",
   },
   {
     id: "appointments",
@@ -75,6 +87,7 @@ const FEATURES: Feature[] = [
     description: "Manage doctor appointments with reminders and calendar view",
     icon: "house.fill",
     route: "/appointments",
+    category: "Clinical",
   },
   {
     id: "wearables",
@@ -82,6 +95,7 @@ const FEATURES: Feature[] = [
     description: "Sync data from Apple Health, Google Fit, and fitness trackers",
     icon: "house.fill",
     route: "/wearables",
+    category: "Health Tracking",
   },
   {
     id: "emergency-sos",
@@ -89,6 +103,7 @@ const FEATURES: Feature[] = [
     description: "One-tap emergency calling with location sharing and caregiver alerts",
     icon: "house.fill",
     route: "/emergency-sos",
+    category: "Clinical",
   },
   {
     id: "documentation-center",
@@ -96,6 +111,7 @@ const FEATURES: Feature[] = [
     description: "Research health conditions, symptoms, treatments, and lifestyle tips",
     icon: "house.fill",
     route: "/documentation-center",
+    category: "Clinical",
   },
   {
     id: "medication-interaction",
@@ -103,6 +119,7 @@ const FEATURES: Feature[] = [
     description: "Check for drug interactions and view severity levels",
     icon: "house.fill",
     route: "/medication-interaction-checker",
+    category: "Pharmacy",
   },
   {
     id: "fall-detection",
@@ -110,6 +127,7 @@ const FEATURES: Feature[] = [
     description: "Automatic fall detection with emergency alerts",
     icon: "house.fill",
     route: "/fall-detection",
+    category: "Clinical",
   },
   {
     id: "health-report",
@@ -117,6 +135,7 @@ const FEATURES: Feature[] = [
     description: "Generate comprehensive health reports for doctors",
     icon: "house.fill",
     route: "/health-report-export",
+    category: "Clinical",
   },
   {
     id: "telemedicine",
@@ -124,6 +143,7 @@ const FEATURES: Feature[] = [
     description: "Video consultations with doctors and healthcare providers",
     icon: "house.fill",
     route: "/telemedicine",
+    category: "Clinical",
   },
   {
     id: "medication-refill",
@@ -131,6 +151,7 @@ const FEATURES: Feature[] = [
     description: "Track prescriptions and order refills from pharmacies",
     icon: "house.fill",
     route: "/medication-refill",
+    category: "Pharmacy",
   },
   {
     id: "social-features",
@@ -138,6 +159,7 @@ const FEATURES: Feature[] = [
     description: "Health challenges, achievements, community forum, and messaging",
     icon: "house.fill",
     route: "/social-features",
+    category: "Social",
   },
   {
     id: "medication-barcode",
@@ -145,6 +167,7 @@ const FEATURES: Feature[] = [
     description: "Scan medication barcodes to auto-fill details",
     icon: "house.fill",
     route: "/medication-barcode-scanner",
+    category: "Pharmacy",
   },
   {
     id: "health-goals",
@@ -152,6 +175,7 @@ const FEATURES: Feature[] = [
     description: "Set and track health goals with progress visualization",
     icon: "house.fill",
     route: "/health-goals",
+    category: "Health Tracking",
   },
   {
     id: "bp-dashboard",
@@ -159,6 +183,7 @@ const FEATURES: Feature[] = [
     description: "Dedicated BP tracking with trend analysis and alerts",
     icon: "house.fill",
     route: "/blood-pressure-dashboard",
+    category: "Health Tracking",
   },
   {
     id: "doctor-visit-prep",
@@ -166,6 +191,7 @@ const FEATURES: Feature[] = [
     description: "Generate visit summaries and suggested questions",
     icon: "house.fill",
     route: "/doctor-visit-preparation",
+    category: "AI Tools",
   },
   {
     id: "nutrition-tracking",
@@ -173,6 +199,7 @@ const FEATURES: Feature[] = [
     description: "Log meals, track calories, and monitor macronutrients",
     icon: "house.fill",
     route: "/nutrition-tracking",
+    category: "Health Tracking",
   },
   {
     id: "exercise-library",
@@ -180,6 +207,7 @@ const FEATURES: Feature[] = [
     description: "Senior-friendly workouts with video demonstrations",
     icon: "house.fill",
     route: "/exercise-library",
+    category: "Health Tracking",
   },
   {
     id: "symptom-diary",
@@ -187,6 +215,7 @@ const FEATURES: Feature[] = [
     description: "Track symptoms, identify patterns, and generate reports",
     icon: "house.fill",
     route: "/symptom-diary",
+    category: "Health Tracking",
   },
   {
     id: "medication-photo",
@@ -194,6 +223,7 @@ const FEATURES: Feature[] = [
     description: "AI-powered pill identification from photos",
     icon: "house.fill",
     route: "/medication-photo-recognition",
+    category: "AI Tools",
   },
   {
     id: "insurance-scanner",
@@ -201,6 +231,7 @@ const FEATURES: Feature[] = [
     description: "OCR extraction of insurance information from card photos",
     icon: "house.fill",
     route: "/insurance-card-scanner",
+    category: "AI Tools",
   },
   {
     id: "wellness-score",
@@ -208,6 +239,7 @@ const FEATURES: Feature[] = [
     description: "Comprehensive wellness score with category breakdown",
     icon: "house.fill",
     route: "/wellness-score-dashboard",
+    category: "Health Tracking",
   },
   {
     id: "ai-appointment-coach",
@@ -215,6 +247,7 @@ const FEATURES: Feature[] = [
     description: "Real-time transcription and note-taking during doctor visits",
     icon: "house.fill",
     route: "/ai-appointment-coach",
+    category: "AI Tools",
   },
   {
     id: "fall-stability-alert",
@@ -222,6 +255,7 @@ const FEATURES: Feature[] = [
     description: "7-day gait analysis with proactive fall risk alerts",
     icon: "house.fill",
     route: "/fall-stability-alert",
+    category: "AI Tools",
   },
   {
     id: "medication-cost",
@@ -229,6 +263,7 @@ const FEATURES: Feature[] = [
     description: "Compare prices and find cheaper alternatives",
     icon: "house.fill",
     route: "/medication-cost-optimizer",
+    category: "Pharmacy",
   },
   {
     id: "cgm-integration",
@@ -236,6 +271,7 @@ const FEATURES: Feature[] = [
     description: "Real-time glucose monitoring with trend analysis",
     icon: "house.fill",
     route: "/cgm-integration",
+    category: "Health Tracking",
   },
   {
     id: "food-scan",
@@ -243,6 +279,7 @@ const FEATURES: Feature[] = [
     description: "AI-powered food recognition with nutritional information",
     icon: "house.fill",
     route: "/food-scan",
+    category: "AI Tools",
   },
   {
     id: "specialist-booking",
@@ -250,11 +287,26 @@ const FEATURES: Feature[] = [
     description: "Manage specialist appointments and referrals",
     icon: "house.fill",
     route: "/specialist-booking",
+    category: "Clinical",
   },
 ];
 
+const CATEGORIES: Category[] = ["All", "Hospice", "Health Tracking", "AI Tools", "Clinical", "Pharmacy", "Social"];
+
 export default function FeaturesScreen() {
   const colors = useColors();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<Category>("All");
+
+  const filteredFeatures = useMemo(() => {
+    return FEATURES.filter((feature) => {
+      const matchesSearch =
+        feature.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        feature.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === "All" || feature.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [searchQuery, selectedCategory]);
 
   const renderFeatureItem = ({ item }: { item: Feature }) => (
     <TouchableOpacity
@@ -297,12 +349,67 @@ export default function FeaturesScreen() {
         </Text>
       </View>
 
+      {/* Search Bar */}
+      <View className="mb-4 flex-row items-center rounded-xl border border-border bg-surface px-4 py-3">
+        <IconSymbol name="chevron.left.forwardslash.chevron.right" size={20} color={colors.muted} />
+        <TextInput
+          className="ml-3 flex-1 text-base text-foreground"
+          placeholder="Search features..."
+          placeholderTextColor={colors.muted}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+      </View>
+
+      {/* Category Filter Chips */}
+      <View className="mb-4">
+        <FlatList
+          horizontal
+          data={CATEGORIES}
+          keyExtractor={(item) => item}
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => setSelectedCategory(item)}
+              className="mr-2 rounded-full px-4 py-2"
+              style={{
+                backgroundColor: selectedCategory === item ? colors.primary : colors.surface,
+                borderWidth: 1,
+                borderColor: selectedCategory === item ? colors.primary : colors.border,
+              }}
+            >
+              <Text
+                className="text-sm font-medium"
+                style={{
+                  color: selectedCategory === item ? "#fff" : colors.foreground,
+                }}
+              >
+                {item}
+              </Text>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+
+      {/* Results Count */}
+      <Text className="mb-3 text-sm text-muted">
+        {filteredFeatures.length} {filteredFeatures.length === 1 ? "feature" : "features"} found
+      </Text>
+
+      {/* Features List */}
       <FlatList
-        data={FEATURES}
+        data={filteredFeatures}
         renderItem={renderFeatureItem}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 20 }}
+        ListEmptyComponent={
+          <View className="items-center justify-center py-12">
+            <Text className="text-center text-base text-muted">
+              No features found matching your search
+            </Text>
+          </View>
+        }
       />
     </ScreenContainer>
   );

@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, Pressable, type ViewStyle, Platform } from 'react-native';
+import { Text, View, ScrollView, Pressable, Image, type ViewStyle, Platform } from 'react-native';
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import * as Sharing from "expo-sharing";
@@ -152,6 +152,17 @@ export default function PatientCommandCenter() {
           </Text>
         </Pressable>
       </View>
+        
+        {/* QR Code Section */}
+        <View className="bg-surface rounded-2xl p-4 mb-4 border border-border items-center">
+          <Text className="text-base font-semibold text-foreground mb-2">Scan to Download Mobile App</Text>
+          <Image
+            source={require('@/assets/images/app-qr-code.png')}
+            style={{ width: 180, height: 180 }}
+            resizeMode="contain"
+          />
+          <Text className="text-xs text-muted mt-2 text-center">Open Expo Go app and scan this code</Text>
+        </View>
         
         <View className="flex-row items-center justify-end">
           <Pressable

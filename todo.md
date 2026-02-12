@@ -3053,3 +3053,12 @@
 - [ ] Style both buttons to fit on same line
 - [ ] Test both download buttons on web and mobile
 - [ ] Save checkpoint with both presentations
+
+## Phase 86: QR Code for Mobile App Download
+- [x] Generate QR code for Expo app access URL
+- [x] Save QR code image to app assets
+- [x] Add QR code section to Home screen below presentation buttons
+- [x] Add "Scan to Download" heading and instructions
+- [x] Style QR code section to match app design
+- [ ] Test QR code scanning with mobile device
+- [ ] Update checkpoint with QR code functionality

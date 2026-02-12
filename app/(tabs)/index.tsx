@@ -8,6 +8,7 @@ import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
 import { ComplianceDashboard } from '@/components/compliance-dashboard';
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { OnboardingTour, DEFAULT_ONBOARDING_STEPS } from '@/components/onboarding-tour';
 
 /**
  * Module I: Patient Command Center (Home Dashboard)
@@ -105,6 +106,8 @@ export default function PatientCommandCenter() {
 
   return (
     <ScreenContainer>
+      {/* Onboarding Tour */}
+      <OnboardingTour steps={DEFAULT_ONBOARDING_STEPS} />
       {/* Header with greeting and emergency button */}
       <View className="px-6 pt-6 pb-4">
         <View className="flex-row items-center justify-between mb-3">

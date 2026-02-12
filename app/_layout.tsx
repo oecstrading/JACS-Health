@@ -9,6 +9,8 @@ import { Platform } from "react-native";
 import "@/lib/_core/nativewind-pressable";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { LanguageProvider } from "@/lib/language-provider";
+import * as Linking from "expo-linking";
+import { useRouter } from "expo-router";
 import {
   SafeAreaFrameContext,
   SafeAreaInsetsContext,
@@ -31,6 +33,7 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
+  const router = useRouter();
   const initialInsets = initialWindowMetrics?.insets ?? DEFAULT_WEB_INSETS;
   const initialFrame = initialWindowMetrics?.frame ?? DEFAULT_WEB_FRAME;
 
@@ -42,6 +45,36 @@ export default function RootLayout() {
   // Initialize Manus runtime for cookie injection from parent container
   useEffect(() => {
     initManusRuntime();
+  }, []);
+
+  // Handle deep links
+  useEffect(() => {
+    const handleDeepLink = (event: { url: string }) => {
+      const { hostname, path } = Linking.parse(event.url);
+      
+      // Handle universal links (healthmate.app/feature-name)
+      if (hostname === "healthmate.app" && path) {
+        router.push(path as any);
+      }
+      // Handle custom scheme links (manus20260208103805://feature-name)
+      else if (path) {
+        router.push(path as any);
+      }
+    };
+
+    // Listen for deep links when app is already open
+    const subscription = Linking.addEventListener("url", handleDeepLink);
+
+    // Handle deep link that opened the app
+    Linking.getInitialURL().then((url) => {
+      if (url) {
+        handleDeepLink({ url });
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   // Check for updates on app launch

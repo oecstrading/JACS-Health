@@ -3062,3 +3062,22 @@
 - [x] Style QR code section to match app design
 - [ ] Test QR code scanning with mobile device
 - [ ] Update checkpoint with QR code functionality
+
+## Phase 87: Onboarding Tour & Deep Linking
+- [x] Create onboarding tour component with interactive tooltips
+- [x] Implement AsyncStorage tracking for first-time users
+- [x] Add onboarding steps for Revenue Command feature
+- [x] Add onboarding steps for Medication Tracker feature
+- [x] Add onboarding steps for AI Assistant feature
+- [x] Add onboarding steps for Vitals Tracker feature
+- [x] Add skip and next buttons to onboarding overlay
+- [x] Configure deep linking in app.config.ts
+- [x] Add universal links for Revenue Command (/hospice-revenue-command)
+- [x] Add universal links for Medication Tracker (/medication-tracker)
+- [x] Add universal links for Vitals Tracker (/vitals-tracker)
+- [x] Add universal links for AI Assistant (/ai-assistant)
+- [x] Generate feature-specific QR codes for all key features
+- [x] Add deep link handler in app/_layout.tsx
+- [x] Test onboarding tour on first app launch
+- [x] Test deep links by scanning QR codes to specific features
+- [ ] Save checkpoint with onboarding and deep linking

@@ -52,7 +52,11 @@ const config: ExpoConfig = {
     bundleIdentifier: env.iosBundleId,
     "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+    associatedDomains: [
+      "applinks:healthmate.app",
+      "applinks:*.healthmate.app"
+    ]
   },
   android: {
     adaptiveIcon: {
@@ -73,6 +77,11 @@ const config: ExpoConfig = {
           {
             scheme: env.scheme,
             host: "*",
+          },
+          {
+            scheme: "https",
+            host: "healthmate.app",
+            pathPrefix: "/",
           },
         ],
         category: ["BROWSABLE", "DEFAULT"],

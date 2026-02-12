@@ -154,6 +154,25 @@ export default function PatientCommandCenter() {
               Hospice Edition
           </Text>
         </Pressable>
+        
+        <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              router.push('/pitch-deck-consumer');
+            }}
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed ? "#10b981" + "CC" : "#10b981",
+                transform: [{ scale: pressed ? 0.98 : 1 }],
+              },
+            ]}
+            className="flex-1 flex-row items-center justify-center rounded-2xl py-4 px-3"
+          >
+            <IconSymbol name="paperplane.fill" size={18} color="#fff" />
+            <Text className="ml-2 text-sm font-semibold text-white text-center flex-1">
+              Consumer Pitch
+          </Text>
+        </Pressable>
       </View>
         
         {/* QR Code Section */}

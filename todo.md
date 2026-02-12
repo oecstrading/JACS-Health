@@ -3179,4 +3179,18 @@
 - [x] Ensure profile setup is accessible from settings
 - [x] Test update flow on app launch
 - [x] Test first-time personalization prompt
-- [ ] Save checkpoint with update and personalization features
+- [x] Save checkpoint with update and personalization features
+
+## Phase 94: Home Screen Consumer Pitch Deck Button & Printable QR Posters
+- [x] Add "Consumer Pitch Deck" button to home screen next to existing buttons
+- [x] Style button to match teal/orange theme
+- [x] Link button to consumer pitch deck viewer
+- [x] Create high-resolution QR code poster for Consumer Pitch Deck
+- [x] Create high-resolution QR code poster for Investor Pitch Deck
+- [x] Create high-resolution QR code poster for Revenue Command feature
+- [x] Create high-resolution QR code poster for Medication Tracker feature
+- [x] Create high-resolution QR code poster for AI Assistant feature
+- [x] Design posters with compelling headlines for trade shows
+- [x] Export posters as print-ready PDFs
+- [x] Test home screen button navigation
+- [ ] Save checkpoint with home screen update and posters

@@ -7,8 +7,10 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { trpc } from "@/lib/trpc";
 import * as Haptics from "expo-haptics";
 import { AddCustomDeviceModal } from "@/components/add-custom-device-modal";
+import { DevicePairingTutorial } from "@/components/device-pairing-tutorial";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import HealthSyncService from "@/lib/health-sync-service";
+import { BackgroundHealthSync } from "@/lib/background-health-sync";
 
 interface BluetoothDevice {
   id: string;
@@ -46,6 +48,8 @@ export default function ConnectedDevicesScreen() {
   const [customDevices, setCustomDevices] = useState<any[]>([]);
   const [healthSyncStatus, setHealthSyncStatus] = useState<any>(null);
   const [isSyncingHealth, setIsSyncingHealth] = useState(false);
+  const [backgroundSyncEnabled, setBackgroundSyncEnabled] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   const vitalsCreateMutation = trpc.vitals.create.useMutation();
 
@@ -354,10 +358,57 @@ export default function ConnectedDevicesScreen() {
       </TouchableOpacity>
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        <Text className="mb-2 text-3xl font-bold text-foreground">Connected Devices</Text>
-        <Text className="mb-6 text-base text-muted">
-          Sync health data from Bluetooth devices automatically
-        </Text>
+            <Text className="mb-2 text-3xl font-bold text-foreground">Connected Devices</Text>
+      <Text className="mb-6 text-base text-muted">
+        Manage your medical devices and health app integrations
+      </Text>
+
+      {/* Quick Action Buttons */}
+      <View className="mb-6 gap-3">
+        <TouchableOpacity
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            router.push("/device-data-dashboard");
+          }}
+          className="flex-row items-center justify-between rounded-2xl border border-border bg-surface p-4"
+        >
+          <View className="flex-row items-center">
+            <View
+              className="mr-3 h-12 w-12 items-center justify-center rounded-full"
+              style={{ backgroundColor: colors.primary + "20" }}
+            >
+              <IconSymbol name="chart.bar.fill" size={24} color={colors.primary} />
+            </View>
+            <View>
+              <Text className="text-lg font-semibold text-foreground">View Data Dashboard</Text>
+              <Text className="text-sm text-muted">Visualize your health trends</Text>
+            </View>
+          </View>
+          <IconSymbol name="chevron.right" size={20} color={colors.muted} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            setShowTutorial(true);
+          }}
+          className="flex-row items-center justify-between rounded-2xl border border-border bg-surface p-4"
+        >
+          <View className="flex-row items-center">
+            <View
+              className="mr-3 h-12 w-12 items-center justify-center rounded-full"
+              style={{ backgroundColor: "#8B5CF6" + "20" }}
+            >
+              <IconSymbol name="book.fill" size={24} color="#8B5CF6" />
+            </View>
+            <View>
+              <Text className="text-lg font-semibold text-foreground">Device Pairing Guide</Text>
+              <Text className="text-sm text-muted">Learn how to connect your devices</Text>
+            </View>
+          </View>
+          <IconSymbol name="chevron.right" size={20} color={colors.muted} />
+        </TouchableOpacity>
+      </View>
 
         {/* Connected Devices */}
         <View className="mb-6">
@@ -436,6 +487,51 @@ export default function ConnectedDevicesScreen() {
             <Text className="mt-3 text-xs text-muted">
               Automatically sync weight, blood pressure, heart rate, and glucose from {Platform.OS === "ios" ? "Apple Health" : "Google Fit"} and connected devices.
             </Text>
+
+            {/* Background Sync Toggle */}
+            {healthSyncStatus?.isEnabled && (
+              <View className="mt-4 rounded-2xl border border-border bg-surface p-4">
+                <View className="flex-row items-center justify-between">
+                  <View className="flex-1">
+                    <Text className="text-base font-semibold text-foreground">Background Sync</Text>
+                    <Text className="mt-1 text-sm text-muted">
+                      Sync health data automatically every 6 hours, even when app is closed
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    onPress={async () => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                      if (backgroundSyncEnabled) {
+                        await BackgroundHealthSync.unregister();
+                        setBackgroundSyncEnabled(false);
+                        Alert.alert(
+                          "Background Sync Disabled",
+                          "Health data will no longer sync automatically in the background."
+                        );
+                      } else {
+                        await BackgroundHealthSync.register(360);
+                        setBackgroundSyncEnabled(true);
+                        Alert.alert(
+                          "Background Sync Enabled",
+                          "Health data will now sync automatically every 6 hours."
+                        );
+                      }
+                    }}
+                    className="ml-3 h-8 w-14 items-center justify-center rounded-full"
+                    style={{
+                      backgroundColor: backgroundSyncEnabled ? colors.primary : colors.border,
+                    }}
+                  >
+                    <View
+                      className="h-6 w-6 rounded-full bg-white"
+                      style={{
+                        transform: [{ translateX: backgroundSyncEnabled ? 8 : -8 }],
+                      }}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
           </View>
         </View>
 
@@ -549,6 +645,12 @@ export default function ConnectedDevicesScreen() {
         visible={showAddDeviceModal}
         onClose={() => setShowAddDeviceModal(false)}
         onDeviceAdded={handleCustomDeviceAdded}
+      />
+
+      {/* Device Pairing Tutorial */}
+      <DevicePairingTutorial
+        visible={showTutorial}
+        onClose={() => setShowTutorial(false)}
       />
     </ScreenContainer>
   );

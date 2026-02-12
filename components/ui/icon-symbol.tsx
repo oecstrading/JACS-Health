@@ -17,7 +17,8 @@ const MAPPING = {
   "paperplane.fill": "send",
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
-  "syringe.fill": "medication",
+  "folder.fill": "folder",
+  "chart.bar.fill": "bar-chart",
   "fork.knife": "restaurant",
   "drop.fill": "water-drop",
   "heart.fill": "favorite",
@@ -32,7 +33,6 @@ const MAPPING = {
   "calendar.fill": "event",
   "clock.fill": "schedule",
   "location.fill": "location-on",
-  "chart.bar.fill": "bar-chart",
   "exclamationmark.triangle.fill": "warning",
   "phone.fill": "phone",
   "chevron.left": "chevron-left",
@@ -52,7 +52,6 @@ const MAPPING = {
   "chart.line.uptrend.xyaxis": "trending-up",
   "book.fill": "menu-book",
   "antenna.radiowaves.left.and.right": "wifi",
-  "folder.fill": "folder",
 } as IconMapping;
 
 type IconSymbolName = keyof typeof MAPPING;

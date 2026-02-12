@@ -2937,3 +2937,38 @@
 - [x] Update tab bar icons to include Features tab
 - [x] Test Features tab navigation flow
 - [x] Verify all features are accessible from the list
+
+## Phase 77: Database Seeding & Training Videos
+- [x] Create database seeding script with realistic hospice pilot data
+- [x] Seed patients table with 20 sample patients (diverse demographics, conditions)
+- [x] Seed hospice assessments (SOC, ROC, Recert, Discharge, Transfer, Death)
+- [x] Seed hospice visits with nurse assignments and timestamps
+- [x] Seed medication data for patients
+- [x] Seed vitals data (BP, glucose, weight, heart rate)
+- [x] Seed caregiver connections and family portal data
+- [x] Execute seeding script and verify data appears in dashboards
+- [ ] Test Revenue Command dashboard with seeded data
+- [ ] Test Nurse Leader Dashboard with seeded staff performance data
+- [ ] Create training video script for Revenue Command (5-7 minutes)
+- [ ] Create training video script for Nurse Leader Dashboard (5-7 minutes)
+- [ ] Create training video script for Onboarding Wizard (5-7 minutes)
+- [ ] Record screen capture video for Revenue Command feature walkthrough
+- [ ] Record screen capture video for Nurse Leader Dashboard walkthrough
+- [ ] Record screen capture video for Onboarding Wizard walkthrough
+- [ ] Add voiceover narration to training videos
+- [ ] Export training videos as MP4 files
+
+## Phase 78: Public Landing Page with Nano Banana Visuals
+- [x] Design landing page structure (hero, features, presentation embed, testimonials, CTA)
+- [x] Create nano banana visual design system (holographic teal-cyan gradients, medical aesthetics)
+- [x] Build hero section with animated health monitoring visuals
+- [x] Embed HealthMate Platform Presentation (30 slides)
+- [x] Create interactive feature showcase section
+- [x] Add hospice revenue protection section with ROI calculator
+- [x] Add consumer health tracking section with demo
+- [x] Create testimonials section with pilot agency feedback
+- [x] Add contact form and CTA buttons
+- [x] Implement responsive design for mobile/tablet/desktop
+- [x] Add smooth scroll animations and transitions
+- [x] Deploy to public URL for worldwide access
+- [x] Test landing page on multiple devices and browsers

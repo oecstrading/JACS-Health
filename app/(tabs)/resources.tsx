@@ -206,6 +206,50 @@ export default function HealthNavigation() {
           </View>
         </View>
 
+        {/* Pitch Decks Section */}
+        <View className="bg-surface rounded-3xl p-6 mb-6 border border-border">
+          <Text className="text-xl font-semibold text-foreground mb-4" style={{ lineHeight: 28 }}>
+            Pitch Decks & Presentations
+          </Text>
+          <View className="gap-3">
+            <Pressable
+              onPress={() => handleNavigation('/pitch-deck-consumer')}
+              className="flex-row items-center bg-background rounded-2xl p-4 border border-border"
+              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+            >
+              <View
+                className="w-12 h-12 rounded-full items-center justify-center mr-4"
+                style={{ backgroundColor: '#0a7ea420' }}
+              >
+                <IconSymbol name="folder.fill" size={24} color="#0a7ea4" />
+              </View>
+              <View className="flex-1">
+                <Text className="text-lg font-semibold text-foreground">Consumer Pitch Deck</Text>
+                <Text className="text-sm text-muted">For individuals & families</Text>
+              </View>
+              <IconSymbol name="chevron.right" size={24} color={colors.muted} />
+            </Pressable>
+
+            <Pressable
+              onPress={() => handleNavigation('/pitch-deck-investor')}
+              className="flex-row items-center bg-background rounded-2xl p-4 border border-border"
+              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+            >
+              <View
+                className="w-12 h-12 rounded-full items-center justify-center mr-4"
+                style={{ backgroundColor: '#FF8C0020' }}
+              >
+                <IconSymbol name="folder.fill" size={24} color="#FF8C00" />
+              </View>
+              <View className="flex-1">
+                <Text className="text-lg font-semibold text-foreground">Investor Pitch Deck</Text>
+                <Text className="text-sm text-muted">Hospice compliance automation</Text>
+              </View>
+              <IconSymbol name="chevron.right" size={24} color={colors.muted} />
+            </Pressable>
+          </View>
+        </View>
+
         {/* Settings & Support Section */}
         <View className="bg-surface rounded-3xl p-6 mb-6 border border-border">
           <Text className="text-xl font-semibold text-foreground mb-4" style={{ lineHeight: 28 }}>

@@ -3094,4 +3094,64 @@
 - [x] Rename all documentation files from HealthMate to JACS
 - [x] Search and replace all "HealthMate" references in codebase
 - [x] Test app with new branding
-- [ ] Save checkpoint with rebranding
+- [x] Save checkpoint with rebranding
+
+## Phase 89: Investor Pitch Deck & App Store Listing
+- [ ] Read original pitch deck content
+- [ ] Update pitch deck content with JACS Medical Monitoring System branding
+- [ ] Maintain original design theme and layout
+- [ ] Generate investor pitch deck slides
+- [ ] Create Apple App Store listing content
+- [ ] Create Google Play Store listing content
+- [ ] Draft app name and subtitle
+- [ ] Write app description (short and long)
+- [ ] Generate keywords for app store optimization
+- [ ] Create promotional copy
+- [ ] Deliver pitch deck and app store materials
+
+## Phase 90: Consumer Pitch Deck for Individual & Small Home Care Users
+- [ ] Research consumer health monitoring market and pain points
+- [ ] Prepare consumer pitch deck content outline
+- [ ] Initialize consumer pitch deck project
+- [ ] Create title slide for individual/family users
+- [ ] Create "Caring for Aging Loved Ones" problem slide
+- [ ] Create health monitoring solution slide
+- [ ] Create medication management slide
+- [ ] Create vitals tracking slide
+- [ ] Create AI health assistant slide
+- [ ] Create caregiver connection slide
+- [ ] Create predictive health alerts slide
+- [ ] Create small home care business slide
+- [ ] Create pricing for individuals slide
+- [ ] Create call-to-action slide
+- [ ] Present consumer pitch deck
+- [ ] Integrate pitch deck into mobile app
+- [ ] Save checkpoint with consumer pitch deck
+
+## Phase 90: Consumer Pitch Deck for Individual Users & Small Home Care
+- [x] Create consumer-focused pitch deck outline
+- [x] Create title slide
+- [x] Create challenge slide (family caregiving pain points)
+- [x] Create health monitoring features slide
+- [x] Create medication management slide
+- [x] Create AI health assistant slide
+- [x] Create caregiver connection slide
+- [x] Create predictive alerts slide
+- [x] Create emergency SOS slide
+- [x] Create small home care business features slide
+- [x] Create pricing slide (Individual, Family, Small Business tiers)
+- [x] Create testimonials slide
+- [x] Create call-to-action slide with free trial offer
+- [x] Present consumer pitch deck
+
+## Phase 91: Resources Tab with Pitch Deck Viewer
+- [x] Create new Resources tab in tab navigation
+- [x] Add Resources icon to icon-symbol.tsx
+- [x] Create resources screen with pitch deck cards
+- [x] Add "Consumer Pitch Deck" card with view/download buttons
+- [x] Add "Investor Pitch Deck" card with view/download buttons
+- [x] Implement pitch deck viewer using Linking API
+- [x] Add download functionality for pitch decks
+- [x] Style cards to match existing button design (teal/orange theme)
+- [x] Test pitch deck viewing on mobile
+- [ ] Save checkpoint with Resources tab

@@ -3193,4 +3193,23 @@
 - [x] Design posters with compelling headlines for trade shows
 - [x] Export posters as print-ready PDFs
 - [x] Test home screen button navigation
-- [ ] Save checkpoint with home screen update and posters
+- [x] Save checkpoint with home screen update and posters
+
+## Phase 95: Custom Device Registration & Health App Integration
+- [x] Add "Add Custom Device" button to Connected Devices settings
+- [x] Create custom device registration form (device name, type, manufacturer, model)
+- [x] Add device type categories (scale, blood pressure monitor, glucose meter, heart rate monitor, etc.)
+- [x] Store custom devices in AsyncStorage
+- [x] Display custom devices in Connected Devices list
+- [x] Install expo-health for Apple Health integration
+- [x] Install react-native-health-connect for Google Fit integration
+- [x] Request health data permissions (steps, weight, blood pressure, heart rate, glucose)
+- [x] Create health data sync service to fetch data from Apple Health/Google Fit
+- [x] Map health app data to JACS dashboard metrics
+- [x] Add automatic background sync for health data
+- [x] Create manual sync button in Connected Devices
+- [x] Show last sync timestamp for each connected app
+- [x] Test custom device registration
+- [x] Test Apple Health data sync
+- [x] Test Google Fit data sync
+- [ ] Save checkpoint with device integration features

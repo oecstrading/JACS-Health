@@ -3165,4 +3165,18 @@
 - [x] Rename "Revenue" tab to "Hospice Revenue Command Center"
 - [x] Update tab icon if needed
 - [x] Test QR code generation and sharing
-- [ ] Save checkpoint with QR codes and renamed tab
+- [x] Save checkpoint with QR codes and renamed tab
+
+## Phase 93: App Updates & First-Time Personalization
+- [x] Install expo-updates for OTA update functionality
+- [x] Create update checker component to detect new versions
+- [x] Add update prompt modal with seamless update flow
+- [x] Implement background update download
+- [x] Add update progress indicator
+- [x] Create first-time user detection using AsyncStorage
+- [x] Create "Personalize for use" prompt modal
+- [x] Add navigation from personalization prompt to settings/profile page
+- [x] Ensure profile setup is accessible from settings
+- [x] Test update flow on app launch
+- [x] Test first-time personalization prompt
+- [ ] Save checkpoint with update and personalization features

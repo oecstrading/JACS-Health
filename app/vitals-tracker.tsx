@@ -5,6 +5,8 @@ import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { trpc } from "@/lib/trpc";
+import { VoiceVitalsInput } from "@/components/voice-vitals-input";
+import type { VitalData } from "@/lib/voice-vitals-service";
 
 type VitalType = "blood_pressure" | "heart_rate" | "blood_glucose" | "weight" | "temperature" | "oxygen_saturation";
 
@@ -46,6 +48,47 @@ export default function VitalsTrackerScreen() {
       value: "",
       notes: "",
     });
+  };
+
+  const handleVoiceInput = (vitalData: VitalData) => {
+    // Map voice input to vital type and auto-fill form
+    if (vitalData.type === "blood_pressure") {
+      setSelectedVitalType("blood_pressure");
+      setFormData({
+        ...formData,
+        systolic: vitalData.value.systolic.toString(),
+        diastolic: vitalData.value.diastolic.toString(),
+      });
+      setShowAddModal(true);
+    } else if (vitalData.type === "weight") {
+      setSelectedVitalType("weight");
+      setFormData({
+        ...formData,
+        value: vitalData.value.toString(),
+      });
+      setShowAddModal(true);
+    } else if (vitalData.type === "heart_rate") {
+      setSelectedVitalType("heart_rate");
+      setFormData({
+        ...formData,
+        value: vitalData.value.toString(),
+      });
+      setShowAddModal(true);
+    } else if (vitalData.type === "glucose") {
+      setSelectedVitalType("blood_glucose");
+      setFormData({
+        ...formData,
+        value: vitalData.value.toString(),
+      });
+      setShowAddModal(true);
+    } else if (vitalData.type === "temperature") {
+      setSelectedVitalType("temperature");
+      setFormData({
+        ...formData,
+        value: vitalData.value.toString(),
+      });
+      setShowAddModal(true);
+    }
   };
 
   const handleSelectVitalType = (vitalType: VitalType) => {
@@ -114,7 +157,10 @@ export default function VitalsTrackerScreen() {
 
         {/* Vital Type Selection Grid */}
         <View className="mb-6">
-          <Text className="mb-3 text-lg font-semibold text-foreground">Log New Reading</Text>
+          <View className="mb-3 flex-row items-center justify-between">
+            <Text className="text-lg font-semibold text-foreground">Log New Reading</Text>
+            <VoiceVitalsInput onVitalDetected={handleVoiceInput} />
+          </View>
           <View className="flex-row flex-wrap gap-3">
             {VITAL_TYPES.map((vitalType) => (
               <TouchableOpacity

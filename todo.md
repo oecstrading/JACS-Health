@@ -3234,4 +3234,18 @@
 - [x] Add brand-specific instructions for Fitbit devices
 - [x] Add tutorial button to Connected Devices screenAdd "Show Tutorial" button in Connected Devices
 - [x] Test device pairing tutorial flow
-- [ ] Save checkpoint with all three features
+- [x] Save checkpoint with all three features
+
+## Phase 97: Voice-Activated Vitals Entry
+- [x] Install expo-speech-recognition for voice input
+- [x] Create speech recognition service with natural language parsing
+- [x] Add voice input button to Vitals Tracker screen
+- [x] Parse blood pressure commands ("120 over 80", "120/80")
+- [x] Parse weight commands ("I weigh 165 pounds", "165 lbs")
+- [x] Parse heart rate commands ("My heart rate is 72", "72 bpm")
+- [x] Parse glucose commands ("Blood sugar 95", "95 mg/dL")
+- [x] Parse temperature commands ("Temperature 98.6", "98.6 degrees")
+- [x] Add voice feedback confirmation
+- [x] Add error handling for unrecognized commands
+- [x] Test voice recognition accuracy
+- [ ] Save checkpoint with voice-activated vitals entry

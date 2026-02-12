@@ -1,6 +1,8 @@
 import { ScrollView, View, Text, Pressable, type ViewStyle } from 'react-native';
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
+import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system/legacy";
 
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
@@ -33,35 +35,83 @@ export default function PatientCommandCenter() {
     else if (type === 'meal') router.push('/food-scan');
   };
 
+  const handleDownloadPresentation = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    try {
+      const pdfUrl = 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663129142386/mTCKjTTSeiMtQkHN.pdf';
+      const fileUri = FileSystem.documentDirectory + 'HealthMate_Platform_Presentation.pdf';
+      
+      // Download PDF from hosted URL
+      const downloadResult = await FileSystem.downloadAsync(pdfUrl, fileUri);
+      
+      if (downloadResult.uri) {
+        if (await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync(downloadResult.uri, {
+            mimeType: 'application/pdf',
+            dialogTitle: 'HealthMate Platform Presentation',
+          });
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        } else {
+          alert('Sharing is not available on this device');
+        }
+      }
+    } catch (error) {
+      console.error('Error downloading presentation:', error);
+      alert('Could not download presentation. Please try again.');
+    }
+  };
+
   return (
     <ScreenContainer>
       {/* Header with greeting and emergency button */}
-      <View className="px-6 pt-6 pb-4 flex-row items-center justify-between">
-        <View className="flex-1">
-          <Text className="text-3xl font-bold text-foreground" style={{ lineHeight: 40 }}>
-            Hello! 👋
-          </Text>
-          <Text className="text-lg text-muted mt-1" style={{ lineHeight: 26 }}>
-            Your Health Command Center
-          </Text>
+      <View className="px-6 pt-6 pb-4">
+        <View className="flex-row items-center justify-between mb-3">
+          <View className="flex-1">
+            <Text className="text-3xl font-bold text-foreground" style={{ lineHeight: 40 }}>
+              Hello! 👋
+            </Text>
+            <Text className="text-lg text-muted mt-1" style={{ lineHeight: 26 }}>
+              Your Health Command Center
+            </Text>
+          </View>
         </View>
+        
+        {/* Presentation Download Button */}
         <Pressable
-          onPress={handleEmergency}
+          onPress={handleDownloadPresentation}
           style={({ pressed }) => [
             {
-              transform: [{ scale: pressed ? 0.95 : 1 }],
-              opacity: pressed ? 0.8 : 1,
-              backgroundColor: colors.error,
-              width: 56,
-              height: 56,
-              borderRadius: 28,
-              alignItems: "center",
-              justifyContent: "center",
-            } as ViewStyle,
+              backgroundColor: pressed ? colors.primary + "CC" : colors.primary,
+              transform: [{ scale: pressed ? 0.98 : 1 }],
+            },
           ]}
+          className="flex-row items-center justify-center rounded-2xl py-4 px-4 mb-4"
         >
-          <IconSymbol name="phone.fill" size={24} color="#ffffff" />
+          <IconSymbol name="paperplane.fill" size={20} color="#fff" />
+          <Text className="ml-2 text-base font-semibold text-white text-center flex-1">
+            Click here to view the amazing features of HealthMate
+          </Text>
         </Pressable>
+        
+        <View className="flex-row items-center justify-end">
+          <Pressable
+            onPress={handleEmergency}
+            style={({ pressed }) => [
+              {
+                transform: [{ scale: pressed ? 0.95 : 1 }],
+                opacity: pressed ? 0.8 : 1,
+                backgroundColor: colors.error,
+                width: 56,
+                height: 56,
+                borderRadius: 28,
+                alignItems: "center",
+                justifyContent: "center",
+              } as ViewStyle,
+            ]}
+          >
+            <IconSymbol name="phone.fill" size={24} color="#ffffff" />
+          </Pressable>
+        </View>
       </View>
 
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>

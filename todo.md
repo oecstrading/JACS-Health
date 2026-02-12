@@ -3028,3 +3028,11 @@
 - [x] Implement device disconnection handling
 - [x] Test Bluetooth discovery and pairing flow
 - [x] Test automatic data sync with mock devices
+
+## Phase 83: Presentation Download Button on Home Screen
+- [x] Copy HealthMate Platform Presentation PDF to mobile app assets
+- [x] Add download button next to Home screen header
+- [x] Implement button with text "Click here to view the amazing features of HealthMate"
+- [x] Add PDF download functionality using expo-sharing and expo-file-system/legacy
+- [x] Style button to match app design
+- [x] Test presentation download on mobile

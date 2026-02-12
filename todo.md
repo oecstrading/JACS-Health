@@ -3154,4 +3154,15 @@
 - [x] Add download functionality for pitch decks
 - [x] Style cards to match existing button design (teal/orange theme)
 - [x] Test pitch deck viewing on mobile
-- [ ] Save checkpoint with Resources tab
+- [x] Save checkpoint with Resources tab
+
+## Phase 92: QR Code Generation & Tab Rename
+- [x] Install QR code generation library (react-native-qrcode-svg or similar)
+- [x] Add QR code component to Consumer pitch deck viewer
+- [x] Add QR code component to Investor pitch deck viewer
+- [x] Add download/share functionality for QR codes
+- [x] Style QR codes to match app theme
+- [x] Rename "Revenue" tab to "Hospice Revenue Command Center"
+- [x] Update tab icon if needed
+- [x] Test QR code generation and sharing
+- [ ] Save checkpoint with QR codes and renamed tab

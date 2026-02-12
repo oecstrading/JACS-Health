@@ -1,6 +1,11 @@
 import { ScrollView, View, Text, Pressable, Linking, Platform } from 'react-native';
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
+import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
+import { captureRef } from 'react-native-view-shot';
+import { useRef } from 'react';
+import QRCode from 'react-native-qrcode-svg';
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
@@ -14,6 +19,7 @@ import { useColors } from '@/hooks/use-colors';
 export default function ConsumerPitchDeckScreen() {
   const router = useRouter();
   const colors = useColors();
+  const qrCodeRef = useRef<View>(null);
 
   const pitchDeckUrl = 'https://slides.manus.im/SGKzb34URNmefEByIBHuTe';
 
@@ -41,6 +47,36 @@ export default function ConsumerPitchDeckScreen() {
       }
     } catch (error) {
       console.error("Error downloading pitch deck:", error);
+    }
+  };
+
+  const handleShareQR = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    try {
+      if (Platform.OS === 'web') {
+        // On web, just copy the URL
+        await navigator.clipboard.writeText(pitchDeckUrl);
+        alert('Pitch deck URL copied to clipboard!');
+        return;
+      }
+
+      // On mobile, capture QR code as image and share
+      if (qrCodeRef.current) {
+        const uri = await captureRef(qrCodeRef.current, {
+          format: 'png',
+          quality: 1,
+        });
+        
+        const canShare = await Sharing.isAvailableAsync();
+        if (canShare) {
+          await Sharing.shareAsync(uri, {
+            mimeType: 'image/png',
+            dialogTitle: 'Share Consumer Pitch Deck QR Code',
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error sharing QR code:", error);
     }
   };
 
@@ -98,6 +134,23 @@ export default function ConsumerPitchDeckScreen() {
             </Text>
           </View>
 
+          {/* QR Code */}
+          <View className="items-center mb-4">
+            <View
+              ref={qrCodeRef}
+              className="bg-white p-4 rounded-2xl"
+              style={{ shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 }}
+            >
+              <QRCode
+                value={pitchDeckUrl}
+                size={200}
+                backgroundColor="white"
+                color={colors.primary}
+              />
+            </View>
+            <Text className="text-sm text-muted mt-2 text-center">Scan to view pitch deck</Text>
+          </View>
+
           {/* Action Buttons */}
           <View className="gap-3">
             <Pressable
@@ -121,6 +174,19 @@ export default function ConsumerPitchDeckScreen() {
             >
               <Text className="text-lg font-bold" style={{ color: colors.primary }}>
                 Download / Share
+              </Text>
+            </Pressable>
+
+            <Pressable
+              onPress={handleShareQR}
+              className="rounded-2xl p-5 items-center border-2"
+              style={({ pressed }) => ({
+                borderColor: colors.success,
+                backgroundColor: pressed ? `${colors.success}10` : 'transparent',
+              })}
+            >
+              <Text className="text-lg font-bold" style={{ color: colors.success }}>
+                Share QR Code
               </Text>
             </Pressable>
           </View>

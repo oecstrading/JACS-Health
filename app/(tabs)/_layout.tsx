@@ -77,7 +77,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="hospice-revenue-command"
         options={{
-          title: "Revenue",
+          title: "Hospice Revenue",
           tabBarIcon: ({ color }) => <IconSymbol size={28} name={"shield.checkmark.fill" as any} color={color} />,
         }}
       />

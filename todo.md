@@ -3043,3 +3043,13 @@
 - [x] Keep FileSystem API for native mobile apps
 - [x] Test download on web browser
 - [ ] Test download on mobile device
+
+## Phase 85: Hospice Edition Presentation
+- [ ] Create hospice-focused slide content (Revenue Command, CAHPS, Cost Report, Nurse Leader, Compliance)
+- [ ] Generate Hospice Edition nano banana presentation (15-20 slides)
+- [ ] Export Hospice Edition to PDF
+- [ ] Upload Hospice Edition PDF to CDN
+- [ ] Add Hospice Edition download button next to existing presentation button on Home screen
+- [ ] Style both buttons to fit on same line
+- [ ] Test both download buttons on web and mobile
+- [ ] Save checkpoint with both presentations

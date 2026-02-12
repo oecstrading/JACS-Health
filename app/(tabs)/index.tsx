@@ -69,6 +69,40 @@ export default function PatientCommandCenter() {
     }
   };
 
+  const handleDownloadHospiceEdition = async () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    
+    try {
+      const pdfUrl = 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663129142386/yPQrDHBmRfahtaLt.pdf';
+      
+      if (Platform.OS === 'web') {
+        // On web, open PDF in new tab
+        window.open(pdfUrl, '_blank');
+      } else {
+        // On native, download and share
+        const fileUri = FileSystem.documentDirectory + 'HealthMate_Hospice_Edition.pdf';
+        const downloadResult = await FileSystem.downloadAsync(pdfUrl, fileUri);
+        
+        if (downloadResult.uri) {
+          if (await Sharing.isAvailableAsync()) {
+            await Sharing.shareAsync(downloadResult.uri, {
+              mimeType: 'application/pdf',
+              dialogTitle: 'HealthMate Hospice Edition',
+            });
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          } else {
+            alert('Sharing is not available on this device');
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error downloading Hospice Edition:', error);
+      alert('Could not download Hospice Edition. Please try again.');
+    }
+  };
+
   return (
     <ScreenContainer>
       {/* Header with greeting and emergency button */}
@@ -84,22 +118,40 @@ export default function PatientCommandCenter() {
           </View>
         </View>
         
-        {/* Presentation Download Button */}
-        <Pressable
-          onPress={handleDownloadPresentation}
-          style={({ pressed }) => [
-            {
-              backgroundColor: pressed ? colors.primary + "CC" : colors.primary,
-              transform: [{ scale: pressed ? 0.98 : 1 }],
-            },
-          ]}
-          className="flex-row items-center justify-center rounded-2xl py-4 px-4 mb-4"
-        >
-          <IconSymbol name="paperplane.fill" size={20} color="#fff" />
-          <Text className="ml-2 text-base font-semibold text-white text-center flex-1">
-            Click here to view the amazing features of HealthMate
+        {/* Presentation Download Buttons */}
+        <View className="flex-row gap-2 mb-4">
+          <Pressable
+            onPress={handleDownloadPresentation}
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed ? colors.primary + "CC" : colors.primary,
+                transform: [{ scale: pressed ? 0.98 : 1 }],
+              },
+            ]}
+            className="flex-1 flex-row items-center justify-center rounded-2xl py-4 px-3"
+          >
+            <IconSymbol name="paperplane.fill" size={18} color="#fff" />
+            <Text className="ml-2 text-sm font-semibold text-white text-center flex-1">
+              View Amazing Features
           </Text>
         </Pressable>
+        
+        <Pressable
+            onPress={handleDownloadHospiceEdition}
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed ? "#f59e0b" + "CC" : "#f59e0b",
+                transform: [{ scale: pressed ? 0.98 : 1 }],
+              },
+            ]}
+            className="flex-1 flex-row items-center justify-center rounded-2xl py-4 px-3"
+          >
+            <IconSymbol name="house.fill" size={18} color="#fff" />
+            <Text className="ml-2 text-sm font-semibold text-white text-center flex-1">
+              Hospice Edition
+          </Text>
+        </Pressable>
+      </View>
         
         <View className="flex-row items-center justify-end">
           <Pressable

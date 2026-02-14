@@ -91,13 +91,16 @@ export default function TabLayout() {
         }}
       />
       
-      {/* Hidden tabs - accessible via navigation but not shown in tab bar */}
+      {/* Module VI: Device Management & Data Entry */}
       <Tabs.Screen
         name="devices"
         options={{
-          href: null,
+          title: "Devices",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="antenna.radiowaves.left.and.right" color={color} />,
         }}
       />
+      
+      {/* Hidden tabs - accessible via navigation but not shown in tab bar */}
       <Tabs.Screen
         name="hospices"
         options={{

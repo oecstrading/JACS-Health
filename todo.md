@@ -3248,4 +3248,73 @@
 - [x] Add voice feedback confirmation
 - [x] Add error handling for unrecognized commands
 - [x] Test voice recognition accuracy
-- [ ] Save checkpoint with voice-activated vitals entry
+- [x] Save checkpoint with voice-activated vitals entry
+
+## Phase 98: Hospice Manager Demo Workflow
+- [ ] Verify dev server is running properly
+- [ ] Create mock patient data (3-5 patients at different care stages)
+- [ ] Create mock staff data (nurses, doctors, administrators)
+- [ ] Generate demo script covering complete patient journey
+- [ ] Create admission workflow demonstration
+- [ ] Create daily vitals tracking demonstration
+- [ ] Create medication management demonstration
+- [ ] Create AI assistant interaction demonstration
+- [ ] Generate HQRP compliance report samples
+- [ ] Generate cost report samples
+- [ ] Generate revenue command center dashboard demonstration
+- [ ] Create discharge workflow demonstration
+- [ ] Package all demo materials
+
+## New Features (Phase 11) - Bluetooth & Manual Data Entry
+
+### Bluetooth Device Pairing
+- [x] Install expo-bluetooth package for Bluetooth Low Energy (BLE) support
+- [x] Create device pairing screen with scan functionality
+- [x] Implement BLE device discovery (heart rate monitors, BP cuffs, glucose meters)
+- [x] Add device connection logic
+- [x] Create paired devices list screen
+- [x] Implement device unpair functionality
+- [x] Add device connection status indicators
+- [x] Handle Bluetooth permission requests
+- [x] Implement automatic reconnection for paired devices
+- [x] Add device battery level display
+- [x] Create device-specific data parsers (heart rate, BP, glucose)
+- [x] Implement real-time data sync from paired devices
+- [x] Add device pairing tutorial/onboarding
+- [x] Add Devices tab to main navigation
+- [x] Create manual data entry button on devices screen
+
+### Manual Data Entry Fallback
+- [x] Create manual health data entry screen (vitals screen)
+- [x] Implement manual heart rate entry form
+- [x] Implement manual blood pressure entry form (systolic/diastolic)
+- [x] Implement manual blood glucose entry form
+- [x] Implement manual weight entry form
+- [x] Implement manual temperature entry form
+- [x] Add timestamp selection for manual entries
+- [x] Create large number pad for easy input
+- [x] Add data validation and range checking
+- [x] Implement entry history view
+- [x] Add edit/delete functionality for manual entries
+- [x] Create quick entry shortcuts from home screen
+- [x] Add voice input option for manual entries
+- [x] Link manual entry from devices screen
+
+### Health Data Storage & Sync
+- [ ] Create unified health data schema (supports both Bluetooth and manual entries)
+- [ ] Implement AsyncStorage for local data persistence
+- [ ] Add data source tagging (Bluetooth device vs. manual entry)
+- [ ] Create data sync service for merging Bluetooth and manual data
+- [ ] Implement data deduplication logic
+- [ ] Add data export functionality (CSV, PDF)
+- [ ] Create data backup and restore feature
+
+### Health Metrics Dashboard
+- [ ] Create unified health metrics dashboard
+- [ ] Display latest readings from all sources
+- [ ] Add data source indicators (device icon vs. manual icon)
+- [ ] Implement trend charts combining Bluetooth and manual data
+- [ ] Add filtering by data source
+- [ ] Create daily/weekly/monthly summary views
+- [ ] Add health metric comparison over time
+- [ ] Implement anomaly detection and alerts

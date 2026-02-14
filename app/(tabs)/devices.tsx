@@ -279,36 +279,70 @@ export default function DevicesScreen() {
       </View>
 
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        {/* Scan for Devices Button */}
-        <Pressable
-          onPress={handleScanDevices}
-          disabled={isScanning}
-          style={({ pressed }) => ({
-            backgroundColor: isScanning ? colors.muted : colors.primary,
-            borderRadius: 20,
-            padding: 20,
-            marginBottom: 24,
-            opacity: pressed ? 0.7 : 1,
-          })}
-        >
-          <View className="flex-row items-center justify-center gap-3">
-            {isScanning ? (
-              <>
-                <ActivityIndicator size="small" color="#ffffff" />
-                <Text className="text-lg font-bold text-white" style={{ lineHeight: 26 }}>
-                  Scanning for devices...
-                </Text>
-              </>
-            ) : (
-              <>
-                <IconSymbol name="antenna.radiowaves.left.and.right" size={24} color="#ffffff" />
-                <Text className="text-lg font-bold text-white" style={{ lineHeight: 26 }}>
-                  Scan for Nearby Devices
-                </Text>
-              </>
-            )}
-          </View>
-        </Pressable>
+        {/* Quick Actions - Bluetooth Scan and Manual Entry */}
+        <View className="gap-4 mb-6">
+          {/* Scan for Devices Button */}
+          <Pressable
+            onPress={handleScanDevices}
+            disabled={isScanning}
+            style={({ pressed }) => ({
+              backgroundColor: isScanning ? colors.muted : colors.primary,
+              borderRadius: 20,
+              padding: 20,
+              opacity: pressed ? 0.7 : 1,
+            })}
+          >
+            <View className="flex-row items-center justify-center gap-3">
+              {isScanning ? (
+                <>
+                  <ActivityIndicator size="small" color="#ffffff" />
+                  <Text className="text-lg font-bold text-white" style={{ lineHeight: 26 }}>
+                    Scanning for devices...
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <IconSymbol name="antenna.radiowaves.left.and.right" size={24} color="#ffffff" />
+                  <Text className="text-lg font-bold text-white" style={{ lineHeight: 26 }}>
+                    Scan for Nearby Devices
+                  </Text>
+                </>
+              )}
+            </View>
+          </Pressable>
+
+          {/* Manual Data Entry Button */}
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push("/vitals");
+            }}
+            style={({ pressed }) => ({
+              backgroundColor: colors.surface,
+              borderWidth: 2,
+              borderColor: colors.primary,
+              borderRadius: 20,
+              padding: 20,
+              opacity: pressed ? 0.7 : 1,
+            })}
+          >
+            <View className="flex-row items-center justify-center gap-3">
+              <IconSymbol name="doc.text.fill" size={24} color={colors.primary} />
+              <Text 
+                className="text-lg font-bold" 
+                style={{ color: colors.primary, lineHeight: 26 }}
+              >
+                Manual Data Entry
+              </Text>
+            </View>
+            <Text 
+              className="text-sm text-center mt-2" 
+              style={{ color: colors.muted, lineHeight: 20 }}
+            >
+              Can't pair a device? Enter health data manually
+            </Text>
+          </Pressable>
+        </View>
 
         {/* Discovered Devices */}
         {discoveredDevices.length > 0 && (

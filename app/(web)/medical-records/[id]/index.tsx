@@ -284,6 +284,16 @@ export default function PatientDashboard() {
                 </Pressable>
               </Link>
 
+              <Link href={`/medical-records/${id}/export-pdf`} asChild>
+                <Pressable
+                  className="w-[48%] bg-error/10 border border-error rounded-xl p-4 mb-4"
+                  style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+                >
+                  <Text className="text-2xl mb-2">📥</Text>
+                  <Text className="text-error font-semibold">Export PDF</Text>
+                </Pressable>
+              </Link>
+
               <Pressable
                 className="w-[48%] bg-surface border border-border rounded-xl p-4 mb-4"
                 style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}

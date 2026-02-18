@@ -3,6 +3,7 @@ import { useLocalSearchParams, Link } from "expo-router";
 import { useState, useEffect } from "react";
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
+import { LabTestTrendModal } from "@/components/LabTestTrendModal";
 
 interface LabResult {
   testDate: string;
@@ -25,6 +26,8 @@ export default function LabResultsPage() {
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [sortBy, setSortBy] = useState<"date" | "name" | "status">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [selectedTest, setSelectedTest] = useState<string | null>(null);
+  const [showTrendModal, setShowTrendModal] = useState(false);
 
   // Load lab results from CSV
   useEffect(() => {
@@ -124,8 +127,17 @@ export default function LabResultsPage() {
     }
   };
 
+  const handleTestClick = (testName: string) => {
+    setSelectedTest(testName);
+    setShowTrendModal(true);
+  };
+
   const renderLabResult = ({ item }: { item: LabResult }) => (
-    <View className="bg-white border border-border rounded-xl p-4 mb-3">
+    <Pressable
+      onPress={() => handleTestClick(item.testName)}
+      style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+    >
+      <View className="bg-white border border-border rounded-xl p-4 mb-3">
       <View className="flex-row items-center justify-between mb-2">
         <Text className="text-base font-bold text-foreground flex-1">
           {item.testName}
@@ -163,6 +175,7 @@ export default function LabResultsPage() {
         </Text>
       </View>
     </View>
+    </Pressable>
   );
 
   return (
@@ -321,6 +334,24 @@ export default function LabResultsPage() {
           }
         />
       </View>
+
+      {/* Trend Modal */}
+      {selectedTest && (
+        <LabTestTrendModal
+          visible={showTrendModal}
+          onClose={() => setShowTrendModal(false)}
+          testName={selectedTest}
+          allResults={labResults.map((r) => ({
+            test_name: r.testName,
+            result: r.result,
+            unit: r.unit,
+            test_date: r.testDate,
+            reference_range: r.referenceRange,
+            status: r.status,
+            category: r.category,
+          }))}
+        />
+      )}
     </ScreenContainer>
   );
 }

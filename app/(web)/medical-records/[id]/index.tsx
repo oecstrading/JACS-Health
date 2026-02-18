@@ -225,6 +225,15 @@ export default function PatientDashboard() {
               Quick Actions
             </Text>
             <View className="flex-row flex-wrap justify-between">
+              <Link href={`/medical-records/${id}/health-score`} asChild>
+                <Pressable
+                  className="w-[48%] bg-success/10 border border-success rounded-xl p-4 mb-4"
+                  style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+                >
+                  <Text className="text-2xl mb-2">🎯</Text>
+                  <Text className="text-success font-semibold">Health Score</Text>
+                </Pressable>
+              </Link>
               <Link href={`/medical-records/${id}/lab-results`} asChild>
                 <Pressable
                   className="w-[48%] bg-primary/10 border border-primary rounded-xl p-4 mb-4"

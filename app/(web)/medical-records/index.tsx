@@ -177,19 +177,21 @@ export default function MedicalRecordsHome() {
 
         {/* Add Patient Button */}
         <View className="p-4">
-          <Pressable
-            className="bg-success/10 border-2 border-dashed border-success rounded-xl p-6 items-center"
-            style={({ pressed }) => ({
-              opacity: pressed ? 0.7 : 1,
-            })}
-          >
-            <Text className="text-success font-bold text-lg mb-1">
-              + Add New Patient
-            </Text>
-            <Text className="text-success/70 text-sm">
-              Track medical records for another family member
-            </Text>
-          </Pressable>
+          <Link href="/medical-records/manage" asChild>
+            <Pressable
+              className="bg-success/10 border-2 border-dashed border-success rounded-xl p-6 items-center"
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.7 : 1,
+              })}
+            >
+              <Text className="text-success font-bold text-lg mb-1">
+                + Add New Patient
+              </Text>
+              <Text className="text-success/70 text-sm">
+                Track medical records for another family member
+              </Text>
+            </Pressable>
+          </Link>
         </View>
 
         {/* Footer Info */}

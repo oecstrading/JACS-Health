@@ -3501,3 +3501,24 @@
 - [x] Remove problematic native dependencies causing pnpm install failure
 - [ ] Test build process
 - [ ] Save checkpoint for successful publishing
+
+
+## Additional Features (While Waiting for Network - Feb 18, 2026)
+
+### Excel Export
+- [ ] Add "Export to Excel" button on lab results page
+- [ ] Create CSV download functionality with proper formatting
+- [ ] Include all 96 lab results with categories and status
+- [ ] Add filename with patient name and date
+
+### Print-Friendly Reports
+- [ ] Create print.css for optimized printing
+- [ ] Add "Print Report" button on patient dashboard
+- [ ] Format reports for standard letter-size paper
+- [ ] Include page breaks between sections
+
+### Quick Stats Dashboard
+- [ ] Create stats cards component
+- [ ] Show total tests, abnormal findings, latest test date
+- [ ] Add trend indicators (improving/stable/worsening)
+- [ ] Display critical findings count

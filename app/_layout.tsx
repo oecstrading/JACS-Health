@@ -21,10 +21,7 @@ import type { EdgeInsets, Metrics, Rect } from "react-native-safe-area-context";
 
 import { trpc, createTRPCClient } from "@/lib/trpc";
 import { initManusRuntime, subscribeSafeAreaInsets } from "@/lib/_core/manus-runtime";
-import updateService from "@/services/updateService";
-import { UpdateNotificationModal } from "@/components/UpdateNotificationModal";
-import type { UpdateCheckResult } from "@/services/updateService";
-import { UpdateChecker } from "@/components/update-checker";
+
 import { PersonalizationPrompt } from "@/components/personalization-prompt";
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -41,8 +38,7 @@ export default function RootLayout() {
 
   const [insets, setInsets] = useState<EdgeInsets>(initialInsets);
   const [frame, setFrame] = useState<Rect>(initialFrame);
-  const [updateAvailable, setUpdateAvailable] = useState<UpdateCheckResult | null>(null);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
+
 
   // Initialize Manus runtime for cookie injection from parent container
   useEffect(() => {
@@ -79,47 +75,9 @@ export default function RootLayout() {
     };
   }, []);
 
-  // Check for updates on app launch
-  useEffect(() => {
-    checkForUpdates();
-  }, []);
 
-  const checkForUpdates = async () => {
-    try {
-      const shouldCheck = await updateService.shouldCheckForUpdates();
-      if (!shouldCheck) return;
 
-      const result = await updateService.checkForUpdates();
-      const prefs = await updateService.getUpdatePreferences();
 
-      // Don't show if user skipped this version
-      if (prefs.skipVersion === result.latestVersion) return;
-
-      if (result.updateAvailable) {
-        setUpdateAvailable(result);
-        setShowUpdateModal(true);
-      }
-    } catch (error) {
-      console.error("Error checking for updates:", error);
-    }
-  };
-
-  const handleUpdate = () => {
-    // In production, this would trigger app store update or OTA update
-    console.log("Update initiated");
-    setShowUpdateModal(false);
-  };
-
-  const handleRemindLater = () => {
-    setShowUpdateModal(false);
-  };
-
-  const handleSkip = async () => {
-    if (updateAvailable) {
-      await updateService.skipVersion(updateAvailable.latestVersion);
-    }
-    setShowUpdateModal(false);
-  };
 
   const handleSafeAreaUpdate = useCallback((metrics: Metrics) => {
     setInsets(metrics.insets);
@@ -173,21 +131,7 @@ export default function RootLayout() {
             <Stack.Screen name="oauth/callback" />
           </Stack>
           <StatusBar style="auto" />
-          <UpdateChecker />
           <PersonalizationPrompt />
-          {updateAvailable && (
-            <UpdateNotificationModal
-              visible={showUpdateModal}
-              currentVersion={updateAvailable.currentVersion}
-              latestVersion={updateAvailable.latestVersion}
-              priority={updateAvailable.priority}
-              features={updateAvailable.features}
-              onUpdate={handleUpdate}
-              onRemindLater={handleRemindLater}
-              onSkip={handleSkip}
-              shouldForceUpdate={updateAvailable.shouldForceUpdate}
-            />
-          )}
         </QueryClientProvider>
       </trpc.Provider>
     </GestureHandlerRootView>

@@ -1,8 +1,7 @@
 import { Text, View, ScrollView, Pressable, Image, type ViewStyle, Platform } from 'react-native';
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
-import * as Sharing from "expo-sharing";
-import * as FileSystem from "expo-file-system/legacy";
+
 
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';

@@ -61,16 +61,16 @@ export default function SettingsScreen() {
         router.push("/emergency-contacts");
         break;
       case "conditions":
-        router.push("/health-conditions");
+        // router.push("/health-conditions"); // Removed
         break;
       case "privacy":
-        router.push("/privacy-settings");
+        // router.push("/privacy-settings"); // Removed
         break;
       case "account":
-        router.push("/account-management");
+        // router.push("/account-management"); // Removed
         break;
       case "whatsNew":
-        router.push("/whats-new");
+        // router.push("/whats-new"); // Removed
         break;
       case "devices":
         router.push("/connected-devices" as any);

@@ -249,8 +249,28 @@ export default function PatientDashboard() {
                   className="w-[48%] bg-success/10 border border-success rounded-xl p-4 mb-4"
                   style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
                 >
-                  <Text className="text-2xl mb-2">📈</Text>
-                  <Text className="text-success font-semibold">View Trends</Text>
+                  <Text className="text-2xl mb-2">📊</Text>
+                  <Text className="text-success font-semibold">View Charts</Text>
+                </Pressable>
+              </Link>
+
+              <Link href={`/medical-records/${id}/medications`} asChild>
+                <Pressable
+                  className="w-[48%] bg-warning/10 border border-warning rounded-xl p-4 mb-4"
+                  style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+                >
+                  <Text className="text-2xl mb-2">💊</Text>
+                  <Text className="text-warning font-semibold">Medications</Text>
+                </Pressable>
+              </Link>
+
+              <Link href={`/medical-records/${id}/reminders`} asChild>
+                <Pressable
+                  className="w-[48%] bg-error/10 border border-error rounded-xl p-4 mb-4"
+                  style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+                >
+                  <Text className="text-2xl mb-2">⏰</Text>
+                  <Text className="text-error font-semibold">Test Reminders</Text>
                 </Pressable>
               </Link>
 

@@ -175,6 +175,25 @@ export default function MedicalRecordsHome() {
           )}
         </View>
 
+        {/* Family Comparison Button */}
+        <View className="p-4">
+          <Link href="/medical-records/family-comparison" asChild>
+            <Pressable
+              className="bg-primary/10 border-2 border-primary rounded-xl p-6 items-center mb-4"
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.7 : 1,
+              })}
+            >
+              <Text className="text-primary font-bold text-lg mb-1">
+                🧠 Family Health Comparison
+              </Text>
+              <Text className="text-primary/70 text-sm text-center">
+                Compare health metrics and identify hereditary patterns
+              </Text>
+            </Pressable>
+          </Link>
+        </View>
+
         {/* Add Patient Button */}
         <View className="p-4">
           <Link href="/medical-records/manage" asChild>

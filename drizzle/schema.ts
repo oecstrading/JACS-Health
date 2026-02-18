@@ -358,3 +358,116 @@ export type NewMedicationLog = typeof medicationLogs.$inferInsert;
 
 export type Vital = typeof vitals.$inferSelect;
 export type NewVital = typeof vitals.$inferInsert;
+
+
+// ============================================================================
+// MEDICAL RECORDS MANAGEMENT SYSTEM
+// Multi-patient family medical history tracking with lab results and reports
+// ============================================================================
+
+export const patients = mysqlTable("patients", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: varchar("user_id", { length: 128 }).notNull(), // Owner of this patient record
+  name: text("name").notNull(),
+  dateOfBirth: timestamp("date_of_birth").notNull(),
+  gender: mysqlEnum("gender", ["male", "female", "other"]),
+  medicalRecordNumber: varchar("medical_record_number", { length: 100 }).unique(),
+  photoUrl: text("photo_url"),
+  relationship: varchar("relationship", { length: 50 }), // self, spouse, parent, child, etc.
+  emergencyContact: text("emergency_contact"),
+  primaryPhysician: text("primary_physician"),
+  insuranceInfo: json("insurance_info").$type<{
+    company?: string;
+    policyNumber?: string;
+    groupNumber?: string;
+    memberId?: string;
+  }>(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+export const labResults = mysqlTable("lab_results", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  patientId: varchar("patient_id", { length: 128 }).notNull(),
+  testDate: timestamp("test_date").notNull(),
+  testName: text("test_name").notNull(),
+  result: decimal("result", { precision: 10, scale: 2 }).notNull(),
+  unit: varchar("unit", { length: 50 }).notNull(),
+  referenceRange: varchar("reference_range", { length: 100 }),
+  status: mysqlEnum("status", ["Normal", "High", "Low"]).notNull(),
+  category: mysqlEnum("category", [
+    "Blood Count",
+    "Lipids",
+    "Kidney",
+    "Liver",
+    "Electrolytes",
+    "Diabetes",
+    "Thyroid",
+    "Iron Studies",
+    "Autoimmune",
+    "Vitamins",
+    "Metabolic",
+    "Other",
+  ]).notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const patientDocuments = mysqlTable("patient_documents", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  patientId: varchar("patient_id", { length: 128 }).notNull(),
+  documentName: text("document_name").notNull(),
+  documentType: mysqlEnum("document_type", [
+    "Lab Report",
+    "Imaging Study",
+    "Medical Report",
+    "Prescription",
+    "Other",
+  ]).notNull(),
+  uploadDate: timestamp("upload_date").defaultNow().notNull(),
+  fileUrl: text("file_url").notNull(),
+  fileSize: int("file_size"), // in bytes
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const patientReports = mysqlTable("patient_reports", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  patientId: varchar("patient_id", { length: 128 }).notNull(),
+  reportDate: timestamp("report_date").notNull(),
+  reportType: mysqlEnum("report_type", [
+    "Comprehensive Medical Report",
+    "Quick Summary",
+    "Findings by System",
+    "Action Plan",
+  ]).notNull(),
+  title: text("title").notNull(),
+  content: text("content").notNull(), // Markdown content
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+export const chartImages = mysqlTable("chart_images", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  patientId: varchar("patient_id", { length: 128 }).notNull(),
+  chartName: text("chart_name").notNull(),
+  chartCategory: varchar("chart_category", { length: 100 }),
+  imageUrl: text("image_url").notNull(),
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Type exports for medical records management
+export type Patient = typeof patients.$inferSelect;
+export type InsertPatient = typeof patients.$inferInsert;
+
+export type LabResult = typeof labResults.$inferSelect;
+export type InsertLabResult = typeof labResults.$inferInsert;
+
+export type PatientDocument = typeof patientDocuments.$inferSelect;
+export type InsertPatientDocument = typeof patientDocuments.$inferInsert;
+
+export type PatientReport = typeof patientReports.$inferSelect;
+export type InsertPatientReport = typeof patientReports.$inferInsert;
+
+export type ChartImage = typeof chartImages.$inferSelect;
+export type InsertChartImage = typeof chartImages.$inferInsert;

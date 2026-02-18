@@ -1,0 +1,97 @@
+Test_Date,Test_Name,Result,Unit,Reference_Range,Status,Category
+2021-09-08,Estimated Average Glucose,132.0,mg/dL,62-138,Normal,Diabetes
+2021-09-08,Free T3,2.1,pg/mL,1.9-4.0,Normal,Thyroid
+2021-09-08,Free T4,1.66,ng/dL,0.76-2.04,Normal,Thyroid
+2021-09-08,HbA1c,6.2,%,4.5-6.5,High,Diabetes
+2021-09-08,Hematocrit,34.5,%,36.0-54.0,Low,Blood Count
+2021-09-08,Hemoglobin,11.0,G/DL,11.5-17.0,Low,Blood Count
+2021-09-08,MCH,26.8,pg,25.0-32.0,Normal,Blood Count
+2021-09-08,MCHC,31.9,G/DL,32.0-37.0,Low,Blood Count
+2021-09-08,MCV,84.2,fL,80.0-100.0,Normal,Blood Count
+2021-09-08,Platelet Count,387.0,K/UL,150-500,Normal,Blood Count
+2021-09-08,RBC,4.1,M/UL,3.80-6.50,Normal,Blood Count
+2021-09-08,RDW,16.4,%,10.0-13.0,High,Blood Count
+2021-09-08,TSH,0.9,uIU/mL,0.3-5.3,Normal,Thyroid
+2021-09-08,WBC,6.0,K/UL,3.8-10.8,Normal,Blood Count
+2025-01-31,ALT,18.0,U/L,5-40,Normal,Liver
+2025-01-31,AST,18.0,U/L,9-40,Normal,Liver
+2025-01-31,Absolute Neutrophils,1.48,K/UL,1.50-7.50,Low,Blood Count
+2025-01-31,Albumin,5.1,G/DL,3.5-5.2,Normal,Liver
+2025-01-31,Alkaline Phosphatase,75.0,U/L,40-142,Normal,Liver
+2025-01-31,BUN,12.0,mg/dL,8-23,Normal,Kidney
+2025-01-31,Calcium,9.8,mg/dL,8.5-10.5,Normal,Electrolytes
+2025-01-31,Carbon Dioxide,27.0,mEq/L,19-31,Normal,Electrolytes
+2025-01-31,Chloride,99.0,mEq/L,95-107,Normal,Electrolytes
+2025-01-31,Creatinine,0.91,mg/dL,0.60-1.30,Normal,Kidney
+2025-01-31,Glucose,98.0,mg/dL,70-99,Normal,Metabolic
+2025-01-31,HDL Cholesterol,79.0,mg/dL,>39,Normal,Lipids
+2025-01-31,Hematocrit,37.0,%,34.0-45.0,Normal,Blood Count
+2025-01-31,LDL Cholesterol,132.0,mg/dL,<100,High,Lipids
+2025-01-31,Platelet Count,355.0,K/UL,130-400,Normal,Blood Count
+2025-01-31,Potassium,4.4,mEq/L,3.5-5.4,Normal,Electrolytes
+2025-01-31,Protein Total,7.4,G/DL,6.1-8.3,Normal,Liver
+2025-01-31,Sodium,138.0,mEq/L,133-146,Normal,Electrolytes
+2025-01-31,Total Cholesterol,226.0,mg/dL,<200,High,Lipids
+2025-01-31,Triglycerides,60.0,mg/dL,<150,Normal,Lipids
+2025-01-31,Vitamin D,42.0,NG/ML,30-100,Normal,Vitamins
+2025-01-31,eGFR,69.0,mL/min/1.73,>60,Normal,Kidney
+2025-06-05,ALT,16.0,U/L,5-40,Normal,Liver
+2025-06-05,AST,20.0,U/L,9-40,Normal,Liver
+2025-06-05,Absolute Neutrophils,1.51,K/UL,1.50-7.50,Normal,Blood Count
+2025-06-05,Alkaline Phosphatase,73.0,U/L,40-142,Normal,Liver
+2025-06-05,BUN,12.0,mg/dL,8-23,Normal,Kidney
+2025-06-05,Calcium,9.8,mg/dL,8.5-10.5,Normal,Electrolytes
+2025-06-05,Chloride,101.0,mEq/L,95-107,Normal,Electrolytes
+2025-06-05,Creatinine,0.88,mg/dL,0.60-1.30,Normal,Kidney
+2025-06-05,Free T4,1.41,NG/DL,0.80-1.90,Normal,Thyroid
+2025-06-05,Glucose,94.0,mg/dL,70-99,Normal,Metabolic
+2025-06-05,HDL Cholesterol,80.0,mg/dL,>39,Normal,Lipids
+2025-06-05,HbA1c,6.3,%,4.2-5.6,High,Diabetes
+2025-06-05,Hematocrit,36.5,%,34.0-45.0,Normal,Blood Count
+2025-06-05,Hemoglobin,11.6,G/DL,11.5-15.5,Normal,Blood Count
+2025-06-05,LDL Cholesterol,123.0,mg/dL,<100,High,Lipids
+2025-06-05,Platelet Count,343.0,K/UL,130-400,Normal,Blood Count
+2025-06-05,Potassium,4.6,mEq/L,3.5-5.4,Normal,Electrolytes
+2025-06-05,Rheumatoid Factor,52.0,IU/ML,<14,High,Autoimmune
+2025-06-05,Sodium,140.0,mEq/L,133-146,Normal,Electrolytes
+2025-06-05,T3 Total,90.0,NG/DL,80-200,Normal,Thyroid
+2025-06-05,Total Cholesterol,218.0,mg/dL,<200,High,Lipids
+2025-06-05,Triglycerides,61.0,mg/dL,<150,Normal,Lipids
+2025-06-05,eGFR,72.0,mL/min/1.73,>60,Normal,Kidney
+2026-01-20,Absolute Neutrophils,1.54,K/UL,1.50-7.50,Normal,Blood Count
+2026-01-20,BUN,15.0,mg/dL,8-23,Normal,Kidney
+2026-01-20,Calcium,9.4,mg/dL,8.5-10.5,Normal,Electrolytes
+2026-01-20,Chloride,101.0,mEq/L,95-107,Normal,Electrolytes
+2026-01-20,Creatinine,0.92,mg/dL,0.60-1.30,Normal,Kidney
+2026-01-20,Ferritin,64.0,NG/ML,13-200,Normal,Iron Studies
+2026-01-20,Glucose,99.0,mg/dL,70-99,Normal,Metabolic
+2026-01-20,Hematocrit,33.4,%,34.0-45.0,Low,Blood Count
+2026-01-20,Hemoglobin,10.7,G/DL,11.5-15.5,Low,Blood Count
+2026-01-20,Iron Serum,39.0,UG/DL,37-145,Normal,Iron Studies
+2026-01-20,Platelet Count,319.0,K/UL,130-400,Normal,Blood Count
+2026-01-20,Potassium,4.3,mEq/L,3.5-5.4,Normal,Electrolytes
+2026-01-20,RBC,3.57,M/UL,3.80-5.40,Low,Blood Count
+2026-01-20,Sodium,141.0,mEq/L,133-146,Normal,Electrolytes
+2026-01-20,eGFR,67.0,mL/min/1.73,>60,Normal,Kidney
+2026-02-04,ALT,14.0,U/L,5-40,Normal,Liver
+2026-02-04,AST,15.0,U/L,9-40,Normal,Liver
+2026-02-04,Absolute Neutrophils,4.02,K/UL,1.50-7.50,Normal,Blood Count
+2026-02-04,Albumin,4.4,G/DL,3.5-5.2,Normal,Liver
+2026-02-04,Alkaline Phosphatase,65.0,U/L,40-142,Normal,Liver
+2026-02-04,BUN,13.0,mg/dL,8-23,Normal,Kidney
+2026-02-04,Calcium,9.5,mg/dL,8.5-10.5,Normal,Electrolytes
+2026-02-04,Carbon Dioxide,28.0,mEq/L,19-31,Normal,Electrolytes
+2026-02-04,Chloride,101.0,mEq/L,95-107,Normal,Electrolytes
+2026-02-04,Creatinine,0.93,mg/dL,0.60-1.30,Normal,Kidney
+2026-02-04,Glucose,92.0,mg/dL,70-99,Normal,Metabolic
+2026-02-04,HbA1c,6.0,%,4.2-5.6,High,Diabetes
+2026-02-04,Hematocrit,32.6,%,34.0-45.0,Low,Blood Count
+2026-02-04,Hemoglobin,10.5,G/DL,11.5-15.5,Low,Blood Count
+2026-02-04,MCV,93.4,fL,80.0-99.0,Normal,Blood Count
+2026-02-04,Platelet Count,379.0,K/UL,130-400,Normal,Blood Count
+2026-02-04,Potassium,5.5,mEq/L,3.5-5.4,High,Electrolytes
+2026-02-04,Protein Total,7.3,G/DL,6.1-8.3,Normal,Liver
+2026-02-04,RBC,3.49,M/UL,3.80-5.40,Low,Blood Count
+2026-02-04,Sodium,142.0,mEq/L,133-146,Normal,Electrolytes
+2026-02-04,WBC,6.2,K/UL,3.5-11.0,Normal,Blood Count
+2026-02-04,eGFR,67.0,mL/min/1.73,>60,Normal,Kidney

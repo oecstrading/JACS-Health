@@ -9,6 +9,10 @@ import { TodaysSnapshot } from "@/components/diabetes/TodaysSnapshot";
 import { AIFoodScanner } from "@/components/diabetes/AIFoodScanner";
 import { AlertContactsManager } from "@/components/diabetes/AlertContactsManager";
 import { ManualDataEntry } from "@/components/diabetes/ManualDataEntry";
+import { SchoolMode } from "@/components/diabetes/SchoolMode";
+import { EmergencyIDCard } from "@/components/diabetes/EmergencyIDCard";
+import { AIMedicalLibrary } from "@/components/diabetes/AIMedicalLibrary";
+import { KidsZone } from "@/components/diabetes/KidsZone";
 import { useColors } from "@/hooks/use-colors";
 import { Activity, Droplet, Heart, Syringe } from "lucide-react-native";
 
@@ -24,6 +28,10 @@ import { Activity, Droplet, Heart, Syringe } from "lucide-react-native";
  * - AI Food Scanner
  * - Alert Contacts Management
  * - Manual Data Entry
+ * - School Mode (8-time daily reminders)
+ * - Emergency ID Card Generator
+ * - AI Medical Library
+ * - Kids Zone (Gamification)
  */
 export default function DiabetesPortalScreen() {
   const colors = useColors();
@@ -181,39 +189,24 @@ export default function DiabetesPortalScreen() {
           <ManualDataEntry />
         </View>
 
-        {/* Additional Features Coming Soon */}
+        {/* Kids Zone */}
         <View className="px-6 pb-6">
-          <View className="bg-surface border border-border rounded-xl p-6">
-            <Text className="text-lg font-semibold text-foreground mb-3">
-              More Features
-            </Text>
-            <View className="gap-3">
-              <View className="flex-row items-center gap-3">
-                <Heart size={20} color={colors.primary} />
-                <Text className="text-sm text-foreground flex-1">
-                  Kids Zone with gamification, XP, and badges
-                </Text>
-              </View>
-              <View className="flex-row items-center gap-3">
-                <Syringe size={20} color={colors.primary} />
-                <Text className="text-sm text-foreground flex-1">
-                  School Mode with 8-time daily reminders
-                </Text>
-              </View>
-              <View className="flex-row items-center gap-3">
-                <Activity size={20} color={colors.primary} />
-                <Text className="text-sm text-foreground flex-1">
-                  Emergency ID Card generator
-                </Text>
-              </View>
-              <View className="flex-row items-center gap-3">
-                <Droplet size={20} color={colors.primary} />
-                <Text className="text-sm text-foreground flex-1">
-                  AI Diabetes Medical Library
-                </Text>
-              </View>
-            </View>
-          </View>
+          <KidsZone />
+        </View>
+
+        {/* School Mode */}
+        <View className="px-6 pb-6">
+          <SchoolMode />
+        </View>
+
+        {/* Emergency ID Card */}
+        <View className="px-6 pb-6">
+          <EmergencyIDCard />
+        </View>
+
+        {/* AI Medical Library */}
+        <View className="px-6 pb-6">
+          <AIMedicalLibrary />
         </View>
       </ScrollView>
     </ScreenContainer>

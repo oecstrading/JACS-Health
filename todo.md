@@ -3833,3 +3833,53 @@
 - [ ] Validate notification system
 - [ ] Create comprehensive user documentation
 - [ ] Save checkpoint for enhanced app
+
+
+## New Enhancements (Phase 12) - MCP Integration, Data Export, Accessibility
+
+### MCP Connectors for Real Medical Devices
+- [ ] Research available MCP connectors for Dexcom CGM
+- [ ] Research available MCP connectors for Omron blood pressure monitors
+- [ ] Research available MCP connectors for Omnipod insulin pumps
+- [ ] Create MCP integration service layer
+- [ ] Implement Dexcom CGM data sync
+- [ ] Implement Omron BP monitor data sync
+- [ ] Implement Omnipod insulin pump data sync
+- [ ] Add real-time data refresh functionality
+- [ ] Build fallback to virtual devices if MCP unavailable
+- [ ] Add device connection status indicators
+- [ ] Implement data validation and error handling
+- [ ] Add device pairing/authentication flow
+
+### Data Export & Doctor-Ready PDF Reports
+- [ ] Create PDF report generator component
+- [ ] Design professional medical report template
+- [ ] Add glucose trends visualization to PDF
+- [ ] Add Time in Range summary to PDF
+- [ ] Add estimated A1C calculation to PDF
+- [ ] Add medication adherence tracking to PDF
+- [ ] Add daily patterns chart to PDF
+- [ ] Add insulin dosing history to PDF
+- [ ] Implement date range selector for reports
+- [ ] Add export to CSV functionality
+- [ ] Add share via email functionality
+- [ ] Create report preview before export
+- [ ] Add doctor/clinic information fields
+- [ ] Implement report scheduling (weekly/monthly)
+
+### Accessibility Features
+- [ ] Implement voice readback using expo-speech
+- [ ] Add screen reader support for all components
+- [ ] Create high contrast mode toggle
+- [ ] Design high contrast color palette
+- [ ] Implement large text mode (1.5x, 2x scaling)
+- [ ] Add font size selector in settings
+- [ ] Implement keyboard navigation support
+- [ ] Add ARIA labels to all interactive elements
+- [ ] Create accessibility settings screen
+- [ ] Add voice commands for common actions
+- [ ] Implement haptic feedback intensity control
+- [ ] Add color blind friendly mode
+- [ ] Test with iOS VoiceOver
+- [ ] Test with Android TalkBack
+- [ ] Achieve WCAG 2.1 AA compliance

@@ -13,6 +13,7 @@ import { SchoolMode } from "@/components/diabetes/SchoolMode";
 import { EmergencyIDCard } from "@/components/diabetes/EmergencyIDCard";
 import { AIMedicalLibrary } from "@/components/diabetes/AIMedicalLibrary";
 import { KidsZone } from "@/components/diabetes/KidsZone";
+import { HealthReportGenerator } from "@/components/diabetes/HealthReportGenerator";
 import { useColors } from "@/hooks/use-colors";
 import { Activity, Droplet, Heart, Syringe } from "lucide-react-native";
 
@@ -32,6 +33,7 @@ import { Activity, Droplet, Heart, Syringe } from "lucide-react-native";
  * - Emergency ID Card Generator
  * - AI Medical Library
  * - Kids Zone (Gamification)
+ * - Health Report Generator (PDF Export)
  */
 export default function DiabetesPortalScreen() {
   const colors = useColors();
@@ -207,6 +209,11 @@ export default function DiabetesPortalScreen() {
         {/* AI Medical Library */}
         <View className="px-6 pb-6">
           <AIMedicalLibrary />
+        </View>
+
+        {/* Health Report Generator */}
+        <View className="px-6 pb-6">
+          <HealthReportGenerator />
         </View>
       </ScrollView>
     </ScreenContainer>

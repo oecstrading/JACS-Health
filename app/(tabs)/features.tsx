@@ -26,6 +26,14 @@ const FEATURES: Feature[] = [
     category: "Health Tracking",
   },
   {
+    id: "accessibility-settings",
+    title: "Accessibility Settings",
+    description: "Voice readback, high contrast mode, large text, and screen reader support (WCAG 2.1 AA)",
+    icon: "house.fill",
+    route: "/accessibility-settings",
+    category: "Clinical",
+  },
+  {
     id: "hospice-revenue",
     title: "Hospice Revenue Command",
     description: "Real-time APU monitoring, HIS/HOPE submission tracking, and iQIES export",

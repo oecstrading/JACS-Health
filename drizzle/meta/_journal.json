@@ -43,6 +43,13 @@
       "when": 1771887079821,
       "tag": "0005_bored_sentry",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1771887423780,
+      "tag": "0006_white_warbound",
+      "breakpoints": true
     }
   ]
 }

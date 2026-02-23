@@ -581,3 +581,160 @@ export type InsertAlertForwardingSetting = typeof alertForwardingSettings.$infer
 
 export type SharedDataAccessLog = typeof sharedDataAccessLog.$inferSelect;
 export type InsertSharedDataAccessLog = typeof sharedDataAccessLog.$inferInsert;
+
+
+// ============================================================================
+// Medication Reminders & Appointments Tables
+// ============================================================================
+
+/**
+ * Medication Reminders Table
+ */
+export const medicationReminders = mysqlTable("medication_reminders", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  
+  medicationName: text("medication_name").notNull(),
+  dosage: varchar("dosage", { length: 100 }).notNull(),
+  instructions: text("instructions"),
+  
+  frequency: mysqlEnum("frequency", [
+    "once_daily",
+    "twice_daily",
+    "three_times_daily",
+    "four_times_daily",
+    "every_other_day",
+    "weekly",
+    "as_needed",
+    "custom",
+  ]).notNull(),
+  
+  reminderTimes: text("reminder_times").notNull(), // JSON array
+  pillCount: int("pill_count"),
+  refillReminderDays: int("refill_reminder_days").default(7),
+  isActive: boolean("is_active").notNull().default(true),
+  
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+/**
+ * Medication Reminder Logs Table
+ */
+export const medicationReminderLogs = mysqlTable("medication_reminder_logs", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  reminderId: varchar("reminder_id", { length: 128 }).notNull(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  
+  scheduledTime: timestamp("scheduled_time").notNull(),
+  takenTime: timestamp("taken_time"),
+  status: mysqlEnum("status", ["taken", "skipped", "missed"]).notNull(),
+  notes: text("notes"),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+/**
+ * Doctor Appointments Table
+ */
+export const doctorAppointments = mysqlTable("doctor_appointments", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  
+  doctorName: text("doctor_name").notNull(),
+  specialty: varchar("specialty", { length: 100 }),
+  location: text("location"),
+  phone: varchar("phone", { length: 20 }),
+  
+  appointmentDate: timestamp("appointment_date").notNull(),
+  duration: int("duration").default(30), // minutes
+  appointmentType: varchar("appointment_type", { length: 50 }), // "checkup", "follow-up", etc.
+  
+  reason: text("reason"),
+  notes: text("notes"),
+  preparationChecklist: text("preparation_checklist"), // JSON array
+  postVisitNotes: text("post_visit_notes"),
+  
+  reminderSent24h: boolean("reminder_sent_24h").default(false),
+  reminderSent1h: boolean("reminder_sent_1h").default(false),
+  
+  status: mysqlEnum("status", ["scheduled", "completed", "cancelled", "rescheduled"]).notNull().default("scheduled"),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+/**
+ * Health Goals Table
+ */
+export const healthGoals = mysqlTable("health_goals", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  
+  goalType: mysqlEnum("goal_type", [
+    "weight_loss",
+    "weight_gain",
+    "exercise",
+    "glucose_control",
+    "blood_pressure",
+    "steps",
+    "water_intake",
+    "sleep",
+    "custom",
+  ]).notNull(),
+  
+  title: text("title").notNull(),
+  description: text("description"),
+  
+  targetValue: decimal("target_value", { precision: 10, scale: 2 }),
+  currentValue: decimal("current_value", { precision: 10, scale: 2 }),
+  unit: varchar("unit", { length: 20 }), // "lbs", "steps", "hours", etc.
+  
+  startDate: timestamp("start_date").notNull(),
+  targetDate: timestamp("target_date"),
+  
+  frequency: mysqlEnum("frequency", ["daily", "weekly", "monthly"]).notNull().default("daily"),
+  reminderTime: varchar("reminder_time", { length: 5 }), // e.g., "08:00"
+  
+  isActive: boolean("is_active").notNull().default(true),
+  isCompleted: boolean("is_completed").notNull().default(false),
+  completedAt: timestamp("completed_at"),
+  
+  shareWithFamily: boolean("share_with_family").default(false),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+/**
+ * Goal Progress Logs Table
+ */
+export const goalProgressLogs = mysqlTable("goal_progress_logs", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  goalId: varchar("goal_id", { length: 128 }).notNull(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  
+  value: decimal("value", { precision: 10, scale: 2 }).notNull(),
+  notes: text("notes"),
+  
+  logDate: timestamp("log_date").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Type exports
+export type MedicationReminder = typeof medicationReminders.$inferSelect;
+export type InsertMedicationReminder = typeof medicationReminders.$inferInsert;
+
+export type MedicationReminderLog = typeof medicationReminderLogs.$inferSelect;
+export type InsertMedicationReminderLog = typeof medicationReminderLogs.$inferInsert;
+
+export type DoctorAppointment = typeof doctorAppointments.$inferSelect;
+export type InsertDoctorAppointment = typeof doctorAppointments.$inferInsert;
+
+export type HealthGoal = typeof healthGoals.$inferSelect;
+export type InsertHealthGoal = typeof healthGoals.$inferInsert;
+
+export type GoalProgressLog = typeof goalProgressLogs.$inferSelect;
+export type InsertGoalProgressLog = typeof goalProgressLogs.$inferInsert;

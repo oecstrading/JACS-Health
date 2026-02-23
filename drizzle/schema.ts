@@ -471,3 +471,113 @@ export type InsertPatientReport = typeof patientReports.$inferInsert;
 
 export type ChartImage = typeof chartImages.$inferSelect;
 export type InsertChartImage = typeof chartImages.$inferInsert;
+
+
+// ============================================================================
+// Family Sharing & Caregiver Access Tables
+// ============================================================================
+
+/**
+ * Family Connections Table
+ * Links users in family/caregiver relationships
+ */
+export const familyConnections = mysqlTable("family_connections", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  
+  // The user who owns the health data
+  patientUserId: varchar("patient_user_id", { length: 128 }).notNull(),
+  
+  // The family member/caregiver who has access
+  caregiverUserId: varchar("caregiver_user_id", { length: 128 }).notNull(),
+  
+  // Type of relationship
+  relationshipType: mysqlEnum("relationship_type", [
+    "parent",
+    "child",
+    "spouse",
+    "caregiver",
+    "guardian",
+    "sibling",
+    "other",
+  ]).notNull(),
+  
+  // Permission level granted
+  permissionLevel: mysqlEnum("permission_level", [
+    "view_only",      // Can view data but not modify
+    "alerts",         // Can view data and receive alerts
+    "full_access",    // Can view, modify, and manage settings
+  ]).notNull().default("view_only"),
+  
+  // Whether the connection is active
+  isActive: boolean("is_active").notNull().default(true),
+  
+  // Whether the patient approved this connection
+  isApproved: boolean("is_approved").notNull().default(false),
+  
+  // Invitation token for pending connections
+  invitationToken: text("invitation_token"),
+  
+  // When the invitation expires
+  invitationExpiresAt: timestamp("invitation_expires_at"),
+  
+  // Timestamps
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+  approvedAt: timestamp("approved_at"),
+});
+
+/**
+ * Alert Forwarding Settings
+ * Controls which alerts are forwarded to family members
+ */
+export const alertForwardingSettings = mysqlTable("alert_forwarding_settings", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  
+  // The family connection this applies to
+  familyConnectionId: varchar("family_connection_id", { length: 128 }).notNull(),
+  
+  // Alert types to forward
+  forwardGlucoseAlerts: boolean("forward_glucose_alerts").notNull().default(true),
+  forwardMedicationAlerts: boolean("forward_medication_alerts").notNull().default(true),
+  forwardAppointmentAlerts: boolean("forward_appointment_alerts").notNull().default(false),
+  forwardEmergencyAlerts: boolean("forward_emergency_alerts").notNull().default(true),
+  
+  // Time restrictions (24-hour format)
+  quietHoursStart: varchar("quiet_hours_start", { length: 5 }), // e.g., "22:00"
+  quietHoursEnd: varchar("quiet_hours_end", { length: 5 }),     // e.g., "08:00"
+  
+  // Timestamps
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+/**
+ * Shared Health Data Access Log
+ * Audit trail of family member data access
+ */
+export const sharedDataAccessLog = mysqlTable("shared_data_access_log", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  
+  // The family connection
+  familyConnectionId: varchar("family_connection_id", { length: 128 }).notNull(),
+  
+  // What was accessed
+  dataType: varchar("data_type", { length: 50 }).notNull(), // "glucose", "medications", "reports", etc.
+  action: varchar("action", { length: 50 }).notNull(),      // "viewed", "exported", "modified"
+  
+  // Details
+  details: text("details"), // JSON string with additional context
+  
+  // Timestamp
+  accessedAt: timestamp("accessed_at").defaultNow().notNull(),
+});
+
+// Type exports for family sharing
+export type FamilyConnection = typeof familyConnections.$inferSelect;
+export type InsertFamilyConnection = typeof familyConnections.$inferInsert;
+
+export type AlertForwardingSetting = typeof alertForwardingSettings.$inferSelect;
+export type InsertAlertForwardingSetting = typeof alertForwardingSettings.$inferInsert;
+
+export type SharedDataAccessLog = typeof sharedDataAccessLog.$inferSelect;
+export type InsertSharedDataAccessLog = typeof sharedDataAccessLog.$inferInsert;

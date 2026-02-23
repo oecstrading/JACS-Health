@@ -18,6 +18,14 @@ type Category = "All" | "Hospice" | "Health Tracking" | "AI Tools" | "Social" | 
 
 const FEATURES: Feature[] = [
   {
+    id: "diabetes-portal",
+    title: "Diabetes Management Portal",
+    description: "Virtual CGM, OmniPod, Time in Range charts, AI food scanner, and comprehensive diabetes tracking",
+    icon: "house.fill",
+    route: "/diabetes-portal",
+    category: "Health Tracking",
+  },
+  {
     id: "hospice-revenue",
     title: "Hospice Revenue Command",
     description: "Real-time APU monitoring, HIS/HOPE submission tracking, and iQIES export",

@@ -125,6 +125,12 @@ export default function TabLayout() {
           href: null,
         }}
       />
+      <Tabs.Screen
+        name="diabetes-portal"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

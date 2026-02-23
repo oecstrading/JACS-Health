@@ -50,6 +50,13 @@
       "when": 1771887423780,
       "tag": "0006_white_warbound",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1771887856068,
+      "tag": "0007_curly_shocker",
+      "breakpoints": true
     }
   ]
 }

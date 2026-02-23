@@ -3975,3 +3975,43 @@
 - [x] Add achievement badges for goals
 - [ ] Create goal reminders
 - [x] Build goal sharing and accountability
+
+
+## New Features (Phase 15) - Nutrition, Lab Results, Symptom Tracking
+
+### Nutrition Tracking
+- [x] Create nutrition database schema (meals, foods, nutrition_data)
+- [x] Build meal logging UI with meal types (breakfast, lunch, dinner, snack)
+- [x] Implement barcode scanner for packaged foods
+- [x] Integrate with AI Food Scanner for automatic nutrition data
+- [x] Add manual food entry with nutrition facts
+- [x] Build daily calorie and macro tracking
+- [x] Create nutrition goals (calories, protein, carbs, fat)
+- [ ] Implement meal history and favorites
+- [x] Add nutrition charts and trends
+- [ ] Build meal photo gallery
+
+### Lab Results Manager
+- [x] Create lab results database schema (already exists)
+- [x] Build lab results upload UI (PDF, image, manual entry)
+- [x] Implement test categorization (blood work, imaging, etc.)
+- [x] Add normal range indicators for common tests
+- [x] Build trend analysis charts for repeated tests
+- [x] Create automatic alerts for abnormal values
+- [ ] Implement test result sharing with doctors
+- [x] Add lab result history timeline
+- [ ] Build test comparison view (side-by-side)
+- [ ] Create lab result export to PDF
+
+### Symptom Diary
+- [x] Create symptoms database schema
+- [x] Build daily symptom logging UI
+- [x] Implement symptom severity ratings (1-10)
+- [ ] Add common symptom templates
+- [x] Build trigger identification system
+- [x] Implement pattern recognition (time of day, frequency)
+- [x] Add correlation with glucose levels
+- [x] Create correlation with medications
+- [x] Build correlation with activities/meals
+- [x] Implement symptom trend charts
+- [ ] Add symptom export for doctor visits

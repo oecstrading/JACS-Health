@@ -738,3 +738,87 @@ export type InsertHealthGoal = typeof healthGoals.$inferInsert;
 
 export type GoalProgressLog = typeof goalProgressLogs.$inferSelect;
 export type InsertGoalProgressLog = typeof goalProgressLogs.$inferInsert;
+
+
+// ============================================================================
+// Nutrition Tracking, Lab Results, and Symptom Diary Tables
+// ============================================================================
+
+/**
+ * Meals Table
+ */
+export const meals = mysqlTable("meals", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  
+  mealType: mysqlEnum("meal_type", ["breakfast", "lunch", "dinner", "snack"]).notNull(),
+  mealDate: timestamp("meal_date").notNull(),
+  
+  totalCalories: int("total_calories").default(0),
+  totalProtein: decimal("total_protein", { precision: 10, scale: 2 }).default("0"),
+  totalCarbs: decimal("total_carbs", { precision: 10, scale: 2 }).default("0"),
+  totalFat: decimal("total_fat", { precision: 10, scale: 2 }).default("0"),
+  
+  notes: text("notes"),
+  photoUrl: text("photo_url"),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+/**
+ * Meal Foods Table (junction table for meals and foods)
+ */
+export const mealFoods = mysqlTable("meal_foods", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  mealId: varchar("meal_id", { length: 128 }).notNull(),
+  
+  foodName: text("food_name").notNull(),
+  servingSize: varchar("serving_size", { length: 100 }),
+  quantity: decimal("quantity", { precision: 10, scale: 2 }).notNull(),
+  
+  calories: int("calories").notNull(),
+  protein: decimal("protein", { precision: 10, scale: 2 }),
+  carbs: decimal("carbs", { precision: 10, scale: 2 }),
+  fat: decimal("fat", { precision: 10, scale: 2 }),
+  
+  barcode: varchar("barcode", { length: 50 }),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+/**
+ * Symptoms Table
+ */
+export const symptoms = mysqlTable("symptoms", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  
+  symptomName: text("symptom_name").notNull(),
+  severity: int("severity").notNull(), // 1-10 scale
+  
+  logDate: timestamp("log_date").notNull(),
+  duration: int("duration"), // minutes
+  
+  triggers: text("triggers"), // JSON array of potential triggers
+  notes: text("notes"),
+  
+  // Correlations
+  glucoseLevel: int("glucose_level"),
+  medicationTaken: text("medication_taken"),
+  activityBefore: text("activity_before"),
+  mealBefore: text("meal_before"),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+// Type exports for new tables
+export type Meal = typeof meals.$inferSelect;
+export type InsertMeal = typeof meals.$inferInsert;
+
+export type MealFood = typeof mealFoods.$inferSelect;
+export type InsertMealFood = typeof mealFoods.$inferInsert;
+
+export type Symptom = typeof symptoms.$inferSelect;
+export type InsertSymptom = typeof symptoms.$inferInsert;

@@ -822,3 +822,145 @@ export type InsertMealFood = typeof mealFoods.$inferInsert;
 
 export type Symptom = typeof symptoms.$inferSelect;
 export type InsertSymptom = typeof symptoms.$inferInsert;
+
+/**
+ * Wearable Device Connections Table
+ */
+export const wearableDevices = mysqlTable("wearable_devices", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  
+  deviceType: mysqlEnum("device_type", ["fitbit", "apple_watch", "garmin", "other"]).notNull(),
+  deviceName: text("device_name").notNull(),
+  
+  isConnected: boolean("is_connected").default(false),
+  lastSyncAt: timestamp("last_sync_at"),
+  
+  accessToken: text("access_token"), // Encrypted
+  refreshToken: text("refresh_token"), // Encrypted
+  tokenExpiresAt: timestamp("token_expires_at"),
+  
+  syncEnabled: boolean("sync_enabled").default(true),
+  syncFrequency: int("sync_frequency").default(60), // minutes
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+/**
+ * Wearable Data Table
+ */
+export const wearableData = mysqlTable("wearable_data", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  deviceId: varchar("device_id", { length: 128 }).notNull(),
+  
+  dataType: varchar("data_type", { length: 50 }).notNull(), // "steps", "heart_rate", "sleep", "exercise", "calories"
+  dataDate: timestamp("data_date").notNull(),
+  
+  value: decimal("value", { precision: 10, scale: 2 }).notNull(),
+  unit: varchar("unit", { length: 20 }), // "steps", "bpm", "minutes", "kcal"
+  
+  metadata: text("metadata"), // JSON for additional data
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+/**
+ * Telemedicine Consultations Table
+ */
+export const consultations = mysqlTable("consultations", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  
+  providerName: text("provider_name").notNull(),
+  providerSpecialty: varchar("provider_specialty", { length: 100 }),
+  providerEmail: varchar("provider_email", { length: 255 }),
+  providerPhone: varchar("provider_phone", { length: 50 }),
+  
+  consultationType: mysqlEnum("consultation_type", ["video", "phone", "message", "in_person"]).notNull(),
+  consultationDate: timestamp("consultation_date").notNull(),
+  duration: int("duration"), // minutes
+  
+  status: mysqlEnum("status", ["scheduled", "completed", "cancelled", "no_show"]).default("scheduled"),
+  
+  reason: text("reason"),
+  notes: text("notes"),
+  prescription: text("prescription"),
+  
+  videoUrl: text("video_url"),
+  recordingUrl: text("recording_url"),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+/**
+ * Provider Messages Table
+ */
+export const providerMessages = mysqlTable("provider_messages", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  consultationId: varchar("consultation_id", { length: 128 }),
+  
+  senderType: mysqlEnum("sender_type", ["patient", "provider"]).notNull(),
+  senderName: text("sender_name").notNull(),
+  
+  message: text("message").notNull(),
+  attachmentUrl: text("attachment_url"),
+  
+  isRead: boolean("is_read").default(false),
+  readAt: timestamp("read_at"),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+/**
+ * Insurance Claims Table
+ */
+export const insuranceClaims = mysqlTable("insurance_claims", {
+  id: varchar("id", { length: 128 }).primaryKey(),
+  userId: varchar("user_id", { length: 128 }).notNull(),
+  
+  claimNumber: varchar("claim_number", { length: 100 }),
+  insuranceProvider: text("insurance_provider").notNull(),
+  policyNumber: varchar("policy_number", { length: 100 }),
+  
+  claimType: varchar("claim_type", { length: 100 }), // "medical", "dental", "vision", "prescription"
+  serviceDate: timestamp("service_date").notNull(),
+  submissionDate: timestamp("submission_date").notNull(),
+  
+  providerName: text("provider_name"),
+  diagnosis: text("diagnosis"),
+  procedureCode: varchar("procedure_code", { length: 50 }),
+  
+  claimedAmount: decimal("claimed_amount", { precision: 10, scale: 2 }).notNull(),
+  approvedAmount: decimal("approved_amount", { precision: 10, scale: 2 }),
+  paidAmount: decimal("paid_amount", { precision: 10, scale: 2 }),
+  outOfPocket: decimal("out_of_pocket", { precision: 10, scale: 2 }),
+  
+  status: mysqlEnum("status", ["submitted", "pending", "approved", "denied", "paid"]).default("submitted"),
+  denialReason: text("denial_reason"),
+  
+  documentUrls: text("document_urls"), // JSON array of URLs
+  notes: text("notes"),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+// Type exports for new tables
+export type WearableDevice = typeof wearableDevices.$inferSelect;
+export type InsertWearableDevice = typeof wearableDevices.$inferInsert;
+
+export type WearableData = typeof wearableData.$inferSelect;
+export type InsertWearableData = typeof wearableData.$inferInsert;
+
+export type Consultation = typeof consultations.$inferSelect;
+export type InsertConsultation = typeof consultations.$inferInsert;
+
+export type ProviderMessage = typeof providerMessages.$inferSelect;
+export type InsertProviderMessage = typeof providerMessages.$inferInsert;
+
+export type InsuranceClaim = typeof insuranceClaims.$inferSelect;
+export type InsertInsuranceClaim = typeof insuranceClaims.$inferInsert;

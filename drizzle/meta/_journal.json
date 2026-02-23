@@ -57,6 +57,13 @@
       "when": 1771887856068,
       "tag": "0007_curly_shocker",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1771888224409,
+      "tag": "0008_clean_bill_hollister",
+      "breakpoints": true
     }
   ]
 }

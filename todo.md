@@ -4015,3 +4015,42 @@
 - [x] Build correlation with activities/meals
 - [x] Implement symptom trend charts
 - [ ] Add symptom export for doctor visits
+
+
+## New Features (Phase 16) - Wearables, Telemedicine, Insurance Claims
+
+### Wearable Device Integration
+- [x] Create wearable devices database schema (device_connections, wearable_data)
+- [x] Build device connection manager UI
+- [x] Implement Fitbit API integration
+- [x] Implement Apple HealthKit integration
+- [x] Implement Garmin Connect API integration
+- [x] Add automatic data sync (steps, heart rate, sleep, exercise)
+- [x] Build wearable data dashboard with charts
+- [ ] Implement sync schedule configuration
+- [x] Add device connection status indicators
+- [ ] Create historical data import
+
+### Telemedicine Integration
+- [x] Create telemedicine database schema (consultations, messages, prescriptions)
+- [x] Build video consultation scheduling UI
+- [x] Implement secure messaging with providers
+- [x] Add prescription refill requests
+- [ ] Build provider directory
+- [x] Implement consultation history
+- [ ] Add file sharing for medical documents
+- [ ] Create consultation reminders
+- [ ] Build consultation notes and summaries
+- [ ] Add insurance verification
+
+### Insurance Claims Tracker
+- [x] Create insurance claims database schema
+- [x] Build claims submission UI with photo upload
+- [x] Implement claim status tracking
+- [x] Add reimbursement monitoring
+- [x] Build out-of-pocket expense calculator
+- [ ] Implement claim document storage
+- [x] Add claim submission history
+- [ ] Create claim reminders and alerts
+- [x] Build insurance provider management
+- [ ] Add claim export to PDF

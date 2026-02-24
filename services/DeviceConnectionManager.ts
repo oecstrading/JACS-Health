@@ -51,7 +51,8 @@ class DeviceConnectionManagerService {
   private devices: Map<DeviceType, DeviceConfig> = new Map();
 
   private constructor() {
-    this.loadDeviceConfigs();
+    // Don't load configs during construction to avoid SSR issues
+    // Configs will be loaded on first use
   }
 
   static getInstance(): DeviceConnectionManagerService {
@@ -61,10 +62,14 @@ class DeviceConnectionManagerService {
     return DeviceConnectionManagerService.instance;
   }
 
+  private configsLoaded = false;
+
   /**
    * Load device configurations from storage
    */
   private async loadDeviceConfigs() {
+    if (this.configsLoaded) return;
+    this.configsLoaded = true;
     try {
       const stored = await AsyncStorage.getItem("device_configs");
       if (stored) {

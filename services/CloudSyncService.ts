@@ -54,9 +54,8 @@ class CloudSyncServiceClass {
   private syncTimer: ReturnType<typeof setInterval> | null = null;
 
   private constructor() {
-    this.loadConfig();
-    this.loadSyncQueue();
-    this.startAutoSync();
+    // Don't load data during construction to avoid SSR issues
+    // Data will be loaded on first use
   }
 
   static getInstance(): CloudSyncServiceClass {
@@ -64,6 +63,19 @@ class CloudSyncServiceClass {
       CloudSyncServiceClass.instance = new CloudSyncServiceClass();
     }
     return CloudSyncServiceClass.instance;
+  }
+
+  private configLoaded = false;
+
+  /**
+   * Ensure configuration is loaded before use
+   */
+  private async ensureLoaded() {
+    if (this.configLoaded) return;
+    this.configLoaded = true;
+    await this.loadConfig();
+    await this.loadSyncQueue();
+    this.startAutoSync();
   }
 
   /**

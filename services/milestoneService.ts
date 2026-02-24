@@ -4,7 +4,7 @@
  * and family notifications
  */
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { safeStorage as AsyncStorage } from '../lib/safeStorage';
 import * as Notifications from 'expo-notifications';
 
 export type MilestoneType =

@@ -4,7 +4,7 @@
  * with one-tap confirmation logging
  */
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { safeStorage as AsyncStorage } from '../lib/safeStorage';
 import * as Notifications from 'expo-notifications';
 import * as Speech from 'expo-speech';
 import { Platform } from 'react-native';

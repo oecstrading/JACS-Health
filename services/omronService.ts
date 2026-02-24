@@ -4,7 +4,7 @@
  * and other health devices, with automatic data sync
  */
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { safeStorage as AsyncStorage } from '../lib/safeStorage';
 import * as Notifications from 'expo-notifications';
 
 // Omron device types

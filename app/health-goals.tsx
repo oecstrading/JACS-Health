@@ -117,7 +117,7 @@ export default function HealthGoalsScreen() {
         { text: "Cancel", style: "cancel" },
         {
           text: "Save",
-          onPress: (value) => {
+          onPress: (value?: string) => {
             if (value) {
               Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
               Alert.alert("Progress Logged", "Great job! Keep up the good work!");

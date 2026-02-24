@@ -107,7 +107,7 @@ export default function DoctorAppointmentsScreen() {
         { text: "Cancel", style: "cancel" },
         {
           text: "Save",
-          onPress: (notes) => {
+          onPress: (notes?: string) => {
             if (notes) {
               const updated = appointments.map((a) =>
                 a.id === appointment.id ? { ...a, hasNotes: true } : a

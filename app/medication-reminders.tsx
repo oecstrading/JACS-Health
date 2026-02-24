@@ -68,11 +68,11 @@ export default function MedicationRemindersScreen() {
     },
   ]);
 
-  const [todaysDoses, setTodaysDoses] = useState([
-    { id: "1", medication: "Metformin 500mg", time: "08:00", status: "taken" as const },
-    { id: "2", medication: "Lisinopril 10mg", time: "08:00", status: "taken" as const },
-    { id: "3", medication: "Metformin 500mg", time: "20:00", status: "pending" as const },
-    { id: "4", medication: "Atorvastatin 20mg", time: "20:00", status: "pending" as const },
+  const [todaysDoses, setTodaysDoses] = useState<Array<{ id: string; medication: string; time: string; status: "pending" | "taken" | "skipped" }>>([
+    { id: "1", medication: "Metformin 500mg", time: "08:00", status: "taken" },
+    { id: "2", medication: "Lisinopril 10mg", time: "08:00", status: "taken" },
+    { id: "3", medication: "Metformin 500mg", time: "20:00", status: "pending" },
+    { id: "4", medication: "Atorvastatin 20mg", time: "20:00", status: "pending" },
   ]);
 
   const handleAddMedication = async () => {

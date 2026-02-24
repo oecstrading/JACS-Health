@@ -51,7 +51,7 @@ class CloudSyncServiceClass {
     encryptionEnabled: true,
   };
   private syncQueue: PendingSyncItem[] = [];
-  private syncTimer: NodeJS.Timeout | null = null;
+  private syncTimer: ReturnType<typeof setInterval> | null = null;
 
   private constructor() {
     this.loadConfig();

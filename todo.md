@@ -4118,3 +4118,10 @@
 - [x] Create useAppUpdate hook to check for OTA updates
 - [x] Create UpdatePrompt modal component
 - [x] Integrate update check into root app layout
+
+## Build Queue Issue
+- [x] Resolve "Build request is being processed. Try in 24 hours" platform queue limit
+- [x] Set up alternative APK build method that bypasses platform queue - EAS CLI guide provided
+
+## EAS Build Automation
+- [x] Create automated EAS Cloud Build script (scripts/build.sh)

@@ -53,6 +53,7 @@ const MAPPING = {
   "chart.line.uptrend.xyaxis": "trending-up",
   "book.fill": "menu-book",
   "antenna.radiowaves.left.and.right": "wifi",
+  "arrow.down.circle.fill": "download",
 } as IconMapping;
 
 type IconSymbolName = keyof typeof MAPPING;

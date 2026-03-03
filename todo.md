@@ -4112,3 +4112,9 @@
 - [x] Resolve "Build timeout exceeded 24 hours" error - configured EAS local build
 - [x] Optimize build configuration for faster compilation
 - [x] Consider alternative deployment strategies - EAS CLI setup complete
+
+## Auto-Update Feature
+- [x] Add expo-updates dependency and configure app.config.ts
+- [x] Create useAppUpdate hook to check for OTA updates
+- [x] Create UpdatePrompt modal component
+- [x] Integrate update check into root app layout

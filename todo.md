@@ -4161,3 +4161,10 @@
 - [x] Create privacy policy document and host URL
 - [x] Create store submission checklist document
 - [x] Update BUILD_GUIDE.md with Play Store and Amazon submission steps
+
+## Android Build Errors
+- [x] Fix duplicate class error: androidx.versionedparcelable vs com.android.support:versionedparcelable
+  - Created plugins/withAndroidXFix.js Expo config plugin
+  - Injects allprojects resolution strategy into android/build.gradle
+  - Forces androidx.versionedparcelable:1.1.1, excludes com.android.support:versionedparcelable
+  - Enables android.useAndroidX=true and android.enableJetifier=true in gradle.properties

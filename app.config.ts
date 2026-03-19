@@ -95,6 +95,8 @@ const config: ExpoConfig = {
   },
   plugins: [
     "expo-router",
+    // Fix: duplicate class androidx.versionedparcelable vs com.android.support:versionedparcelable
+    "./plugins/withAndroidXFix",
     [
       "expo-audio",
       {

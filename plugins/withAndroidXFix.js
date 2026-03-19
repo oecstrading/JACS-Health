@@ -1,44 +1,47 @@
 /**
  * Custom Expo Config Plugin: withAndroidXFix
  *
- * Fixes the Gradle build error:
- *   "Duplicate class androidx.versionedparcelable.* found in modules
- *    versionedparcelable-1.1.1.aar (androidx) and versionedparcelable-28.0.0.aar (com.android.support)"
+ * Fixes two Android Gradle build errors:
  *
- * Root cause: Some transitive dependencies still pull in the legacy
- * com.android.support:versionedparcelable:28.0.0 alongside the AndroidX version.
+ * Error 1: Duplicate class androidx.versionedparcelable.*
+ *   "Duplicate class found in versionedparcelable-1.1.1.aar (androidx) and
+ *    versionedparcelable-28.0.0.aar (com.android.support)"
+ *   Fix: Force androidx version, exclude legacy com.android.support module.
  *
- * Fix: Inject a Gradle allprojects resolution strategy that:
- *   1. Forces androidx.versionedparcelable:versionedparcelable:1.1.1
- *   2. Excludes com.android.support:versionedparcelable from all configurations
- *   3. Enables android.useAndroidX and android.enableJetifier in gradle.properties
+ * Error 2: Kotlin compilation error in expo module
+ *   "Cannot access 'OnUserLeaveHintProvider' which is a supertype of 'AppCompatActivity'"
+ *   Root cause: expo SDK 54 requires androidx.appcompat >= 1.6.1 which introduced
+ *   OnUserLeaveHintProvider. An older transitive appcompat version on the classpath
+ *   causes this compile-time failure.
+ *   Fix: Force androidx.appcompat:appcompat:1.6.1 in resolution strategy.
  */
 
-const { withAppBuildGradle, withGradleProperties } = require("@expo/config-plugins");
-
-/**
- * Step 1: Inject resolution strategy into android/build.gradle (project-level)
- * We use withAppBuildGradle which gives us the app/build.gradle, but the
- * allprojects block needs to go in the root build.gradle.
- * We use a withProjectBuildGradle approach via a raw mod.
- */
-const { withDangerousMod } = require("@expo/config-plugins");
+const { withDangerousMod, withGradleProperties } = require("@expo/config-plugins");
 const fs = require("fs");
 const path = require("path");
 
 const RESOLUTION_STRATEGY = `
-// ── AndroidX / Support Library duplicate class fix ──────────────────────────
-// Prevents: "Duplicate class androidx.versionedparcelable.* found in modules
-//            versionedparcelable-1.1.1.aar and versionedparcelable-28.0.0.aar"
-configurations.all {
-    resolutionStrategy {
-        force 'androidx.versionedparcelable:versionedparcelable:1.1.1'
-        force 'androidx.core:core:1.12.0'
-        force 'androidx.annotation:annotation:1.7.0'
+    // ── AndroidX dependency conflict fixes ────────────────────────────────────
+    // Fix 1: Duplicate class androidx.versionedparcelable.* (androidx vs com.android.support)
+    // Fix 2: Cannot access 'OnUserLeaveHintProvider' (appcompat version mismatch with expo SDK 54)
+    configurations.all {
+        resolutionStrategy {
+            force 'androidx.appcompat:appcompat:1.6.1'
+            force 'androidx.appcompat:appcompat-resources:1.6.1'
+            force 'androidx.versionedparcelable:versionedparcelable:1.1.1'
+            force 'androidx.core:core:1.12.0'
+            force 'androidx.core:core-ktx:1.12.0'
+            force 'androidx.annotation:annotation:1.7.0'
+            force 'androidx.activity:activity:1.8.0'
+            force 'androidx.activity:activity-ktx:1.8.0'
+            force 'androidx.fragment:fragment:1.6.2'
+            force 'androidx.fragment:fragment-ktx:1.6.2'
+        }
+        exclude group: 'com.android.support', module: 'versionedparcelable'
+        exclude group: 'com.android.support', module: 'support-compat'
+        exclude group: 'com.android.support', module: 'support-annotations'
     }
-    exclude group: 'com.android.support', module: 'versionedparcelable'
-}
-// ─────────────────────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
 `;
 
 const withAndroidXFix = (config) => {
@@ -58,21 +61,19 @@ const withAndroidXFix = (config) => {
 
       let contents = fs.readFileSync(rootBuildGradlePath, "utf8");
 
-      // Only inject once
-      if (contents.includes("AndroidX / Support Library duplicate class fix")) {
+      // Only inject once (idempotent)
+      if (contents.includes("AndroidX dependency conflict fixes")) {
+        console.log("[withAndroidXFix] Resolution strategy already injected, skipping.");
         return config;
       }
 
-      // Inject after the last closing brace of the allprojects block if it exists,
-      // otherwise append before the last line
+      // Inject inside the existing allprojects block, or create one
       if (contents.includes("allprojects {")) {
-        // Insert resolution strategy inside the existing allprojects block
         contents = contents.replace(
           /allprojects\s*\{/,
           `allprojects {\n${RESOLUTION_STRATEGY}`
         );
       } else {
-        // Append a new allprojects block at the end
         contents += `\nallprojects {\n${RESOLUTION_STRATEGY}\n}\n`;
       }
 
@@ -82,7 +83,7 @@ const withAndroidXFix = (config) => {
     },
   ]);
 
-  // Step 2: Ensure gradle.properties has AndroidX and Jetifier enabled
+  // Step 2: Ensure gradle.properties has AndroidX, Jetifier, and sufficient heap
   config = withGradleProperties(config, (config) => {
     const props = config.modResults;
 
@@ -95,10 +96,16 @@ const withAndroidXFix = (config) => {
       }
     };
 
+    // Required for AndroidX migration
     setOrReplace("android.useAndroidX", "true");
+    // Jetifier rewrites legacy support library references to AndroidX at build time
     setOrReplace("android.enableJetifier", "true");
-    // Increase heap for large dependency trees
-    setOrReplace("org.gradle.jvmargs", "-Xmx4096m -XX:MaxMetaspaceSize=512m");
+    // Increase heap to handle large dependency trees without OOM during build
+    setOrReplace("org.gradle.jvmargs", "-Xmx4096m -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError");
+    // Parallel builds for faster compilation
+    setOrReplace("org.gradle.parallel", "true");
+    // Gradle daemon reuse
+    setOrReplace("org.gradle.daemon", "true");
 
     return config;
   });

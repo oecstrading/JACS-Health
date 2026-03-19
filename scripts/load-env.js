@@ -7,6 +7,12 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// Ensure NODE_ENV is always set - EAS build requires it during bundling.
+// Default to 'production' when not explicitly provided (standard for release builds).
+if (!process.env.NODE_ENV) {
+  process.env.NODE_ENV = "production";
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

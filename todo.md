@@ -4168,3 +4168,7 @@
   - Injects allprojects resolution strategy into android/build.gradle
   - Forces androidx.versionedparcelable:1.1.1, excludes com.android.support:versionedparcelable
   - Enables android.useAndroidX=true and android.enableJetifier=true in gradle.properties
+
+## Android Build Errors (Round 2)
+- [x] Fix: NODE_ENV environment variable not set during EAS build bundling - defaulted to 'production' in load-env.js
+- [x] Fix: Kotlin compilation error - Cannot access OnUserLeaveHintProvider - forced androidx.appcompat:1.6.1 in withAndroidXFix plugin

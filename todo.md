@@ -4125,3 +4125,39 @@
 
 ## EAS Build Automation
 - [x] Create automated EAS Cloud Build script (scripts/build.sh)
+
+## Migration Gap Implementation
+- [x] Add missing hooks: useEffectiveUserId, useSubscription, useActiveConditions, useHealthDataInvalidation, useVirtualDeviceMode, useVoiceInput, useUserRoles
+- [x] Add FamilyChat screen with 5-second polling, text/audio/image messages, pin support
+- [x] Add FamilyCircleManagement screen (invite, accept, max 5 members)
+- [x] Enhance CaregiverDashboard with effective user ID pattern
+- [x] Add MultiConditionSwitcher component
+- [x] Add MergedConditionTemplate component
+- [x] Add BPAlertCard component with JNC/AHA classification
+- [x] Add DoctorVisitTracker component
+- [x] Add DangerZoneSettings screen (configurable thresholds)
+- [x] Add InsuranceCardSection screen
+- [x] Add MedicalConditionsPicker screen
+- [x] Add MedicalHistorySummary screen
+- [x] Add MyDoctorsList screen
+- [x] Add DailyProgressBar component
+- [x] Add EveningReflection component
+- [x] Add MealPlannerCard component
+- [x] Add MidDayVitalCheck component
+- [x] Add MorningResetCard component
+- [x] Add DocumentationStreak component (gamification)
+- [x] Add GuidedWalkthrough / NewUserGuidedTour
+- [x] Add TrialBanner and TrialPaywall screens
+- [x] Add SupportCenter screen
+
+## Go-to-Market: Google Play Store & Amazon Appstore
+- [x] Configure production EAS build profiles for Play Store (AAB) and Amazon (APK)
+- [x] Update app version to 1.0.0 production in app.config.ts
+- [x] Add android permissions and content rating declarations
+- [x] Generate 512x512 app icon for stores
+- [x] Generate 1024x500 feature graphic for Play Store
+- [x] Write Play Store listing: title, short description, full description, keywords
+- [x] Write Amazon Appstore listing: title, description, keywords, content rating
+- [x] Create privacy policy document and host URL
+- [x] Create store submission checklist document
+- [x] Update BUILD_GUIDE.md with Play Store and Amazon submission steps

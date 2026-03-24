@@ -97,7 +97,7 @@ const SOCIAL_PLATFORMS = [
     url: SOCIAL_LINKS.facebook,
     cta: "Follow Us",
     stat: "100K Goal",
-    image: require("../assets/images/jacs_facebook.png"),
+    image: { uri: "https://d2xsxph8kpxj0f.cloudfront.net/310519663129142386/8UJRLxsNhLmxzNWs5o7Tr8/jacs_facebook_876b4be0.png" },
   },
   {
     id: "tiktok",
@@ -109,7 +109,7 @@ const SOCIAL_PLATFORMS = [
     url: SOCIAL_LINKS.tiktok,
     cta: "Follow Us",
     stat: "1M Goal",
-    image: require("../assets/images/jacs_tiktok.png"),
+    image: { uri: "https://d2xsxph8kpxj0f.cloudfront.net/310519663129142386/8UJRLxsNhLmxzNWs5o7Tr8/jacs_tiktok_542b37e6.png" },
   },
   {
     id: "instagram",
@@ -121,7 +121,7 @@ const SOCIAL_PLATFORMS = [
     url: SOCIAL_LINKS.instagram,
     cta: "Follow Us",
     stat: "500K Goal",
-    image: require("../assets/images/jacs_instagram_story.png"),
+    image: { uri: "https://d2xsxph8kpxj0f.cloudfront.net/310519663129142386/8UJRLxsNhLmxzNWs5o7Tr8/jacs_instagram_story_f6c11ce1.png" },
   },
 ];
 
@@ -175,7 +175,7 @@ export default function JACSBrandHub() {
         {/* ── Hero Section ────────────────────────────────────────────────── */}
         <View style={styles.heroContainer}>
           <Image
-            source={require("../assets/images/jacs_hero.png")}
+            source={{ uri: "https://d2xsxph8kpxj0f.cloudfront.net/310519663129142386/8UJRLxsNhLmxzNWs5o7Tr8/jacs_hero_c6ff4cac.png" }}
             style={styles.heroImage}
             resizeMode="cover"
           />
@@ -223,7 +223,7 @@ export default function JACSBrandHub() {
           <View style={styles.section}>
             {/* Features Card Image */}
             <Image
-              source={require("../assets/images/jacs_features_card.png")}
+              source={{ uri: "https://d2xsxph8kpxj0f.cloudfront.net/310519663129142386/8UJRLxsNhLmxzNWs5o7Tr8/jacs_features_card_92a292dd.png" }}
               style={styles.featuresCardImage}
               resizeMode="contain"
             />
@@ -336,7 +336,7 @@ export default function JACSBrandHub() {
             {/* Social Square */}
             <Text style={styles.sectionTitle}>Our Brand Story</Text>
             <Image
-              source={require("../assets/images/jacs_social_square.png")}
+              source={{ uri: "https://d2xsxph8kpxj0f.cloudfront.net/310519663129142386/8UJRLxsNhLmxzNWs5o7Tr8/jacs_social_square_3332477e.png" }}
               style={styles.socialSquareImage}
               resizeMode="contain"
             />
@@ -375,7 +375,7 @@ export default function JACSBrandHub() {
 
             {/* Features Post Image */}
             <Image
-              source={require("../assets/images/jacs_features_post.png")}
+              source={{ uri: "https://d2xsxph8kpxj0f.cloudfront.net/310519663129142386/8UJRLxsNhLmxzNWs5o7Tr8/jacs_features_post_0e80f3ba.png" }}
               style={styles.sharePreviewImage}
               resizeMode="contain"
             />

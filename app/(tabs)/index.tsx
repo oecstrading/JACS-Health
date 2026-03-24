@@ -203,6 +203,32 @@ export default function PatientCommandCenter() {
         <Text style={{ color: '#D4AF37', fontSize: 18 }}>→</Text>
       </Pressable>
         
+      {/* Blood Sugar Log — Quick Access */}
+      <Pressable
+        onPress={() => {
+          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          router.push('/blood-sugar-log');
+        }}
+        style={({ pressed }) => [{
+          backgroundColor: pressed ? '#7F1D1DCC' : '#7F1D1D',
+          borderWidth: 2,
+          borderColor: pressed ? '#FCA5A5' : '#EF444480',
+          transform: [{ scale: pressed ? 0.98 : 1 }],
+          borderRadius: 16,
+          marginBottom: 12,
+          padding: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }]}
+      >
+        <Text style={{ fontSize: 28, marginRight: 12 }}>🩸</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#FCA5A5', fontWeight: '800', fontSize: 16 }} allowFontScaling={false}>Blood Sugar Log</Text>
+          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Log reading • View history • 7-day chart</Text>
+        </View>
+        <Text style={{ color: '#FCA5A5', fontSize: 18 }}>→</Text>
+      </Pressable>
+
         {/* QR Code Section */}
         <View className="bg-surface rounded-2xl p-4 mb-4 border border-border items-center">
           <Text className="text-base font-semibold text-foreground mb-2">Scan to Download Mobile App</Text>

@@ -1,9 +1,17 @@
-import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, Image } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, Image, ActivityIndicator, Platform } from "react-native";
 import { useState } from "react";
-import { router } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
 import FoodScanService, { type FoodItem, type GlucoseImpactPrediction } from "@/services/foodScanService";
+import {
+  searchFoodDatabase,
+  recognizeFoodFromCamera,
+  getCarbsForPortion,
+  type AIFoodRecognitionResult,
+} from "@/services/foodRecognition";
+import { offlineStorage } from "@/services/offlineStorage";
+
+const SERVER_URL = "http://127.0.0.1:3000";
 
 export default function FoodScannerScreen() {
   const colors = useColors();
@@ -12,38 +20,70 @@ export default function FoodScannerScreen() {
   const [currentGlucose, setCurrentGlucose] = useState("120");
   const [portionSize, setPortionSize] = useState("1.0");
   const [isScanning, setIsScanning] = useState(false);
+  const [dbQuery, setDbQuery] = useState("");
+  const [dbResults, setDbResults] = useState<ReturnType<typeof searchFoodDatabase>>([]);
+  const [aiResult, setAiResult] = useState<AIFoodRecognitionResult | null>(null);
+  const [savedMsg, setSavedMsg] = useState("");
 
-  const handlePhotoScan = async () => {
+  const handlePhotoScan = async (source: "camera" | "library" = "camera") => {
     setIsScanning(true);
+    setAiResult(null);
     try {
-      // In production, this would open camera and use AI recognition
-      // For now, we'll simulate with mock data
-      const mockPhotoUri = "mock://photo.jpg";
-      const food = await FoodScanService.recognizeFood(mockPhotoUri);
-      setScannedFood(food);
-      calculatePrediction(food);
-      Alert.alert("Success", `Recognized: ${food.name}`);
-    } catch (error) {
+      const result = await recognizeFoodFromCamera(SERVER_URL, source);
+      if (result) {
+        setAiResult(result);
+        // Also search our offline DB for the recognized food
+        if (result.recognizedFood && !result.recognizedFood.includes("offline")) {
+          const dbMatches = searchFoodDatabase(result.recognizedFood, 3);
+          setDbResults(dbMatches);
+          setDbQuery(result.recognizedFood);
+        }
+        Alert.alert("Recognized", `${result.recognizedFood} (~${result.estimatedCarbsG}g carbs)`);
+      }
+    } catch {
       Alert.alert("Error", "Failed to recognize food from photo.");
     } finally {
       setIsScanning(false);
     }
   };
 
+  const handleDbSearch = (text: string) => {
+    setDbQuery(text);
+    if (text.length >= 2) {
+      setDbResults(searchFoodDatabase(text));
+    } else {
+      setDbResults([]);
+    }
+  };
+
   const handleBarcodeScan = async () => {
     setIsScanning(true);
     try {
-      // In production, this would open barcode scanner
-      // For now, we'll simulate with mock barcode
       const mockBarcode = "012345678901";
       const food = await FoodScanService.scanBarcode(mockBarcode);
       setScannedFood(food);
       calculatePrediction(food);
       Alert.alert("Success", `Scanned: ${food.name}`);
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "Failed to scan barcode.");
     } finally {
       setIsScanning(false);
+    }
+  };
+
+  const handleLogToOfflineStorage = async () => {
+    if (!scannedFood) return;
+    const portion = parseFloat(portionSize) || 1;
+    const carbs = Math.round(scannedFood.nutrition.carbs * portion);
+    const calories = Math.round(scannedFood.nutrition.calories * portion);
+    const protein = Math.round(scannedFood.nutrition.protein * portion);
+    const fat = Math.round(scannedFood.nutrition.fat * portion);
+    try {
+      await offlineStorage.saveMealEntry(scannedFood.name, carbs, protein, fat, calories, "scanner");
+      setSavedMsg(`✓ Logged ${carbs}g carbs`);
+      setTimeout(() => setSavedMsg(""), 3000);
+    } catch {
+      Alert.alert("Error", "Failed to save meal.");
     }
   };
 
@@ -96,7 +136,7 @@ export default function FoodScannerScreen() {
           {/* Scan Options */}
           <View className="gap-3">
             <TouchableOpacity
-              onPress={handlePhotoScan}
+              onPress={() => handlePhotoScan("camera")}
               disabled={isScanning}
               className="rounded-2xl p-6 items-center"
               style={{ backgroundColor: colors.primary, opacity: isScanning ? 0.6 : 1 }}
@@ -295,33 +335,93 @@ export default function FoodScannerScreen() {
             </View>
           )}
 
+          {/* Offline DB Search */}
+          <View
+            className="rounded-2xl p-4"
+            style={{ backgroundColor: colors.surface }}
+          >
+            <Text className="text-base font-semibold text-foreground mb-3">Search Food Database (Offline)</Text>
+            <View
+              className="flex-row items-center rounded-xl px-3"
+              style={{ backgroundColor: colors.background, borderWidth: 1, borderColor: colors.border }}
+            >
+              <Text style={{ fontSize: 16, marginRight: 8 }}>🔍</Text>
+              <TextInput
+                value={dbQuery}
+                onChangeText={handleDbSearch}
+                placeholder="e.g. banana, rice, pizza..."
+                placeholderTextColor={colors.muted}
+                className="flex-1 py-3 text-foreground"
+                returnKeyType="search"
+              />
+            </View>
+            {dbResults.length > 0 && (
+              <View className="mt-2 gap-1">
+                {dbResults.map((r) => (
+                  <TouchableOpacity
+                    key={r.item.id}
+                    onPress={() => {
+                      setScannedFood({
+                        id: r.item.id,
+                        name: r.item.name,
+                        brand: r.item.category,
+                        nutrition: {
+                          calories: r.item.caloriesPer100g,
+                          carbs: r.item.carbsPer100g,
+                          protein: r.item.proteinPer100g,
+                          fat: r.item.fatPer100g,
+                          fiber: 0,
+                          glycemicIndex: r.item.glycemicIndex,
+                          servingSize: r.item.servingLabel,
+                        },
+                      } as any);
+                      setPortionSize("1.0");
+                      setDbResults([]);
+                    }}
+                    className="flex-row justify-between items-center p-3 rounded-xl"
+                    style={{ backgroundColor: colors.background }}
+                  >
+                    <View>
+                      <Text className="text-sm font-semibold text-foreground">{r.item.name}</Text>
+                      <Text className="text-xs text-muted">{r.item.servingLabel} · GI {r.item.glycemicIndex}</Text>
+                    </View>
+                    <Text className="text-base font-bold" style={{ color: colors.primary }}>{r.servingCarbs}g carbs</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+          </View>
+
           {/* Action Buttons */}
           {scannedFood && (
             <View className="gap-3">
               <TouchableOpacity
-                onPress={() => Alert.alert("Coming Soon", "Meal logging will be available soon.")}
+                onPress={handleLogToOfflineStorage}
                 className="rounded-full p-4 items-center"
                 style={{ backgroundColor: colors.primary }}
               >
-                <Text className="text-lg font-semibold text-white">
-                  Log This Meal
-                </Text>
+                <Text className="text-lg font-semibold text-white">Log This Meal</Text>
               </TouchableOpacity>
-              
+
               <TouchableOpacity
-                onPress={() => {
-                  setScannedFood(null);
-                  setPrediction(null);
-                }}
+                onPress={() => { setScannedFood(null); setPrediction(null); setAiResult(null); }}
                 className="rounded-full p-4 items-center"
                 style={{ backgroundColor: colors.surface }}
               >
-                <Text className="text-lg font-semibold" style={{ color: colors.primary }}>
-                  Scan Another Food
-                </Text>
+                <Text className="text-lg font-semibold" style={{ color: colors.primary }}>Scan Another Food</Text>
               </TouchableOpacity>
             </View>
           )}
+
+          {/* Success Banner */}
+          {savedMsg ? (
+            <View
+              className="rounded-2xl p-4 items-center"
+              style={{ backgroundColor: "#22C55E20", borderWidth: 1, borderColor: "#22C55E" }}
+            >
+              <Text style={{ color: "#22C55E", fontWeight: "700" }}>{savedMsg}</Text>
+            </View>
+          ) : null}
         </View>
       </ScrollView>
     </ScreenContainer>

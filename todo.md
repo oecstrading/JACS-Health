@@ -4172,3 +4172,38 @@
 ## Android Build Errors (Round 2)
 - [x] Fix: NODE_ENV environment variable not set during EAS build bundling - defaulted to 'production' in load-env.js
 - [x] Fix: Kotlin compilation error - Cannot access OnUserLeaveHintProvider - forced androidx.appcompat:1.6.1 in withAndroidXFix plugin
+
+## World-Class Diabetic Management Upgrade
+
+### Phase A: Hard-Gate Data Entry Enforcement
+- [x] Create HardGateScreen component - replaces dashboard when mandatory metrics missing
+- [x] Create useHardGate hook - checks if glucose/insulin/activity logged in current window
+- [x] Integrate HardGate into root _layout.tsx with progressive disclosure
+- [x] Add persistent 4-hour reminder notifications for missing data
+- [x] Add rapid-spike lock (trendRate > 2.0 mg/dL/min locks all screens except entry)
+
+### Phase B: Device Simulation Suite
+- [x] Create services/simulatorDataFactory.ts - Dexcom G6/G7 CGM JSON packets (5-min intervals)
+- [x] Implement physiological glucose engine (gamma distribution carb/insulin curves)
+- [x] Create Omnipod DASH state machine (reservoir, basal rate, bolus, auto-off timer)
+- [x] Create Omron BP BLE emulator (twice-daily push, physiologically plausible values)
+- [x] Add SimulatorMode toggle in device settings
+- [x] Wire all simulated data into existing analytics engine
+
+### Phase C: Offline-First SQLite Storage
+- [x] Install expo-sqlite and create local database schema
+- [x] Migrate AsyncStorage health records to SQLite
+- [x] Implement 3-2-1 backup: sync only on unmetered Wi-Fi
+- [x] Bundle top 500 regional food items offline database (USDA FoodData Central)
+
+### Phase D: On-Device AI Bolus Advisor
+- [x] Implement IOB (Insulin on Board) exponential decay engine
+- [x] Implement COB (Carbs on Board) dual-peak absorption model
+- [x] Create PredictiveBolus advisor screen (no server calls)
+- [x] Add mg/dL ↔ mmol/L unit switching globally
+
+### Phase E: Gold Standard Features
+- [x] HCP PDF export (one-tap, doctor-formatted)
+- [x] Emergency Mode lock-screen widget (glucose + ICE contacts)
+- [x] Community Insights anonymous benchmarking
+- [x] Food Recognition carb counter (camera-based) with offline USDA database + AI image recognition

@@ -26,6 +26,8 @@ import { UpdateNotificationModal } from "@/components/UpdateNotificationModal";
 import type { UpdateCheckResult } from "@/services/updateService";
 import { UpdateChecker } from "@/components/update-checker";
 import { PersonalizationPrompt } from "@/components/personalization-prompt";
+import { HardGateScreen } from "@/components/hard-gate-screen";
+import { useHardGate } from "@/hooks/use-hard-gate";
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
 const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -33,6 +35,17 @@ const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
 export const unstable_settings = {
   anchor: "(tabs)",
 };
+
+function AppContent() {
+  const { isGateOpen, isRapidSpikeActive, missingMetrics } = useHardGate();
+
+  // Show Hard-Gate if mandatory metrics are missing or rapid spike detected
+  if (!isGateOpen || isRapidSpikeActive) {
+    return <HardGateScreen />;
+  }
+
+  return null; // Gate is open, render normal app
+}
 
 export default function RootLayout() {
   const router = useRouter();
@@ -175,6 +188,7 @@ export default function RootLayout() {
           <StatusBar style="auto" />
           <UpdateChecker />
           <PersonalizationPrompt />
+          <AppContent />
           {updateAvailable && (
             <UpdateNotificationModal
               visible={showUpdateModal}

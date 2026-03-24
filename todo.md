@@ -4303,3 +4303,6 @@
 - [x] School/Caregiver handoff card (printable/shareable)
 - [ ] Meal planner (wheat-free + T1D friendly weekly plan)
 - [x] Wheat-Free Meal Planner (one-tap weekly plan, carb counts, shareable shopping list)
+- [x] Daily BG reminder notifications (up to 5 configurable times, local push)
+- [x] My T1D Story voice journal (Kids World, voice memo recorder, playback)
+- [x] A1C estimator (Blood Sugar Log, ADA formula, 90-day average)

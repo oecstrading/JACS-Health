@@ -333,6 +333,58 @@ export default function PatientCommandCenter() {
         <Text style={{ color: '#4ADE80', fontSize: 18 }}>→</Text>
       </Pressable>
 
+      {/* BG Reminders */}
+      <Pressable
+        onPress={() => {
+          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          router.push('/bg-reminders');
+        }}
+        style={({ pressed }) => [{
+          backgroundColor: pressed ? '#1E3A5FCC' : '#1E3A5F',
+          borderWidth: 2,
+          borderColor: pressed ? '#60A5FA' : '#60A5FA80',
+          transform: [{ scale: pressed ? 0.98 : 1 }],
+          borderRadius: 16,
+          marginBottom: 12,
+          padding: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }]}
+      >
+        <Text style={{ fontSize: 28, marginRight: 12 }}>⏰</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#60A5FA', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>⏰ BG CHECK REMINDERS</Text>
+          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Set daily alerts • Never miss a check</Text>
+        </View>
+        <Text style={{ color: '#60A5FA', fontSize: 18 }}>→</Text>
+      </Pressable>
+
+      {/* My T1D Story */}
+      <Pressable
+        onPress={() => {
+          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          router.push('/my-t1d-story');
+        }}
+        style={({ pressed }) => [{
+          backgroundColor: pressed ? '#3B0764CC' : '#3B0764',
+          borderWidth: 2,
+          borderColor: pressed ? '#C084FC' : '#C084FC80',
+          transform: [{ scale: pressed ? 0.98 : 1 }],
+          borderRadius: 16,
+          marginBottom: 12,
+          padding: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }]}
+      >
+        <Text style={{ fontSize: 28, marginRight: 12 }}>🎙️</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#C084FC', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>🎙️ MY T1D STORY</Text>
+          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Kids voice journal • Record your day • Build your story</Text>
+        </View>
+        <Text style={{ color: '#C084FC', fontSize: 18 }}>→</Text>
+      </Pressable>
+
         {/* QR Code Section */}
         <View className="bg-surface rounded-2xl p-4 mb-4 border border-border items-center">
           <Text className="text-base font-semibold text-foreground mb-2">Scan to Download Mobile App</Text>

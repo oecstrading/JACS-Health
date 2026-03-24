@@ -243,6 +243,46 @@ export default function BloodSugarLog() {
           </View>
         )}
 
+        {/* A1C Estimator */}
+        {readings.length >= 3 && (() => {
+          const last90 = readings.filter(r => r.timestamp > Date.now() - 90 * 86400000);
+          const pool = last90.length >= 3 ? last90 : readings.slice(0, Math.min(readings.length, 30));
+          const poolAvg = Math.round(pool.reduce((s, r) => s + r.value, 0) / pool.length);
+          const eA1C = ((poolAvg + 46.7) / 28.7).toFixed(1);
+          const a1cNum = parseFloat(eA1C);
+          const a1cColor = a1cNum < 7 ? "#22C55E" : a1cNum < 8 ? "#F59E0B" : "#EF4444";
+          const a1cLabel = a1cNum < 7 ? "In Target Range" : a1cNum < 8 ? "Slightly Above Target" : "Above Target — Talk to Endo";
+          const a1cNote = a1cNum < 7
+            ? "Great control! ADA target for children is below 7.0%."
+            : a1cNum < 8
+            ? "Close to target. Small adjustments may help. Discuss with your endocrinologist."
+            : "Above ADA target. Please review insulin doses with your endocrinologist soon.";
+          return (
+            <View style={[s.card, { backgroundColor: "#0C1B33", borderColor: a1cColor, borderWidth: 2 }]}>
+              <Text style={[s.cardTitle, { color: a1cColor }]} allowFontScaling={false}>🧪 Estimated A1C</Text>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 16, marginBottom: 10 }}>
+                <View style={{ alignItems: "center" }}>
+                  <Text style={{ color: a1cColor, fontSize: 48, fontWeight: "900" }} allowFontScaling={false}>{eA1C}%</Text>
+                  <Text style={{ color: a1cColor, fontSize: 12, fontWeight: "700" }} allowFontScaling={false}>{a1cLabel}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: "#9BA1A6", fontSize: 12, lineHeight: 18 }} allowFontScaling={false}>{a1cNote}</Text>
+                  <Text style={{ color: "#60A5FA", fontSize: 11, marginTop: 6 }} allowFontScaling={false}>Based on {pool.length} reading{pool.length !== 1 ? "s" : ""} • ADA formula: (avg + 46.7) / 28.7</Text>
+                </View>
+              </View>
+              <View style={{ flexDirection: "row", justifyContent: "space-around", borderTopWidth: 1, borderTopColor: "#1E3A5F", paddingTop: 10 }}>
+                {[{ pct: "<7%", label: "ADA Target", color: "#22C55E" }, { pct: "7–8%", label: "Borderline", color: "#F59E0B" }, { pct: ">8%", label: "Above Target", color: "#EF4444" }].map(b => (
+                  <View key={b.pct} style={{ alignItems: "center" }}>
+                    <Text style={{ color: b.color, fontSize: 14, fontWeight: "900" }} allowFontScaling={false}>{b.pct}</Text>
+                    <Text style={{ color: "#9BA1A6", fontSize: 10 }} allowFontScaling={false}>{b.label}</Text>
+                  </View>
+                ))}
+              </View>
+              <Text style={{ color: "#9BA1A6", fontSize: 11, marginTop: 8, textAlign: "center", fontStyle: "italic" }} allowFontScaling={false}>⚠️ Estimated only. Lab A1C from your doctor is the gold standard.</Text>
+            </View>
+          );
+        })()}
+
         {/* History */}
         {readings.length > 0 && (
           <View style={[s.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>

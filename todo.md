@@ -4263,3 +4263,20 @@
 - [x] Medical ID emergency card at top of Home screen (red, prominent, one-tap access)
 - [x] Overnight low glucose push notifications (local notification when CGM < 70 mg/dL)
 - [x] Social media account setup guides (Facebook, TikTok, Instagram — real page creation steps)
+
+## Phase 10 — Cross-Platform Optimization (Samsung, iPhone, All Devices)
+- [x] Create useResponsive hook for adaptive font sizes and spacing
+- [ ] Add allowFontScaling={false} to all critical Text elements (medical data, dosing)
+- [x] Fix tab bar: scrollable tab bar for 8+ visible tabs on small screens
+- [x] Fix Android edge-to-edge: status bar color matches screen header on all screens
+- [x] Fix iOS Dynamic Island / notch: all custom headers use correct top inset
+- [x] Add minimum 44pt touch targets to all interactive elements
+- [x] Fix Samsung Galaxy font scaling: prevent system font size from breaking layouts
+- [x] Add Platform-specific shadow styles (iOS shadow vs Android elevation)
+- [x] Add keyboard avoiding behavior to all forms (TextInput screens)
+- [ ] Fix ScrollView bottom padding to account for tab bar height on all devices
+- [ ] Add FlatList optimization: keyExtractor, getItemLayout, removeClippedSubviews
+- [ ] Fix web layout: max-width container for iPad/tablet landscape mode
+- [ ] Add haptic feedback guards (Platform.OS !== 'web') to all haptic calls
+- [ ] Ensure all images use resizeMode='contain' or 'cover' explicitly
+- [x] Add accessibility labels to all icon buttons and interactive elements

@@ -360,6 +360,7 @@ export default function DiabetesPortal() {
                 { label: "Night Safety", icon: "🌙", color: "#7C3AED", action: () => router.push("/overnight-dashboard") },
                 { label: "Free Insulin", icon: "💊", color: "#10B981", action: () => router.push("/insulin-resources") },
                 { label: "Medical ID", icon: "🪪", color: "#D4AF37", action: () => router.push("/medical-id-card") },
+                { label: "Diaversary", icon: "💙", color: "#1D4ED8", action: () => router.push("/diagnosis-anniversary") },
               ].map((btn, i) => (
                 <TouchableOpacity key={i} style={[styles.quickBtn, { backgroundColor: btn.color }]} onPress={btn.action}>
                   <Text style={styles.quickIcon}>{btn.icon}</Text>

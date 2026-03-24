@@ -255,6 +255,58 @@ export default function PatientCommandCenter() {
         <Text style={{ color: '#D4AF37', fontSize: 18 }}>→</Text>
       </Pressable>
 
+      {/* Kids World — Child-Facing */}
+      <Pressable
+        onPress={() => {
+          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          router.push('/kids-world');
+        }}
+        style={({ pressed }) => [{
+          backgroundColor: pressed ? '#1A0A3BCC' : '#1A0A3B',
+          borderWidth: 2,
+          borderColor: pressed ? '#FFD700' : '#FFD70080',
+          transform: [{ scale: pressed ? 0.98 : 1 }],
+          borderRadius: 16,
+          marginBottom: 12,
+          padding: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }]}
+      >
+        <Text style={{ fontSize: 28, marginRight: 12 }}>🌟</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#FFD700', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>🌟 KIDS WORLD</Text>
+          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>For your child • Games • Badges • Education</Text>
+        </View>
+        <Text style={{ color: '#FFD700', fontSize: 18 }}>→</Text>
+      </Pressable>
+
+      {/* Learning Hub — Caregiver Education */}
+      <Pressable
+        onPress={() => {
+          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          router.push('/learning-hub');
+        }}
+        style={({ pressed }) => [{
+          backgroundColor: pressed ? '#0C1B33CC' : '#0C1B33',
+          borderWidth: 2,
+          borderColor: pressed ? '#60A5FA' : '#60A5FA80',
+          transform: [{ scale: pressed ? 0.98 : 1 }],
+          borderRadius: 16,
+          marginBottom: 12,
+          padding: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }]}
+      >
+        <Text style={{ fontSize: 28, marginRight: 12 }}>🌍</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#60A5FA', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>🌍 LEARNING HUB</Text>
+          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Caregiver education • 6 languages • Handoff card</Text>
+        </View>
+        <Text style={{ color: '#60A5FA', fontSize: 18 }}>→</Text>
+      </Pressable>
+
         {/* QR Code Section */}
         <View className="bg-surface rounded-2xl p-4 mb-4 border border-border items-center">
           <Text className="text-base font-semibold text-foreground mb-2">Scan to Download Mobile App</Text>

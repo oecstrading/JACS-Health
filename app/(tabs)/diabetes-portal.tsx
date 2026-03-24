@@ -363,6 +363,8 @@ export default function DiabetesPortal() {
                 { label: "Diaversary", icon: "💙", color: "#1D4ED8", action: () => router.push("/diagnosis-anniversary") },
                 { label: "BG Log", icon: "🩸", color: "#DC2626", action: () => router.push("/blood-sugar-log") },
                 { label: "Guardian", icon: "🛡️", color: "#D4AF37", action: () => router.push("/guardian-agent") },
+                { label: "Kids World", icon: "🌟", color: "#FFD700", action: () => router.push("/kids-world") },
+                { label: "Learn Hub", icon: "🌍", color: "#60A5FA", action: () => router.push("/learning-hub") },
               ].map((btn, i) => (
                 <TouchableOpacity key={i} style={[styles.quickBtn, { backgroundColor: btn.color }]} onPress={btn.action}>
                   <Text style={styles.quickIcon}>{btn.icon}</Text>

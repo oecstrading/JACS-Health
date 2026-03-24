@@ -4288,3 +4288,17 @@
 - [x] Daily safety routine checklist (homeschool mom single parent)
 - [x] Emergency contacts + EpiPen tracker
 - [x] Safe foods database (wheat-free + T1D friendly)
+
+## Phase 12 — Kids World & Global Education
+- [x] Kids World screen (child-facing fun BG tracker with characters)
+- [x] Diabetes Buddy character (animated companion for 4-year-olds)
+- [x] BG check reward system (stars, badges, celebrations)
+- [x] Kids diabetes education (simple age-appropriate lessons)
+- [x] "How I Feel" mood + symptom tracker for young children
+- [x] Learning Hub screen (caregiver education in multiple languages)
+- [x] Multilingual support (Spanish, French, Portuguese, Hindi, Arabic)
+- [x] T1D myth busters (common misconceptions)
+- [x] Carb counting basics for caregivers
+- [x] Glucagon kit tracker
+- [x] School/Caregiver handoff card (printable/shareable)
+- [ ] Meal planner (wheat-free + T1D friendly weekly plan)

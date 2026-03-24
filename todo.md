@@ -4258,3 +4258,8 @@
 - [x] Audience targeting agent (500M reach strategy)
 - [x] Engagement response agent (auto-reply templates)
 - [x] Analytics reporting agent (weekly performance summary)
+
+## Next Steps (Phase 8)
+- [x] Medical ID emergency card at top of Home screen (red, prominent, one-tap access)
+- [x] Overnight low glucose push notifications (local notification when CGM < 70 mg/dL)
+- [x] Social media account setup guides (Facebook, TikTok, Instagram — real page creation steps)

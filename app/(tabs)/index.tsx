@@ -236,6 +236,40 @@ export default function PatientCommandCenter() {
       </View>
 
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
+        {/* ── MEDICAL ID EMERGENCY CARD ─────────────────────────────────── */}
+        <Pressable
+          onPress={() => {
+            if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+            router.push('/medical-id-card');
+          }}
+          style={({ pressed }) => ({
+            backgroundColor: pressed ? '#B91C1C' : '#DC2626',
+            borderRadius: 16,
+            padding: 16,
+            marginBottom: 16,
+            marginTop: 4,
+            flexDirection: 'row',
+            alignItems: 'center',
+            shadowColor: '#DC2626',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.4,
+            shadowRadius: 8,
+            elevation: 8,
+            transform: [{ scale: pressed ? 0.97 : 1 }],
+          })}
+        >
+          <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: '#ffffff30', alignItems: 'center', justifyContent: 'center', marginRight: 14 }}>
+            <Text style={{ fontSize: 26 }}>🪪</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: '#fff', fontWeight: '900', fontSize: 17, letterSpacing: 0.3 }}>MEDICAL ID CARD</Text>
+            <Text style={{ color: '#FFB3B3', fontSize: 12, marginTop: 2 }}>Type 1 Diabetes • Tap for emergency info</Text>
+          </View>
+          <View style={{ backgroundColor: '#ffffff25', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6 }}>
+            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 12 }}>OPEN →</Text>
+          </View>
+        </Pressable>
+
         {/* Daily Vitals Ribbon */}
         <View className="bg-surface rounded-3xl p-6 mb-6 border border-border">
           <Text className="text-xl font-semibold text-foreground mb-4" style={{ lineHeight: 28 }}>

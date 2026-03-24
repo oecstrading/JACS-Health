@@ -7,7 +7,7 @@
  * Clinically based on ADA 2024 nighttime hypoglycemia prevention guidelines.
  */
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -15,11 +15,72 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  Platform,
+  Switch,
 } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Notifications from "expo-notifications";
+import * as Haptics from "expo-haptics";
+
+// ─── Notification Setup ────────────────────────────────────────────────────────
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
+
+async function requestNotificationPermission(): Promise<boolean> {
+  if (Platform.OS === "web") return false;
+  const { status: existing } = await Notifications.getPermissionsAsync();
+  if (existing === "granted") return true;
+  const { status } = await Notifications.requestPermissionsAsync();
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("glucose-alerts", {
+      name: "Glucose Alerts",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 500, 250, 500],
+      lightColor: "#DC2626",
+      sound: "default",
+    });
+  }
+  return status === "granted";
+}
+
+async function sendLowGlucoseAlert(value: number, trend: string): Promise<void> {
+  const granted = await requestNotificationPermission();
+  if (!granted) return;
+  const isRapidFall = trend === "falling_fast";
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: isRapidFall ? "⚠️ RAPID DROP — Check Child Now!" : "⚠️ LOW GLUCOSE ALERT",
+      body: `Glucose is ${value} mg/dL${isRapidFall ? " and falling fast" : ""}. Wake up and treat immediately!`,
+      data: { screen: "overnight-dashboard", value },
+      sound: "default",
+    },
+    trigger: null, // fire immediately
+  });
+}
+
+async function sendCautionAlert(value: number): Promise<void> {
+  const granted = await requestNotificationPermission();
+  if (!granted) return;
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "👀 Glucose Dropping — Monitor Closely",
+      body: `Glucose is ${value} mg/dL and trending down. Check in 15 minutes.`,
+      data: { screen: "overnight-dashboard", value },
+      sound: "default",
+    },
+    trigger: null,
+  });
+}
 
 const { width } = Dimensions.get("window");
 const CHART_WIDTH = width - 48;
@@ -96,6 +157,18 @@ export default function OvernightDashboard() {
   const colors = useColors();
   const [readings, setReadings] = useState<GlucoseReading[]>([]);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [alertsEnabled, setAlertsEnabled] = useState(true);
+  const [notifPermission, setNotifPermission] = useState<"unknown" | "granted" | "denied">("unknown");
+  const lastAlertRef = useRef<{ value: number; time: number } | null>(null);
+
+  // Request permission on mount
+  useEffect(() => {
+    if (Platform.OS !== "web") {
+      requestNotificationPermission().then(granted =>
+        setNotifPermission(granted ? "granted" : "denied")
+      );
+    }
+  }, []);
 
   const loadData = useCallback(async () => {
     try {
@@ -113,6 +186,25 @@ export default function OvernightDashboard() {
     }
     setLastUpdated(new Date());
   }, []);
+
+  // ─── Check glucose and fire alerts after readings update ────────────────────────────
+  useEffect(() => {
+    if (!alertsEnabled || readings.length === 0) return;
+    const latest = readings[readings.length - 1];
+    const now = Date.now();
+    // Throttle: only alert once per 15 minutes for the same glucose level
+    const lastAlert = lastAlertRef.current;
+    if (lastAlert && now - lastAlert.time < 15 * 60 * 1000 && Math.abs(lastAlert.value - latest.value) < 10) return;
+    if (latest.value < 70) {
+      sendLowGlucoseAlert(latest.value, latest.trend);
+      if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      lastAlertRef.current = { value: latest.value, time: now };
+    } else if (latest.value < 80 && (latest.trend === "falling" || latest.trend === "falling_fast")) {
+      sendCautionAlert(latest.value);
+      if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      lastAlertRef.current = { value: latest.value, time: now };
+    }
+  }, [readings, alertsEnabled]);
 
   useEffect(() => {
     loadData();
@@ -154,6 +246,34 @@ export default function OvernightDashboard() {
         <TouchableOpacity onPress={loadData}>
           <Text style={styles.refreshBtn}>↻ Refresh</Text>
         </TouchableOpacity>
+      </View>
+
+      {/* Notification Alert Toggle Bar */}
+      <View style={[styles.alertBar, {
+        backgroundColor: alertsEnabled ? "#052e16" : "#1c1917",
+        borderBottomColor: alertsEnabled ? "#16a34a" : "#44403c",
+      }]}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: alertsEnabled ? "#4ade80" : "#a8a29e", fontWeight: "700", fontSize: 13 }}>
+            {alertsEnabled ? "🔔 Low Glucose Alerts ON" : "🔕 Low Glucose Alerts OFF"}
+          </Text>
+          <Text style={{ color: alertsEnabled ? "#86efac" : "#78716c", fontSize: 11, marginTop: 1 }}>
+            {notifPermission === "denied"
+              ? "Enable notifications in Settings to receive alerts"
+              : alertsEnabled
+              ? "You will be notified if glucose drops below 70 mg/dL"
+              : "Tap to enable overnight glucose alerts"}
+          </Text>
+        </View>
+        <Switch
+          value={alertsEnabled}
+          onValueChange={(v) => {
+            setAlertsEnabled(v);
+            if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          }}
+          trackColor={{ false: "#44403c", true: "#16a34a" }}
+          thumbColor={alertsEnabled ? "#4ade80" : "#a8a29e"}
+        />
       </View>
 
       <ScrollView
@@ -293,6 +413,7 @@ export default function OvernightDashboard() {
 }
 
 const styles = StyleSheet.create({
+  alertBar: { flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: 1 },
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: 16 },
   backText: { color: "#94A3B8", fontSize: 16, fontWeight: "600" },
   headerTitle: { color: "#fff", fontSize: 17, fontWeight: "800" },

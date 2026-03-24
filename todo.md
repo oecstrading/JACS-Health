@@ -4281,3 +4281,10 @@
 - [ ] Ensure all images use resizeMode='contain' or 'cover' explicitly
 - [x] Add accessibility labels to all icon buttons and interactive elements
 - [x] Blood Sugar Log screen (quick entry, history chart, stats)
+- [x] Guardian Agent screen (T1D + wheat allergy life-safety agent for 4-year-old)
+- [x] Wheat/gluten food scanner (barcode + ingredient text scan)
+- [x] Hypoglycemia symptom checker (toddler-specific behavioral signs)
+- [x] Anaphylaxis emergency protocol (wheat allergy step-by-step)
+- [x] Daily safety routine checklist (homeschool mom single parent)
+- [x] Emergency contacts + EpiPen tracker
+- [x] Safe foods database (wheat-free + T1D friendly)

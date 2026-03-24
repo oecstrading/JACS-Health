@@ -78,9 +78,9 @@ export default function DiagnosisAnniversary() {
     if (status !== "granted") { Alert.alert("Permission needed", "Enable notifications in Settings."); return; }
     await Notifications.scheduleNotificationAsync({
       content: { title: "💙 Another Year Stronger!", body: `${data.childName || "Your child"} has been fighting T1D for ${Math.max(1, yearsAgo(data.diagnosisDate))} year(s). Brave, resilient, and loved. 💙`, sound: "default" },
-      trigger: { seconds: 3 },
+      trigger: { type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL, seconds: 3 },
     });
-    setTestSent(true); if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    setTestSent(true); if (Platform.OS === "ios" || Platform.OS === "android") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     setTimeout(() => setTestSent(false), 4000);
   };
 

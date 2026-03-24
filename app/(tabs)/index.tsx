@@ -174,6 +174,34 @@ export default function PatientCommandCenter() {
           </Text>
         </Pressable>
       </View>
+
+      {/* JACS Brand Hub — Hero Page & Social Media */}
+      <Pressable
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          router.push('/jacs-brand-hub');
+        }}
+        style={({ pressed }) => [
+          {
+            backgroundColor: pressed ? '#0A0F1ECC' : '#0A0F1E',
+            borderWidth: 2,
+            borderColor: pressed ? '#D4AF37' : '#D4AF3780',
+            transform: [{ scale: pressed ? 0.98 : 1 }],
+            borderRadius: 16,
+            marginBottom: 12,
+            padding: 16,
+            flexDirection: 'row',
+            alignItems: 'center',
+          },
+        ]}
+      >
+        <Text style={{ fontSize: 28, marginRight: 12 }}>🌟</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#D4AF37', fontWeight: '800', fontSize: 16 }}>JACS Brand Hub</Text>
+          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }}>Hero Page • Social Media • Share App</Text>
+        </View>
+        <Text style={{ color: '#D4AF37', fontSize: 18 }}>→</Text>
+      </Pressable>
         
         {/* QR Code Section */}
         <View className="bg-surface rounded-2xl p-4 mb-4 border border-border items-center">

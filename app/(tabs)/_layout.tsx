@@ -90,6 +90,14 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
+
+      {/* JACS Brand Hub - Hero Page & Social Media Marketing */}
+      <Tabs.Screen
+        name="jacs-brand-hub"
+        options={{
+          href: null,
+        }}
+      />
       
       {/* Module VI: Device Management & Data Entry */}
       <Tabs.Screen

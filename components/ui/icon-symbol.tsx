@@ -56,6 +56,9 @@ const MAPPING = {
   "arrow.down.circle.fill": "download",
   "waveform.path.ecg": "monitor-heart",
   "syringe.fill": "vaccines",
+  "star.fill": "star",
+  "megaphone.fill": "campaign",
+  "globe": "public",
 } as IconMapping;
 
 type IconSymbolName = keyof typeof MAPPING;

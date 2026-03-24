@@ -128,7 +128,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="diabetes-portal"
         options={{
-          href: null,
+          title: "Diabetes",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="drop.fill" color={color} />,
         }}
       />
     </Tabs>

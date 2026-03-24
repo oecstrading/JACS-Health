@@ -54,6 +54,8 @@ const MAPPING = {
   "book.fill": "menu-book",
   "antenna.radiowaves.left.and.right": "wifi",
   "arrow.down.circle.fill": "download",
+  "waveform.path.ecg": "monitor-heart",
+  "syringe.fill": "vaccines",
 } as IconMapping;
 
 type IconSymbolName = keyof typeof MAPPING;

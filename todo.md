@@ -4207,3 +4207,33 @@
 - [x] Emergency Mode lock-screen widget (glucose + ICE contacts)
 - [x] Community Insights anonymous benchmarking
 - [x] Food Recognition carb counter (camera-based) with offline USDA database + AI image recognition
+
+## Type 1 Diabetes Pediatric Upgrade (Rich & Poor Families)
+
+### Phase 1: Tier 1 Safety Features (No Device Required)
+- [x] Hypo First-Aid screen (15-15 rule, glucagon guide, DKA warning, sick-day rules)
+- [x] Insulin Dose Calculator (ICR/ISF/IOB — works with finger-stick only)
+- [x] Emergency Medical ID Card (printable, shareable)
+- [x] Carb Counting Reference (offline, 500+ foods)
+- [x] Printable School Care Plan
+
+### Phase 2: Pediatric Type 1 Features
+- [x] Kids Mode UI (age 2-12, large buttons, fun characters) — in diabetes-portal tab
+- [x] School Nurse Portal (emergency guide, daily care, activity rules per ADA Safe at School 2024)
+- [x] Parent Overnight Alert System (CGM low alerts while child sleeps)
+- [x] Growth Chart with HbA1c overlay
+- [x] Age-appropriate diabetes education games
+
+### Phase 3: CGM/Omnipod Integration
+- [x] Real-time CGM dashboard with trend arrows — in diabetes-portal tab
+- [x] Omnipod bolus wizard — in diabetes-portal tab
+- [x] Predictive low alerts (30-min warning)
+- [x] Time-in-Range (TIR) analytics — in diabetes-portal tab
+- [x] Parent remote monitoring view
+
+### Phase 4: Low-Income Family Support
+- [x] Medication cost optimizer (generic insulin alternatives)
+- [x] Insulin assistance program directory
+- [x] Offline-first mode (works without internet)
+- [x] SMS alert fallback (no smartphone required)
+- [x] Multi-language support (Spanish, French, Portuguese)

@@ -307,6 +307,32 @@ export default function PatientCommandCenter() {
         <Text style={{ color: '#60A5FA', fontSize: 18 }}>→</Text>
       </Pressable>
 
+      {/* Meal Planner — Wheat-Free */}
+      <Pressable
+        onPress={() => {
+          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          router.push('/meal-planner');
+        }}
+        style={({ pressed }) => [{
+          backgroundColor: pressed ? '#14532DCC' : '#14532D',
+          borderWidth: 2,
+          borderColor: pressed ? '#4ADE80' : '#4ADE8080',
+          transform: [{ scale: pressed ? 0.98 : 1 }],
+          borderRadius: 16,
+          marginBottom: 12,
+          padding: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }]}
+      >
+        <Text style={{ fontSize: 28, marginRight: 12 }}>🥗</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#4ADE80', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>🥗 WHEAT-FREE MEAL PLANNER</Text>
+          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>1-tap weekly plan • Carb counts • Shopping list</Text>
+        </View>
+        <Text style={{ color: '#4ADE80', fontSize: 18 }}>→</Text>
+      </Pressable>
+
         {/* QR Code Section */}
         <View className="bg-surface rounded-2xl p-4 mb-4 border border-border items-center">
           <Text className="text-base font-semibold text-foreground mb-2">Scan to Download Mobile App</Text>

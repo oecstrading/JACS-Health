@@ -4302,3 +4302,4 @@
 - [x] Glucagon kit tracker
 - [x] School/Caregiver handoff card (printable/shareable)
 - [ ] Meal planner (wheat-free + T1D friendly weekly plan)
+- [x] Wheat-Free Meal Planner (one-tap weekly plan, carb counts, shareable shopping list)

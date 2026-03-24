@@ -358,6 +358,7 @@ export default function KidsWorld() {
                 { emoji: "📚", label: "Learn!", color: "#0891B2", action: () => setTab("learn") },
                 { emoji: "🏆", label: "My Badges", color: "#D97706", action: () => setTab("badges") },
                 { emoji: "🛡️", label: "Guardian", color: "#D4AF37", action: () => router.push("/guardian-agent") },
+            { emoji: "🥗", label: "Meal Plan", color: "#16A34A", action: () => router.push("/meal-planner") },
               ].map(({ emoji, label, color, action }) => (
                 <TouchableOpacity key={label} style={[s.quickBtn, { backgroundColor: color + "22", borderColor: color }]} onPress={action} accessibilityRole="button" accessibilityLabel={label}>
                   <Text style={{ fontSize: 30 }}>{emoji}</Text>

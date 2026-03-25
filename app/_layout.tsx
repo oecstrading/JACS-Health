@@ -37,14 +37,10 @@ export const unstable_settings = {
 };
 
 function AppContent() {
-  const { isGateOpen, isRapidSpikeActive, missingMetrics } = useHardGate();
-
-  // Show Hard-Gate if mandatory metrics are missing or rapid spike detected
-  if (!isGateOpen || isRapidSpikeActive) {
-    return <HardGateScreen />;
-  }
-
-  return null; // Gate is open, render normal app
+  // Gate is always open — no blocking. useHardGate now only fires gentle 30-min reminders.
+  // Users can use the full app freely whether or not they have logged vitals.
+  useHardGate();
+  return null;
 }
 
 export default function RootLayout() {

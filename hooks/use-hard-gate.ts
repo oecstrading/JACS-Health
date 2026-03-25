@@ -1,37 +1,32 @@
 /**
- * useHardGate — Hard-Gate Data Entry Enforcement
+ * useHardGate — Gentle Reminder (Non-Blocking)
  *
- * Checks whether the user has recorded all mandatory daily health metrics
- * (Blood Glucose, Insulin dose, Activity) within the current time window.
+ * The gate is ALWAYS OPEN. Users can use the app freely at any time.
+ * A gentle push notification fires every 30 minutes if any metric
+ * has not been logged today, encouraging (never forcing) data entry.
  *
- * Rules:
- * - Gate is OPEN if all three metrics are logged within the last 4 hours
- * - Gate is LOCKED if any metric is missing for > 4 hours
- * - Rapid-spike lock: if CGM trendRate > 2.0 mg/dL/min, ALL screens locked
- *   except the mandatory entry screen
- * - Persistent notifications fire every 4 hours while gate is locked
+ * The HardGateScreen is no longer rendered as a blocker — it is now
+ * an optional quick-log widget accessible from the Home screen.
  */
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { AppState, AppStateStatus } from "react-native";
+import { AppState, AppStateStatus, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
-import { Platform } from "react-native";
 
 const GATE_STORAGE_KEY = "@hard_gate_metrics";
-const REMINDER_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours
-const RAPID_SPIKE_THRESHOLD = 2.0; // mg/dL/min
+const REMINDER_INTERVAL_MS = 30 * 60 * 1000; // 30 minutes
 
 export interface MandatoryMetrics {
-  glucoseLoggedAt: string | null;   // ISO timestamp
-  insulinLoggedAt: string | null;   // ISO timestamp
-  activityLoggedAt: string | null;  // ISO timestamp
-  lastGlucoseTrendRate: number;     // mg/dL/min from CGM
+  glucoseLoggedAt: string | null;
+  insulinLoggedAt: string | null;
+  activityLoggedAt: string | null;
+  lastGlucoseTrendRate: number;
 }
 
 export interface HardGateState {
-  isGateOpen: boolean;
-  isRapidSpikeActive: boolean;
+  isGateOpen: boolean;          // Always true — kept for API compatibility
+  isRapidSpikeActive: boolean;  // Always false — kept for API compatibility
   missingMetrics: string[];
   metrics: MandatoryMetrics;
   logGlucose: (trendRate?: number) => Promise<void>;
@@ -47,39 +42,46 @@ const DEFAULT_METRICS: MandatoryMetrics = {
   lastGlucoseTrendRate: 0,
 };
 
-function isWithin4Hours(isoTimestamp: string | null): boolean {
+function isToday(isoTimestamp: string | null): boolean {
   if (!isoTimestamp) return false;
-  const logged = new Date(isoTimestamp).getTime();
-  const now = Date.now();
-  return now - logged < REMINDER_INTERVAL_MS;
+  const logged = new Date(isoTimestamp);
+  const now = new Date();
+  return (
+    logged.getFullYear() === now.getFullYear() &&
+    logged.getMonth() === now.getMonth() &&
+    logged.getDate() === now.getDate()
+  );
 }
 
 async function requestNotificationPermission(): Promise<boolean> {
   if (Platform.OS === "web") return false;
-  const { status } = await Notifications.requestPermissionsAsync();
-  return status === "granted";
+  try {
+    const { status } = await Notifications.requestPermissionsAsync();
+    return status === "granted";
+  } catch {
+    return false;
+  }
 }
 
-async function scheduleReminderNotification(missingMetrics: string[]): Promise<void> {
+async function scheduleGentleReminder(missingMetrics: string[]): Promise<void> {
   if (Platform.OS === "web") return;
   try {
-    // Cancel any existing hard-gate reminders first
+    // Cancel existing reminders
     const scheduled = await Notifications.getAllScheduledNotificationsAsync();
     for (const n of scheduled) {
-      if (n.content.data?.type === "hard_gate_reminder") {
+      if (n.content.data?.type === "gentle_reminder") {
         await Notifications.cancelScheduledNotificationAsync(n.identifier);
       }
     }
-
     if (missingMetrics.length === 0) return;
 
+    const missing = missingMetrics.join(", ");
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: "⚠️ Health Data Required",
-        body: `Please log your ${missingMetrics.join(", ")} to unlock the dashboard. Accurate data ensures safe AI predictions.`,
+        title: "💙 JACS Health Reminder",
+        body: `Friendly reminder to log: ${missing}. Tap to open the app — takes less than 10 seconds!`,
         sound: true,
-        priority: Notifications.AndroidNotificationPriority.HIGH,
-        data: { type: "hard_gate_reminder" },
+        data: { type: "gentle_reminder" },
       },
       trigger: {
         seconds: REMINDER_INTERVAL_MS / 1000,
@@ -95,16 +97,12 @@ export function useHardGate(): HardGateState {
   const [metrics, setMetrics] = useState<MandatoryMetrics>(DEFAULT_METRICS);
   const appStateRef = useRef<AppStateStatus>(AppState.currentState);
 
-  const computeGateState = useCallback((m: MandatoryMetrics) => {
+  const getMissingMetrics = useCallback((m: MandatoryMetrics): string[] => {
     const missing: string[] = [];
-    if (!isWithin4Hours(m.glucoseLoggedAt)) missing.push("Blood Glucose");
-    if (!isWithin4Hours(m.insulinLoggedAt)) missing.push("Insulin Dose");
-    if (!isWithin4Hours(m.activityLoggedAt)) missing.push("Activity");
-
-    const isRapidSpikeActive = Math.abs(m.lastGlucoseTrendRate) > RAPID_SPIKE_THRESHOLD;
-    const isGateOpen = missing.length === 0 && !isRapidSpikeActive;
-
-    return { isGateOpen, isRapidSpikeActive, missingMetrics: missing };
+    if (!isToday(m.glucoseLoggedAt)) missing.push("Blood Glucose");
+    if (!isToday(m.insulinLoggedAt)) missing.push("Insulin Dose");
+    if (!isToday(m.activityLoggedAt)) missing.push("Activity");
+    return missing;
   }, []);
 
   const loadMetrics = useCallback(async () => {
@@ -113,41 +111,28 @@ export function useHardGate(): HardGateState {
       if (raw) {
         const parsed: MandatoryMetrics = JSON.parse(raw);
         setMetrics(parsed);
-        const { missingMetrics } = computeGateState(parsed);
-        if (missingMetrics.length > 0) {
-          await scheduleReminderNotification(missingMetrics);
-        } else {
-          // Cancel reminders if gate is open
-          if (Platform.OS !== "web") {
-            const scheduled = await Notifications.getAllScheduledNotificationsAsync();
-            for (const n of scheduled) {
-              if (n.content.data?.type === "hard_gate_reminder") {
-                await Notifications.cancelScheduledNotificationAsync(n.identifier);
-              }
-            }
-          }
-        }
+        const missing = getMissingMetrics(parsed);
+        await scheduleGentleReminder(missing);
       }
     } catch {
-      // Storage unavailable, use defaults
+      // Storage unavailable, use defaults — app still works
     }
-  }, [computeGateState]);
+  }, [getMissingMetrics]);
 
   const saveMetrics = useCallback(async (updated: MandatoryMetrics) => {
     try {
       await AsyncStorage.setItem(GATE_STORAGE_KEY, JSON.stringify(updated));
       setMetrics(updated);
-      const { missingMetrics } = computeGateState(updated);
-      await scheduleReminderNotification(missingMetrics);
+      const missing = getMissingMetrics(updated);
+      await scheduleGentleReminder(missing);
     } catch {
       setMetrics(updated);
     }
-  }, [computeGateState]);
+  }, [getMissingMetrics]);
 
   useEffect(() => {
     requestNotificationPermission();
     loadMetrics();
-
     const subscription = AppState.addEventListener("change", (nextState) => {
       if (
         appStateRef.current.match(/inactive|background/) &&
@@ -157,44 +142,40 @@ export function useHardGate(): HardGateState {
       }
       appStateRef.current = nextState;
     });
-
     return () => subscription.remove();
   }, [loadMetrics]);
 
   const logGlucose = useCallback(async (trendRate = 0) => {
-    const updated: MandatoryMetrics = {
+    await saveMetrics({
       ...metrics,
       glucoseLoggedAt: new Date().toISOString(),
       lastGlucoseTrendRate: trendRate,
-    };
-    await saveMetrics(updated);
+    });
   }, [metrics, saveMetrics]);
 
   const logInsulin = useCallback(async () => {
-    const updated: MandatoryMetrics = {
+    await saveMetrics({
       ...metrics,
       insulinLoggedAt: new Date().toISOString(),
-    };
-    await saveMetrics(updated);
+    });
   }, [metrics, saveMetrics]);
 
   const logActivity = useCallback(async () => {
-    const updated: MandatoryMetrics = {
+    await saveMetrics({
       ...metrics,
       activityLoggedAt: new Date().toISOString(),
-    };
-    await saveMetrics(updated);
+    });
   }, [metrics, saveMetrics]);
 
   const refreshGate = useCallback(async () => {
     await loadMetrics();
   }, [loadMetrics]);
 
-  const { isGateOpen, isRapidSpikeActive, missingMetrics } = computeGateState(metrics);
+  const missingMetrics = getMissingMetrics(metrics);
 
   return {
-    isGateOpen,
-    isRapidSpikeActive,
+    isGateOpen: true,          // Always open — no blocking
+    isRapidSpikeActive: false, // Never locks the app
     missingMetrics,
     metrics,
     logGlucose,

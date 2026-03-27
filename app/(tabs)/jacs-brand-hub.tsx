@@ -127,7 +127,20 @@ const SOCIAL_PLATFORMS = [
 
 // ─── Component ─────────────────────────────────────────────────────────────────
 export default function JACSBrandHub() {
-  const [activeTab, setActiveTab] = useState<"hero" | "social" | "share">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "features" | "pitch" | "social" | "share">("hero");
+
+  const handleDownloadFeaturesDeck = async () => {
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const pdfUrl = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663129142386/mTCKjTTSeiMtQkHN.pdf";
+    try {
+      Linking.openURL(pdfUrl);
+    } catch { /* ignore */ }
+  };
+
+  const handleOpenConsumerPitch = () => {
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    router.push("/pitch-deck-consumer" as any);
+  };
 
   const handleLink = (url: string, platform?: string) => {
     if (Platform.OS !== "web") {
@@ -199,24 +212,35 @@ export default function JACSBrandHub() {
           </View>
         </View>
 
-        {/* ── Tab Navigation ───────────────────────────────────────────────── */}
-        <View style={styles.tabRow}>
-          {(["hero", "social", "share"] as const).map((tab) => (
+        {/* ── Tab Navigation (5 tabs, horizontally scrollable) ────────────── */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ flexDirection: "row", paddingHorizontal: 16, gap: 8, paddingBottom: 4 }}
+          style={{ marginBottom: 4 }}
+        >
+          {([
+            { key: "hero",     label: "🌟 Features" },
+            { key: "features", label: "📋 Features Deck" },
+            { key: "pitch",    label: "🎯 Consumer Pitch" },
+            { key: "social",   label: "📱 Social" },
+            { key: "share",    label: "🚀 Share" },
+          ] as const).map(({ key, label }) => (
             <TouchableOpacity
-              key={tab}
-              style={[styles.tab, activeTab === tab && styles.tabActive]}
+              key={key}
+              style={[styles.tab, activeTab === key && styles.tabActive, { minWidth: 110 }]}
               onPress={() => {
-                setActiveTab(tab);
+                setActiveTab(key as any);
                 if (Platform.OS !== "web") Haptics.selectionAsync();
               }}
               activeOpacity={0.8}
             >
-              <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
-                {tab === "hero" ? "🌟 Features" : tab === "social" ? "📱 Social" : "🚀 Share"}
+              <Text style={[styles.tabText, activeTab === key && styles.tabTextActive]}>
+                {label}
               </Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </ScrollView>
 
         {/* ── Features Tab ────────────────────────────────────────────────── */}
         {activeTab === "hero" && (
@@ -418,6 +442,91 @@ export default function JACSBrandHub() {
             ))}
 
             {/* Mission Statement */}
+            <View style={styles.missionCard}>
+              <Text style={styles.missionQuote}>
+                "Because no child should go without the care they deserve."
+              </Text>
+              <Text style={styles.missionAuthor}>— JACS Founder</Text>
+            </View>
+          </View>
+        )}
+
+        {/* ── Features Deck Tab ───────────────────────────────────────────────── */}
+        {activeTab === "features" && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>📋 JACS Platform Presentation</Text>
+            <Text style={styles.sectionSubtitle}>
+              The complete JACS Medical Monitoring System feature overview. Share with investors, healthcare partners, and families.
+            </Text>
+            <Image
+              source={{ uri: "https://d2xsxph8kpxj0f.cloudfront.net/310519663129142386/8UJRLxsNhLmxzNWs5o7Tr8/jacs_features_card_92a292dd.png" }}
+              style={[styles.featuresCardImage, { marginBottom: 20 }]}
+              resizeMode="contain"
+            />
+            <TouchableOpacity
+              style={[styles.bigShareBtn, { backgroundColor: "#1D4ED8" }]}
+              onPress={handleDownloadFeaturesDeck}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.bigShareEmoji}>📥</Text>
+              <Text style={styles.bigShareTitle}>Download Features Deck (PDF)</Text>
+              <Text style={styles.bigShareSub}>Full platform presentation • Share with partners</Text>
+            </TouchableOpacity>
+            {[
+              { icon: "📊", title: "CGM Real-Time Monitor", desc: "Live glucose trends, predictive alerts, 8-hour overnight view" },
+              { icon: "🧸", title: "Kids Mode", desc: "Fun child-friendly interface for ages 2–12, gamified learning" },
+              { icon: "🏫", title: "School Nurse Portal", desc: "ADA Safe at School 2024 compliant care plans" },
+              { icon: "🌙", title: "Overnight Safety", desc: "Safe-to-Sleep status, low glucose push alerts" },
+              { icon: "💉", title: "Bolus Calculator", desc: "ICR/ISF/IOB precision dosing for all insulin types" },
+              { icon: "💰", title: "Free Insulin Finder", desc: "15+ assistance programs, $35/month cap, free options" },
+            ].map((f) => (
+              <View key={f.title} style={[styles.messageCard, { flexDirection: "row", alignItems: "flex-start", gap: 12 }]}>
+                <Text style={{ fontSize: 28 }}>{f.icon}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.messagePlatform, { marginBottom: 4 }]}>{f.title}</Text>
+                  <Text style={styles.messageText}>{f.desc}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* ── Consumer Pitch Tab ───────────────────────────────────────────────── */}
+        {activeTab === "pitch" && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>🎯 Consumer Pitch Deck</Text>
+            <Text style={styles.sectionSubtitle}>
+              The JACS story for families, caregivers, and healthcare advocates. Designed to inspire downloads and community growth.
+            </Text>
+            <Image
+              source={{ uri: "https://d2xsxph8kpxj0f.cloudfront.net/310519663129142386/8UJRLxsNhLmxzNWs5o7Tr8/jacs_hero_c6ff4cac.png" }}
+              style={[styles.featuresCardImage, { height: 200, marginBottom: 20 }]}
+              resizeMode="cover"
+            />
+            <TouchableOpacity
+              style={[styles.bigShareBtn, { backgroundColor: "#065F46" }]}
+              onPress={handleOpenConsumerPitch}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.bigShareEmoji}>🎯</Text>
+              <Text style={styles.bigShareTitle}>Open Consumer Pitch Deck</Text>
+              <Text style={styles.bigShareSub}>Interactive slides • Full story • Share with families</Text>
+            </TouchableOpacity>
+            {[
+              { icon: "👶", stat: "4 Years Old", desc: "Built for the youngest T1D warriors and their families" },
+              { icon: "🌍", stat: "500 Million", desc: "Target reach across Facebook, TikTok, and Instagram" },
+              { icon: "💰", stat: "FREE Forever", desc: "No subscription, no paywall, no hidden costs" },
+              { icon: "🏥", stat: "ADA Compliant", desc: "Meets 2024 American Diabetes Association guidelines" },
+              { icon: "❤️", stat: "Built with Love", desc: "Created by a grandmother for her granddaughter" },
+            ].map((s) => (
+              <View key={s.stat} style={[styles.messageCard, { flexDirection: "row", alignItems: "center", gap: 12 }]}>
+                <Text style={{ fontSize: 32 }}>{s.icon}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: "#D4AF37", fontSize: 18, fontWeight: "900", marginBottom: 2 }}>{s.stat}</Text>
+                  <Text style={styles.messageText}>{s.desc}</Text>
+                </View>
+              </View>
+            ))}
             <View style={styles.missionCard}>
               <Text style={styles.missionQuote}>
                 "Because no child should go without the care they deserve."

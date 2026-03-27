@@ -4306,3 +4306,7 @@
 - [x] Daily BG reminder notifications (up to 5 configurable times, local push)
 - [x] My T1D Story voice journal (Kids World, voice memo recorder, playback)
 - [x] A1C estimator (Blood Sugar Log, ADA formula, 90-day average)
+- [x] Move "View Amazing Features" and "Consumer Pitch" into JACS Brand Hub as sub-tabs
+- [x] Move "Hospice Edition" to footer section on Home screen
+- [x] Remove duplicate JACS Brand Hub button from Home screen
+- [x] Add Features Deck and Consumer Pitch tabs to JACS Brand Hub (5-tab scrollable row)

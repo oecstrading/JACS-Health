@@ -121,87 +121,33 @@ export default function PatientCommandCenter() {
           </View>
         </View>
         
-        {/* Presentation Download Buttons */}
-        <View className="flex-row gap-2 mb-4">
-          <Pressable
-            onPress={handleDownloadPresentation}
-            style={({ pressed }) => [
-              {
-                backgroundColor: pressed ? colors.primary + "CC" : colors.primary,
-                transform: [{ scale: pressed ? 0.98 : 1 }],
-              },
-            ]}
-            className="flex-1 flex-row items-center justify-center rounded-2xl py-4 px-3"
-          >
-            <IconSymbol name="paperplane.fill" size={18} color="#fff" />
-            <Text className="ml-2 text-sm font-semibold text-white text-center flex-1">
-              View Amazing Features
-          </Text>
-        </Pressable>
-        
+        {/* JACS Brand Hub shortcut — replaces the old 3-button row */}
         <Pressable
-            onPress={handleDownloadHospiceEdition}
-            style={({ pressed }) => [
-              {
-                backgroundColor: pressed ? "#f59e0b" + "CC" : "#f59e0b",
-                transform: [{ scale: pressed ? 0.98 : 1 }],
-              },
-            ]}
-            className="flex-1 flex-row items-center justify-center rounded-2xl py-4 px-3"
-          >
-            <IconSymbol name="house.fill" size={18} color="#fff" />
-            <Text className="ml-2 text-sm font-semibold text-white text-center flex-1">
-              Hospice Edition
-          </Text>
-        </Pressable>
-        
-        <Pressable
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              router.push('/pitch-deck-consumer');
-            }}
-            style={({ pressed }) => [
-              {
-                backgroundColor: pressed ? "#10b981" + "CC" : "#10b981",
-                transform: [{ scale: pressed ? 0.98 : 1 }],
-              },
-            ]}
-            className="flex-1 flex-row items-center justify-center rounded-2xl py-4 px-3"
-          >
-            <IconSymbol name="paperplane.fill" size={18} color="#fff" />
-            <Text className="ml-2 text-sm font-semibold text-white text-center flex-1">
-              Consumer Pitch
-          </Text>
-        </Pressable>
-      </View>
-
-      {/* JACS Brand Hub — Hero Page & Social Media */}
-      <Pressable
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-          router.push('/jacs-brand-hub');
-        }}
-        style={({ pressed }) => [
-          {
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            router.push('/jacs-brand-hub');
+          }}
+          style={({ pressed }) => [{
             backgroundColor: pressed ? '#0A0F1ECC' : '#0A0F1E',
             borderWidth: 2,
             borderColor: pressed ? '#D4AF37' : '#D4AF3780',
             transform: [{ scale: pressed ? 0.98 : 1 }],
-            borderRadius: 16,
+            borderRadius: 14,
             marginBottom: 12,
-            padding: 16,
+            padding: 14,
             flexDirection: 'row',
             alignItems: 'center',
-          },
-        ]}
-      >
-        <Text style={{ fontSize: 28, marginRight: 12 }}>🌟</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={{ color: '#D4AF37', fontWeight: '800', fontSize: 16 }}>JACS Brand Hub</Text>
-          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }}>Hero Page • Social Media • Share App</Text>
-        </View>
-        <Text style={{ color: '#D4AF37', fontSize: 18 }}>→</Text>
-      </Pressable>
+          }]}
+        >
+          <Text style={{ fontSize: 24, marginRight: 10 }}>🌟</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: '#D4AF37', fontWeight: '900', fontSize: 15 }} allowFontScaling={false}>JACS Brand Hub</Text>
+            <Text style={{ color: '#9BA1A6', fontSize: 11, marginTop: 1 }} allowFontScaling={false}>Features Deck • Consumer Pitch • Social Media • Share</Text>
+          </View>
+          <Text style={{ color: '#D4AF37', fontSize: 16 }}>→</Text>
+        </Pressable>
+
+
         
       {/* Blood Sugar Log — Quick Access */}
       <Pressable
@@ -583,6 +529,43 @@ export default function PatientCommandCenter() {
 
         {/* Medicare Compliance Dashboard */}
         <ComplianceDashboard />
+
+        {/* ── HOSPICE EDITION FOOTER ──────────────────────────────────────────── */}
+        <View style={{ marginTop: 8, marginBottom: 8 }}>
+          <View style={{ height: 1, backgroundColor: '#334155', marginBottom: 16 }} />
+          <Text style={{ color: '#9BA1A6', fontSize: 11, fontWeight: '700', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 10, textAlign: 'center' }} allowFontScaling={false}>
+            JACS PROFESSIONAL SUITE
+          </Text>
+          <Pressable
+            onPress={handleDownloadHospiceEdition}
+            style={({ pressed }) => ({
+              backgroundColor: pressed ? '#78350F' : '#92400E',
+              borderWidth: 2,
+              borderColor: pressed ? '#FCD34D' : '#F59E0B',
+              borderRadius: 16,
+              padding: 18,
+              flexDirection: 'row',
+              alignItems: 'center',
+              transform: [{ scale: pressed ? 0.98 : 1 }],
+            })}
+          >
+            <View style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: '#F59E0B30', alignItems: 'center', justifyContent: 'center', marginRight: 14 }}>
+              <Text style={{ fontSize: 26 }}>🏥</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: '#FCD34D', fontWeight: '900', fontSize: 17, marginBottom: 3 }} allowFontScaling={false}>
+                Hospice Edition
+              </Text>
+              <Text style={{ color: '#FDE68A', fontSize: 12, lineHeight: 18 }} allowFontScaling={false}>
+                JACS Medical Monitoring System • Professional PDF
+              </Text>
+              <Text style={{ color: '#F59E0B', fontSize: 11, marginTop: 4, fontWeight: '700' }} allowFontScaling={false}>
+                Tap to download • Share with care teams
+              </Text>
+            </View>
+            <Text style={{ color: '#FCD34D', fontSize: 22 }}>↓</Text>
+          </Pressable>
+        </View>
 
         <View className="h-8" />
       </ScrollView>

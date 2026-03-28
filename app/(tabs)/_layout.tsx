@@ -132,14 +132,10 @@ export default function TabLayout() {
         }}
       />
 
-      {/* Features Tab */}
+      {/* Features Tab — hidden from tab bar; accessible via JACS Brand Hub */}
       <Tabs.Screen
         name="features"
-        options={{
-          title: "Features",
-          tabBarIcon: ({ color }) => <IconSymbol size={iconSize} name={"star.fill" as any} color={color} />,
-          tabBarAccessibilityLabel: "All features",
-        }}
+        options={{ href: null }}
       />
 
       {/* Module VI: Device Management */}

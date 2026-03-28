@@ -20,6 +20,8 @@ import {
 } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
 import * as Haptics from "expo-haptics";
+import * as FileSystem from "expo-file-system/legacy";
+import * as Sharing from "expo-sharing";
 import { router } from "expo-router";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -127,7 +129,26 @@ const SOCIAL_PLATFORMS = [
 
 // ─── Component ─────────────────────────────────────────────────────────────────
 export default function JACSBrandHub() {
-  const [activeTab, setActiveTab] = useState<"hero" | "features" | "pitch" | "social" | "share">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "features" | "pitch" | "social" | "share" | "hospice">("hero");
+
+  const handleDownloadHospiceEdition = async () => {
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    try {
+      const pdfUrl = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663129142386/yPQrDHBmRfahtaLt.pdf";
+      if (Platform.OS === "web") {
+        window.open(pdfUrl, "_blank");
+      } else {
+        const fileUri = (FileSystem.documentDirectory ?? "") + "JACS_Hospice_Edition.pdf";
+        const dl = await FileSystem.downloadAsync(pdfUrl, fileUri);
+        if (dl.uri && await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync(dl.uri, { mimeType: "application/pdf", dialogTitle: "JACS Hospice Edition" });
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        }
+      }
+    } catch (e) {
+      console.error("Hospice download error:", e);
+    }
+  };
 
   const handleDownloadFeaturesDeck = async () => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -223,6 +244,7 @@ export default function JACSBrandHub() {
             { key: "hero",     label: "🌟 Features" },
             { key: "features", label: "📋 Features Deck" },
             { key: "pitch",    label: "🎯 Consumer Pitch" },
+            { key: "hospice",  label: "🏥 Hospice" },
             { key: "social",   label: "📱 Social" },
             { key: "share",    label: "🚀 Share" },
           ] as const).map(({ key, label }) => (
@@ -532,6 +554,63 @@ export default function JACSBrandHub() {
                 "Because no child should go without the care they deserve."
               </Text>
               <Text style={styles.missionAuthor}>— JACS Founder</Text>
+            </View>
+          </View>
+        )}
+
+        {/* ── Hospice Edition Tab ───────────────────────────────────────────── */}
+        {activeTab === "hospice" && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>🏥 JACS Hospice Edition</Text>
+            <Text style={styles.sectionSubtitle}>
+              The JACS Medical Monitoring System — Professional Edition for hospice care teams, palliative nurses, and family caregivers.
+            </Text>
+
+            {/* Amber hero card */}
+            <View style={{ backgroundColor: "#92400E", borderRadius: 16, padding: 20, marginBottom: 20, borderWidth: 2, borderColor: "#F59E0B" }}>
+              <Text style={{ fontSize: 36, textAlign: "center", marginBottom: 8 }}>🏥</Text>
+              <Text style={{ color: "#FCD34D", fontSize: 20, fontWeight: "900", textAlign: "center", marginBottom: 6 }} allowFontScaling={false}>
+                JACS Medical Monitoring System
+              </Text>
+              <Text style={{ color: "#FDE68A", fontSize: 13, textAlign: "center", lineHeight: 20 }} allowFontScaling={false}>
+                Hospice & Palliative Care Edition
+              </Text>
+            </View>
+
+            {/* Download button */}
+            <TouchableOpacity
+              style={[styles.bigShareBtn, { backgroundColor: "#92400E", borderWidth: 2, borderColor: "#F59E0B" }]}
+              onPress={handleDownloadHospiceEdition}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.bigShareEmoji}>📥</Text>
+              <Text style={styles.bigShareTitle}>Download Hospice Edition (PDF)</Text>
+              <Text style={styles.bigShareSub}>Professional care guide • Share with your care team</Text>
+            </TouchableOpacity>
+
+            {/* Feature highlights */}
+            {[
+              { icon: "📊", title: "Continuous Monitoring", desc: "Real-time vitals tracking for comfort-focused care" },
+              { icon: "💊", title: "Medication Management", desc: "Symptom control protocols, PRN dosing guides" },
+              { icon: "👨‍👩‍👧", title: "Family Communication", desc: "Caregiver updates, condition summaries, care notes" },
+              { icon: "❤️", title: "Comfort Care Protocols", desc: "Evidence-based comfort measures and pain assessment" },
+              { icon: "📋", title: "ADA & CMS Compliant", desc: "Meets 2024 hospice quality reporting requirements" },
+              { icon: "📞", title: "24/7 Crisis Support", desc: "Emergency escalation contacts and on-call protocols" },
+            ].map((f) => (
+              <View key={f.title} style={[styles.messageCard, { flexDirection: "row", alignItems: "flex-start", gap: 12 }]}>
+                <Text style={{ fontSize: 28 }}>{f.icon}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.messagePlatform, { marginBottom: 4, color: "#FCD34D" }]}>{f.title}</Text>
+                  <Text style={styles.messageText}>{f.desc}</Text>
+                </View>
+              </View>
+            ))}
+
+            <View style={styles.missionCard}>
+              <Text style={styles.missionQuote}>
+                "Dignity, comfort, and compassion — at every stage of life."
+              </Text>
+              <Text style={styles.missionAuthor}>— JACS Hospice Care Mission</Text>
             </View>
           </View>
         )}

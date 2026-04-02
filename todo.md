@@ -4310,3 +4310,4 @@
 - [x] Move "Hospice Edition" to footer section on Home screen
 - [x] Remove duplicate JACS Brand Hub button from Home screen
 - [x] Add Features Deck and Consumer Pitch tabs to JACS Brand Hub (5-tab scrollable row)
+- [ ] Seamless QR code share screen with one-tap WhatsApp/Email/SMS/native share

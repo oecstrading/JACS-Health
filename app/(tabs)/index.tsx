@@ -331,16 +331,31 @@ export default function PatientCommandCenter() {
         <Text style={{ color: '#C084FC', fontSize: 18 }}>→</Text>
       </Pressable>
 
-        {/* QR Code Section */}
-        <View className="bg-surface rounded-2xl p-4 mb-4 border border-border items-center">
-          <Text className="text-base font-semibold text-foreground mb-2">Scan to Download Mobile App</Text>
-          <Image
-            source={require('@/assets/images/app-qr-code.png')}
-            style={{ width: 180, height: 180 }}
-            resizeMode="contain"
-          />
-          <Text className="text-xs text-muted mt-2 text-center">Open Expo Go app and scan this code</Text>
+        {/* Share App — Seamless QR + One-tap sharing */}
+      <Pressable
+        onPress={() => {
+          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          router.push('/share-app');
+        }}
+        style={({ pressed }) => [{
+          backgroundColor: pressed ? '#0C4A6ECC' : '#0C4A6E',
+          borderWidth: 2,
+          borderColor: pressed ? '#38BDF8' : '#38BDF880',
+          transform: [{ scale: pressed ? 0.98 : 1 }],
+          borderRadius: 16,
+          marginBottom: 12,
+          padding: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }]}
+      >
+        <Text style={{ fontSize: 28, marginRight: 12 }}>📲</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#38BDF8', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>📲 SHARE JACS APP</Text>
+          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>WhatsApp · Email · SMS · QR Code · Any App — Instant, no friction</Text>
         </View>
+        <Text style={{ color: '#38BDF8', fontSize: 18 }}>→</Text>
+      </Pressable>
         
         <View className="flex-row items-center justify-end">
           <Pressable

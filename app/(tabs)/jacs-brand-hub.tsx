@@ -180,27 +180,9 @@ export default function JACSBrandHub() {
     router.push(route as any);
   };
 
-  const handleShare = async () => {
-    if (Platform.OS !== "web") {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    }
-    try {
-      await Share.share({
-        message:
-          "🩸 JACS Health Companion — FREE Type 1 Diabetes app for children!\n\n" +
-          "✅ CGM Real-Time Monitor\n" +
-          "✅ Kids Mode (ages 2–12)\n" +
-          "✅ School Nurse Portal\n" +
-          "✅ Overnight Safety Dashboard\n" +
-          "✅ Bolus Calculator\n" +
-          "✅ Free Insulin Resource Finder\n\n" +
-          "Download FREE on Google Play & Amazon Appstore\n" +
-          SOCIAL_LINKS.googlePlay,
-        title: "JACS Health Companion — FREE T1D App for Children",
-      });
-    } catch {
-      // Share cancelled
-    }
+  const handleShare = () => {
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    router.push('/share-app' as any);
   };
 
   return (

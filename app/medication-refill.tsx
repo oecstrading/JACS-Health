@@ -36,7 +36,7 @@ export default function MedicationRefillScreen() {
               </View>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 8 }}>
                 <View style={{ flex: 1, height: 8, backgroundColor: colors.border, borderRadius: 4 }}>
-                  <View style={{ width: pct + "%", height: 8, backgroundColor: urgent ? colors.error : pct > 50 ? colors.success : colors.warning, borderRadius: 4 }} />
+                  <View style={{ width: (pct + "%") as `${number}%`, height: 8, backgroundColor: urgent ? colors.error : pct > 50 ? colors.success : colors.warning, borderRadius: 4 }} />
                 </View>
                 <Text style={{ color: urgent ? colors.error : colors.muted, fontWeight: "700", fontSize: 13 }}>{m.daysLeft}d left</Text>
               </View>

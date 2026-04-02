@@ -41,7 +41,7 @@ export default function DoctorVisitPreparationScreen() {
             <Text style={{ color: colors.primary, fontWeight: "700" }}>{checked.size}/{CHECKLIST.length} done</Text>
           </View>
           <View style={{ height: 8, backgroundColor: colors.border, borderRadius: 4 }}>
-            <View style={{ width: pct + "%", height: 8, backgroundColor: pct >= 80 ? colors.success : pct >= 50 ? colors.warning : colors.primary, borderRadius: 4 }} />
+            <View style={{ width: (pct + "%") as `${number}%`, height: 8, backgroundColor: pct >= 80 ? colors.success : pct >= 50 ? colors.warning : colors.primary, borderRadius: 4 }} />
           </View>
         </View>
         {CHECKLIST.map((item) => (

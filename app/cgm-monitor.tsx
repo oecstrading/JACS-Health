@@ -1,275 +1,66 @@
-import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
-import { useState, useEffect } from "react";
+import { ScrollView, Text, View, TouchableOpacity } from "react-native";
 import { router } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
-import CGMService, { type CGMReading, type CGMDeviceInfo } from "@/services/cgmService";
-
+import * as Haptics from "expo-haptics";
+import * as Linking from "expo-linking";
+const CGM_APPS = [
+  { name: "Dexcom G7", icon: "📡", desc: "Best CGM for children. Real-time glucose every 5 min. 10-day wear. No fingersticks. FDA-approved for treatment decisions.", app_ios: "https://apps.apple.com/us/app/dexcom-g7/id1635564931", app_android: "https://play.google.com/store/apps/details?id=com.dexcom.g7", phone: "+18883380005" },
+  { name: "FreeStyle Libre 3", icon: "🔵", desc: "Slim, discreet CGM. Continuous readings every minute. 14-day wear. Scan with phone. Great for active children.", app_ios: "https://apps.apple.com/us/app/freestyle-librelink-us/id1292893975", app_android: "https://play.google.com/store/apps/details?id=com.abbott.freestyle.libre", phone: "+18556327349" },
+  { name: "Dexcom Follow", icon: "👨‍👩‍👧", desc: "Remote monitoring app for parents. See child's glucose in real-time from anywhere. Alerts for lows and highs.", app_ios: "https://apps.apple.com/us/app/dexcom-follow/id919297394", app_android: "https://play.google.com/store/apps/details?id=com.dexcom.follow", phone: "+18883380005" },
+  { name: "Nightscout", icon: "🌙", desc: "Open-source CGM remote monitoring. Displays glucose on any device. Free. Requires technical setup.", app_ios: "https://apps.apple.com/us/app/nightscout/id1560699894", app_android: "https://play.google.com/store/apps/details?id=com.nightscout.android", phone: "" },
+];
+const TARGETS = [
+  { label: "Target Range", range: "70–180 mg/dL", color: "success", note: "Aim for 70%+ time in range (TIR)" },
+  { label: "Low Alert", range: "<70 mg/dL", color: "error", note: "Treat immediately with 15g fast carbs" },
+  { label: "Critical Low", range: "<54 mg/dL", color: "error", note: "Emergency — use glucagon if unconscious" },
+  { label: "High Alert", range: ">180 mg/dL", color: "warning", note: "Check for ketones if >250 mg/dL" },
+  { label: "Critical High", range: ">300 mg/dL", color: "error", note: "Call doctor — DKA risk" },
+];
 export default function CGMMonitorScreen() {
   const colors = useColors();
-  const [latestReading, setLatestReading] = useState<CGMReading | null>(null);
-  const [pairedDevices, setPairedDevices] = useState<CGMDeviceInfo[]>([]);
-  const [timeInRange, setTimeInRange] = useState({
-    veryLow: 0,
-    low: 0,
-    inRange: 0,
-    high: 0,
-    veryHigh: 0,
-  });
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    loadData();
-    
-    // Subscribe to real-time updates
-    const unsubscribe = CGMService.subscribe((reading) => {
-      setLatestReading(reading);
-    });
-    
-    return unsubscribe;
-  }, []);
-
-  const loadData = async () => {
-    const devices = CGMService.getPairedDevices();
-    setPairedDevices(devices);
-    
-    const reading = CGMService.getLatestReading();
-    setLatestReading(reading);
-    
-    // Calculate time in range for last 24 hours
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setHours(startDate.getHours() - 24);
-    const tir = CGMService.calculateTimeInRange(startDate, endDate);
-    setTimeInRange(tir);
-  };
-
-  const handleSync = async () => {
-    if (pairedDevices.length === 0) {
-      Alert.alert("No Device Paired", "Please pair a CGM device first.");
-      return;
-    }
-    
-    setIsLoading(true);
-    try {
-      await CGMService.syncGlucoseData(pairedDevices[0].device);
-      await loadData();
-      Alert.alert("Success", "Glucose data synced successfully!");
-    } catch (error) {
-      Alert.alert("Error", "Failed to sync glucose data.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const getTrendArrow = (trend: CGMReading["trend"]) => {
-    switch (trend) {
-      case "rising_fast":
-        return "⇈";
-      case "rising":
-        return "↗";
-      case "stable":
-        return "→";
-      case "falling":
-        return "↘";
-      case "falling_fast":
-        return "⇊";
-    }
-  };
-
-  const getGlucoseColor = (glucose: number) => {
-    if (glucose < 54) return "#DC2626"; // Very low - red
-    if (glucose < 70) return "#F59E0B"; // Low - orange
-    if (glucose <= 180) return "#10B981"; // In range - green
-    if (glucose <= 250) return "#F59E0B"; // High - orange
-    return "#DC2626"; // Very high - red
-  };
-
-  const getGlucoseStatus = (glucose: number) => {
-    if (glucose < 54) return "Very Low";
-    if (glucose < 70) return "Low";
-    if (glucose <= 180) return "In Range";
-    if (glucose <= 250) return "High";
-    return "Very High";
-  };
-
+  const colorMap: Record<string, string> = { success: colors.success, error: colors.error, warning: colors.warning };
+  const open = (url: string) => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); Linking.openURL(url); };
+  const call = (phone: string) => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); Linking.openURL("tel:" + phone); };
   return (
-    <ScreenContainer className="p-6">
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="gap-6">
-          {/* Header */}
-          <View>
-            <Text className="text-3xl font-bold text-foreground">CGM Monitor</Text>
-            <Text className="text-base text-muted mt-1">
-              Real-time glucose monitoring
-            </Text>
-          </View>
-
-          {/* Current Glucose Reading */}
-          {latestReading ? (
-            <View
-              className="rounded-2xl p-6 items-center"
-              style={{ backgroundColor: colors.surface }}
-            >
-              <Text className="text-lg text-muted mb-2">Current Glucose</Text>
-              <View className="flex-row items-center gap-3">
-                <Text
-                  className="text-6xl font-bold"
-                  style={{ color: getGlucoseColor(latestReading.glucose) }}
-                >
-                  {latestReading.glucose}
-                </Text>
-                <View className="items-center">
-                  <Text className="text-4xl">{getTrendArrow(latestReading.trend)}</Text>
-                  <Text className="text-sm text-muted">mg/dL</Text>
-                </View>
-              </View>
-              <Text
-                className="text-lg font-semibold mt-3"
-                style={{ color: getGlucoseColor(latestReading.glucose) }}
-              >
-                {getGlucoseStatus(latestReading.glucose)}
-              </Text>
-              <Text className="text-sm text-muted mt-2">
-                Last updated: {latestReading.timestamp.toLocaleTimeString()}
-              </Text>
-            </View>
-          ) : (
-            <View
-              className="rounded-2xl p-8 items-center"
-              style={{ backgroundColor: colors.surface }}
-            >
-              <Text className="text-lg text-muted text-center">
-                No glucose readings yet.{"\n"}Pair a device and sync to get started.
-              </Text>
-            </View>
-          )}
-
-          {/* Time in Range (Last 24h) */}
-          <View
-            className="rounded-2xl p-6"
-            style={{ backgroundColor: colors.surface }}
-          >
-            <Text className="text-xl font-bold text-foreground mb-4">
-              Time in Range (24h)
-            </Text>
-            
-            <View className="gap-3">
-              <View className="flex-row items-center justify-between">
-                <Text className="text-base text-foreground">Very Low (&lt;54)</Text>
-                <Text className="text-base font-semibold" style={{ color: "#DC2626" }}>
-                  {timeInRange.veryLow.toFixed(1)}%
-                </Text>
-              </View>
-              
-              <View className="flex-row items-center justify-between">
-                <Text className="text-base text-foreground">Low (54-69)</Text>
-                <Text className="text-base font-semibold" style={{ color: "#F59E0B" }}>
-                  {timeInRange.low.toFixed(1)}%
-                </Text>
-              </View>
-              
-              <View className="flex-row items-center justify-between">
-                <Text className="text-base text-foreground">In Range (70-180)</Text>
-                <Text className="text-base font-semibold" style={{ color: "#10B981" }}>
-                  {timeInRange.inRange.toFixed(1)}%
-                </Text>
-              </View>
-              
-              <View className="flex-row items-center justify-between">
-                <Text className="text-base text-foreground">High (181-250)</Text>
-                <Text className="text-base font-semibold" style={{ color: "#F59E0B" }}>
-                  {timeInRange.high.toFixed(1)}%
-                </Text>
-              </View>
-              
-              <View className="flex-row items-center justify-between">
-                <Text className="text-base text-foreground">Very High (&gt;250)</Text>
-                <Text className="text-base font-semibold" style={{ color: "#DC2626" }}>
-                  {timeInRange.veryHigh.toFixed(1)}%
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Paired Devices */}
-          <View
-            className="rounded-2xl p-6"
-            style={{ backgroundColor: colors.surface }}
-          >
-            <Text className="text-xl font-bold text-foreground mb-4">
-              Paired Devices
-            </Text>
-            
-            {pairedDevices.length > 0 ? (
-              <View className="gap-3">
-                {pairedDevices.map((device) => (
-                  <View
-                    key={device.id}
-                    className="flex-row items-center justify-between p-4 rounded-xl"
-                    style={{ backgroundColor: colors.background }}
-                  >
-                    <View className="flex-1">
-                      <Text className="text-base font-semibold text-foreground">
-                        {device.name}
-                      </Text>
-                      <Text className="text-sm text-muted">
-                        {device.device.replace("_", " ").toUpperCase()}
-                      </Text>
-                      {device.lastSync && (
-                        <Text className="text-xs text-muted mt-1">
-                          Last sync: {device.lastSync.toLocaleString()}
-                        </Text>
-                      )}
-                    </View>
-                    <View
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: device.isPaired ? "#10B981" : "#9CA3AF" }}
-                    />
-                  </View>
-                ))}
-              </View>
-            ) : (
-              <Text className="text-base text-muted text-center">
-                No devices paired yet
-              </Text>
-            )}
-          </View>
-
-          {/* Action Buttons */}
-          <View className="gap-3">
-            <TouchableOpacity
-              onPress={handleSync}
-              disabled={isLoading}
-              className="rounded-full p-4 items-center"
-              style={{ backgroundColor: colors.primary, opacity: isLoading ? 0.6 : 1 }}
-            >
-              <Text className="text-lg font-semibold text-white">
-                {isLoading ? "Syncing..." : "Sync Glucose Data"}
-              </Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              onPress={() => Alert.alert("Coming Soon", "Device & Alert Settings will be available soon.")}
-              className="rounded-full p-4 items-center"
-              style={{ backgroundColor: colors.surface }}
-            >
-              <Text className="text-lg font-semibold" style={{ color: colors.primary }}>
-                Device & Alert Settings
-              </Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              onPress={() => Alert.alert("Coming Soon", "History & Reports will be available soon.")}
-              className="rounded-full p-4 items-center"
-              style={{ backgroundColor: colors.surface }}
-            >
-              <Text className="text-lg font-semibold" style={{ color: colors.primary }}>
-                View History & Reports
-              </Text>
-            </TouchableOpacity>
-          </View>
+    <ScreenContainer>
+      <ScrollView className="flex-1 px-4 pt-4" showsVerticalScrollIndicator={false}>
+        <View className="mb-4 flex-row items-center">
+          <TouchableOpacity onPress={() => router.back()} style={{ backgroundColor: colors.surface, borderRadius: 20, width: 40, height: 40, alignItems: "center", justifyContent: "center", marginRight: 12 }}>
+            <Text style={{ color: colors.primary, fontSize: 16 }}>Back</Text>
+          </TouchableOpacity>
+          <Text className="flex-1 text-2xl font-bold text-foreground">CGM Monitor</Text>
         </View>
+        <View style={{ backgroundColor: colors.primary + "15", borderRadius: 16, padding: 14, marginBottom: 16 }}>
+          <Text style={{ color: colors.primary, fontWeight: "800" }}>📡 Connect Your CGM App</Text>
+          <Text style={{ color: colors.foreground, fontSize: 13, marginTop: 4 }}>JACS works alongside your CGM app. Install your CGM app below, then return here to log readings manually or view targets.</Text>
+        </View>
+        <Text style={{ color: colors.foreground, fontWeight: "800", fontSize: 16, marginBottom: 12 }}>📱 CGM Apps</Text>
+        {CGM_APPS.map((app, i) => (
+          <View key={i} style={{ backgroundColor: colors.surface, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: colors.border }}>
+            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
+              <Text style={{ fontSize: 28, marginRight: 10 }}>{app.icon}</Text>
+              <Text style={{ color: colors.foreground, fontWeight: "800", fontSize: 15, flex: 1 }}>{app.name}</Text>
+            </View>
+            <Text style={{ color: colors.muted, fontSize: 13, marginBottom: 10 }}>{app.desc}</Text>
+            <View style={{ flexDirection: "row", gap: 8 }}>
+              <TouchableOpacity onPress={() => open(app.app_ios)} style={{ flex: 1, backgroundColor: colors.primary + "20", borderRadius: 10, padding: 10, alignItems: "center" }}><Text style={{ color: colors.primary, fontWeight: "700", fontSize: 12 }}>iOS App</Text></TouchableOpacity>
+              <TouchableOpacity onPress={() => open(app.app_android)} style={{ flex: 1, backgroundColor: colors.success + "20", borderRadius: 10, padding: 10, alignItems: "center" }}><Text style={{ color: colors.success, fontWeight: "700", fontSize: 12 }}>Android App</Text></TouchableOpacity>
+              {app.phone ? <TouchableOpacity onPress={() => call(app.phone)} style={{ flex: 1, backgroundColor: colors.warning + "20", borderRadius: 10, padding: 10, alignItems: "center" }}><Text style={{ color: colors.warning, fontWeight: "700", fontSize: 12 }}>📞 Support</Text></TouchableOpacity> : null}
+            </View>
+          </View>
+        ))}
+        <Text style={{ color: colors.foreground, fontWeight: "800", fontSize: 16, marginBottom: 12, marginTop: 8 }}>🎯 Glucose Target Ranges (Children)</Text>
+        {TARGETS.map((t, i) => (
+          <View key={i} style={{ flexDirection: "row", alignItems: "center", backgroundColor: colors.surface, borderRadius: 12, padding: 12, marginBottom: 8, borderWidth: 1, borderColor: colorMap[t.color] + "40" }}>
+            <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: colorMap[t.color], marginRight: 12 }} />
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: colors.foreground, fontWeight: "700" }}>{t.label}: <Text style={{ color: colorMap[t.color] }}>{t.range}</Text></Text>
+              <Text style={{ color: colors.muted, fontSize: 12, marginTop: 2 }}>{t.note}</Text>
+            </View>
+          </View>
+        ))}
+        <View style={{ height: 24 }} />
       </ScrollView>
     </ScreenContainer>
   );

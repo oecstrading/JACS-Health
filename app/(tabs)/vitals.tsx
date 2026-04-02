@@ -1,6 +1,7 @@
 import { ScrollView, Text, View, Pressable, type ViewStyle } from "react-native";
 import { useState, useEffect } from "react";
 import * as Haptics from "expo-haptics";
+import { router } from "expo-router";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -385,7 +386,7 @@ export default function HealthScreen() {
             <Pressable
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                alert("Add medication feature coming soon");
+                router.push('/blood-sugar-log' as any);
               }}
               style={({ pressed }) => [
                 {
@@ -454,7 +455,7 @@ export default function HealthScreen() {
             <Pressable
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                alert("Record vitals feature coming soon");
+                router.push('/blood-sugar-log' as any);
               }}
               style={({ pressed }) => [
                 {

@@ -257,26 +257,25 @@ export default function HospicesScreen() {
             </Text>
           </View>
 
-          {/* Coming Soon Features */}
+          {/* Advanced Compliance Tools */}
           <View className="gap-3 mb-6">
-            <Text
-              className="text-lg font-semibold"
-              style={{ color: colors.foreground }}
-            >
-              Coming Soon
-            </Text>
-            <View
-              className="p-4 rounded-2xl gap-2"
-              style={{ backgroundColor: colors.surface }}
-            >
-              <Text className="text-sm" style={{ color: colors.muted }}>
-                • Clinical gap alerts with automatic visit scheduling{"\n"}
-                • Real-time HOPE/HIS validation with error highlighting{"\n"}
-                • Automated CAHPS eligibility filtering{"\n"}
-                • Cost report smart-folder with CMS worksheet categorization{"\n"}
-                • iQIES system integration for direct submission{"\n"}
-                • Multi-agency dashboard for enterprise users
-              </Text>
+            <Text className="text-lg font-semibold" style={{ color: colors.foreground }}>Advanced Compliance Tools</Text>
+            <View className="p-4 rounded-2xl gap-4" style={{ backgroundColor: colors.surface }}>
+              {[
+                { icon: "📋", title: "HOPE/HIS Validation Checklist", desc: "Review all required data elements before submission. Catch errors before CMS does." },
+                { icon: "📊", title: "CAHPS Survey Eligibility Filter", desc: "Identify which patients qualify for CAHPS surveys. Exclude ineligible patients." },
+                { icon: "💰", title: "Cost Report Preparation Guide", desc: "Step-by-step CMS-1984 worksheet guide. Avoid the 4% APU penalty." },
+                { icon: "🏥", title: "iQIES Submission Readiness", desc: "Verify your agency is ready for iQIES direct submission. Check enrollment status." },
+                { icon: "📞", title: "CMS Helpdesk: 1-800-339-9313", desc: "Contact CMS for iQIES technical support, HOPE/HIS questions, and cost report guidance." },
+              ].map((item, i) => (
+                <View key={i} style={{ flexDirection: "row", alignItems: "flex-start", gap: 10 }}>
+                  <Text style={{ fontSize: 22 }}>{item.icon}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ color: colors.foreground, fontWeight: "700", fontSize: 14 }}>{item.title}</Text>
+                    <Text style={{ color: colors.muted, fontSize: 13, marginTop: 2 }}>{item.desc}</Text>
+                  </View>
+                </View>
+              ))}
             </View>
           </View>
         </View>

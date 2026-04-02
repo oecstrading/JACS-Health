@@ -1,52 +1,48 @@
-import { ScrollView, Text, View, TouchableOpacity } from "react-native";
+import { ScrollView, Text, View, TouchableOpacity, Linking } from "react-native";
 import { router } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
-import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
-
-export default function SpecialistBookingAndReferralTrackerScreen() {
+import * as Haptics from "expo-haptics";
+const SPECIALISTS = [
+  { name: "Pediatric Endocrinologist", icon: "🩺", frequency: "Every 3 months", treats: "T1D management, insulin dosing, A1C, CGM settings", search: "pediatric endocrinologist near me" },
+  { name: "Registered Dietitian (T1D)", icon: "🥗", frequency: "Every 6 months", treats: "Carb counting, meal planning, wheat-free diet, growth nutrition", search: "pediatric dietitian diabetes near me" },
+  { name: "Ophthalmologist", icon: "👁️", frequency: "Annually", treats: "Diabetic retinopathy screening — starts at age 10 or after 5 years T1D", search: "pediatric ophthalmologist near me" },
+  { name: "Nephrologist", icon: "🫘", frequency: "Annually (after 5 yrs)", treats: "Kidney function screening — urine microalbumin test", search: "pediatric nephrologist near me" },
+  { name: "Allergist / Immunologist", icon: "🌾", frequency: "Annually", treats: "Wheat allergy management, EpiPen prescription, allergy testing", search: "pediatric allergist near me" },
+  { name: "Psychologist / Counselor", icon: "🧠", frequency: "As needed", treats: "Diabetes distress, burnout, anxiety, school adjustment", search: "pediatric psychologist diabetes near me" },
+];
+export default function SpecialistBookingScreen() {
   const colors = useColors();
-
+  const find = (query: string) => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); Linking.openURL("https://www.google.com/maps/search/" + encodeURIComponent(query)); };
   return (
     <ScreenContainer>
-      <ScrollView className="flex-1 px-4 pt-4">
-        <View className="mb-6 flex-row items-center">
-          <TouchableOpacity
-            onPress={() => router.back()}
-            className="mr-4 h-10 w-10 items-center justify-center rounded-full"
-            style={{ backgroundColor: colors.surface }}
-          >
-            <IconSymbol name="chevron.left.forwardslash.chevron.right" size={20} color={colors.primary} />
+      <ScrollView className="flex-1 px-4 pt-4" showsVerticalScrollIndicator={false}>
+        <View className="mb-4 flex-row items-center">
+          <TouchableOpacity onPress={() => router.back()} style={{ backgroundColor: colors.surface, borderRadius: 20, width: 40, height: 40, alignItems: "center", justifyContent: "center", marginRight: 12 }}>
+            <Text style={{ color: colors.primary, fontSize: 16 }}>Back</Text>
           </TouchableOpacity>
-          <Text className="flex-1 text-2xl font-bold text-foreground">Specialist Booking & Referral Tracker</Text>
+          <Text className="flex-1 text-2xl font-bold text-foreground">Find Specialists</Text>
         </View>
-
-        <View className="mb-6 rounded-xl bg-surface p-4">
-          <Text className="text-base leading-relaxed text-foreground">
-            Manage specialist appointments and track referrals. Never lose track of follow-up care.
-          </Text>
+        <View style={{ backgroundColor: colors.primary + "15", borderRadius: 16, padding: 14, marginBottom: 16 }}>
+          <Text style={{ color: colors.primary, fontWeight: "800" }}>T1D Care Team Checklist</Text>
+          <Text style={{ color: colors.foreground, fontSize: 13, marginTop: 4 }}>Your child needs a full care team. Tap "Find Near Me" to locate each specialist.</Text>
         </View>
-
-        <View className="items-center justify-center rounded-xl bg-primary/10 p-8">
-          <Text className="mb-2 text-center text-xl font-bold text-primary">
-            Coming Soon
-          </Text>
-          <Text className="text-center text-base text-muted">
-            This feature is currently in development and will be available in a future update.
-          </Text>
-        </View>
-
-        <View className="mt-6 space-y-4">
-          <View className="rounded-xl border border-border bg-surface p-4">
-            <Text className="mb-2 text-lg font-semibold text-foreground">Key Benefits</Text>
-            <Text className="text-base text-muted">
-              • Comprehensive tracking and monitoring{"\n"}
-              • Real-time alerts and notifications{"\n"}
-              • Easy-to-use interface{"\n"}
-              • Secure data storage
-            </Text>
+        {SPECIALISTS.map((s, i) => (
+          <View key={i} style={{ backgroundColor: colors.surface, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: colors.border }}>
+            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
+              <Text style={{ fontSize: 28, marginRight: 10 }}>{s.icon}</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: colors.foreground, fontWeight: "800", fontSize: 15 }}>{s.name}</Text>
+                <Text style={{ color: colors.primary, fontSize: 12, marginTop: 2 }}>Visit: {s.frequency}</Text>
+              </View>
+            </View>
+            <Text style={{ color: colors.muted, fontSize: 13, marginBottom: 10 }}>{s.treats}</Text>
+            <TouchableOpacity onPress={() => find(s.search)} style={{ backgroundColor: colors.primary + "20", borderRadius: 10, padding: 10, alignItems: "center" }}>
+              <Text style={{ color: colors.primary, fontWeight: "700" }}>📍 Find Near Me</Text>
+            </TouchableOpacity>
           </View>
-        </View>
+        ))}
+        <View style={{ height: 24 }} />
       </ScrollView>
     </ScreenContainer>
   );

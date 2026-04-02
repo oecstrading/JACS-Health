@@ -104,13 +104,14 @@ export default function FamilyScreen() {
   };
 
   const handleInviteCaregiver = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    alert("Invite caregiver feature coming soon. You'll be able to send email or SMS invitations.");
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    router.push('/share-app' as any);
   };
 
   const handleCaregiverPress = (caregiver: Caregiver) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    alert(`Contact ${caregiver.name} at ${caregiver.phone}`);
+    const { Linking } = require('react-native');
+    Linking.openURL(`tel:${caregiver.phone.replace(/[^0-9+]/g, '')}`);
   };
 
   const handleEmergencyContacts = () => {

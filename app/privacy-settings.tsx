@@ -1,42 +1,44 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, View, TouchableOpacity, Switch, Alert } from "react-native";
+import { useState } from "react";
 import { router } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
-import { IconSymbol } from "@/components/ui/icon-symbol";
-
+import * as Haptics from "expo-haptics";
+const SETTINGS = [
+  { key: "shareDoctor", label: "Share data with doctor", desc: "Allow your endocrinologist to view BG logs and CGM data", def: true },
+  { key: "notifications", label: "Allow notifications", desc: "BG reminders, medication alerts, and safety notifications", def: true },
+  { key: "biometric", label: "Biometric lock", desc: "Require Face ID or fingerprint to open the app", def: false },
+  { key: "backup", label: "Data backup", desc: "Automatically back up health data to secure cloud storage", def: true },
+  { key: "analytics", label: "Anonymous analytics", desc: "Help improve JACS by sharing anonymized usage data", def: false },
+  { key: "emergency", label: "Emergency access", desc: "Allow emergency responders to view Medical ID without unlock", def: true },
+];
 export default function PrivacySettingsScreen() {
   const colors = useColors();
-
+  const [settings, setSettings] = useState<Record<string, boolean>>(Object.fromEntries(SETTINGS.map(s => [s.key, s.def])));
+  const toggle = (key: string) => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSettings(prev => ({ ...prev, [key]: !prev[key] })); };
+  const save = () => { Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success); Alert.alert("Saved", "Privacy settings updated successfully."); };
   return (
-    <ScreenContainer className="p-6">
-      <TouchableOpacity onPress={() => router.back()} className="mb-4">
-        <IconSymbol name="chevron.left.forwardslash.chevron.right" size={24} color={colors.primary} />
-      </TouchableOpacity>
-
-      <View className="flex-1 items-center justify-center">
-        <View
-          className="mb-6 h-24 w-24 items-center justify-center rounded-full"
-          style={{ backgroundColor: colors.primary + "20" }}
-        >
-          <IconSymbol name="lock.shield.fill" size={48} color={colors.primary} />
+    <ScreenContainer>
+      <ScrollView className="flex-1 px-4 pt-4" showsVerticalScrollIndicator={false}>
+        <View className="mb-4 flex-row items-center">
+          <TouchableOpacity onPress={() => router.back()} style={{ backgroundColor: colors.surface, borderRadius: 20, width: 40, height: 40, alignItems: "center", justifyContent: "center", marginRight: 12 }}>
+            <Text style={{ color: colors.primary, fontSize: 16 }}>Back</Text>
+          </TouchableOpacity>
+          <Text className="flex-1 text-2xl font-bold text-foreground">Privacy Settings</Text>
         </View>
-
-        <Text className="mb-2 text-center text-3xl font-bold text-foreground">
-          Privacy Settings
-        </Text>
-        <Text className="mb-8 text-center text-base text-muted">
-          Control your data privacy and sharing preferences
-        </Text>
-
-        <View className="w-full max-w-md rounded-2xl border border-border bg-surface p-6">
-          <Text className="text-center text-lg font-semibold text-foreground">
-            Coming Soon
-          </Text>
-          <Text className="mt-2 text-center text-sm text-muted">
-            This feature is under development and will be available in a future update.
-          </Text>
-        </View>
-      </View>
+        {SETTINGS.map((s) => (
+          <View key={s.key} style={{ backgroundColor: colors.surface, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: colors.border, flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flex: 1, marginRight: 12 }}>
+              <Text style={{ color: colors.foreground, fontWeight: "700", fontSize: 15 }}>{s.label}</Text>
+              <Text style={{ color: colors.muted, fontSize: 12, marginTop: 3 }}>{s.desc}</Text>
+            </View>
+            <Switch value={settings[s.key]} onValueChange={() => toggle(s.key)} trackColor={{ false: colors.border, true: colors.primary + "80" }} thumbColor={settings[s.key] ? colors.primary : colors.muted} />
+          </View>
+        ))}
+        <TouchableOpacity onPress={save} style={{ backgroundColor: colors.primary, borderRadius: 16, padding: 16, alignItems: "center", marginTop: 8, marginBottom: 24 }}>
+          <Text style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>Save Settings</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </ScreenContainer>
   );
 }

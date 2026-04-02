@@ -4316,3 +4316,90 @@
 - [x] Fixed TypeScript errors in health-report-export.tsx and fall-detection.tsx
 - [x] Replaced hospice-compliance-tracker.tsx stub with full HQRP compliance tracker
 - [x] Replaced hospices.tsx Coming Soon section with Advanced Compliance Tools
+
+## Gluroo Gap Features + Setup Flow (Phase 11)
+
+### First-Run Setup Wizard (Child Profile)
+- [x] Create setup wizard screen (replaces generic onboarding)
+- [x] Step 1: Role selection (Parent/Guardian, Child self-managing, Caregiver, Healthcare Provider)
+- [x] Step 2: Child profile (name, date of birth, age auto-calculated)
+- [x] Step 3: Diagnosis info (T1D diagnosis date, years since diagnosis)
+- [x] Step 4: Device setup (CGM type: Dexcom G6/G7/ONE, Libre 2/3, None; Pump: Omnipod 5, Tandem, MDI, None)
+- [x] Step 5: Allergy setup (wheat/gluten, peanut, tree nuts, dairy, egg, soy, shellfish, other)
+- [x] Step 6: Prescription setup (Carb Ratio, Insulin Sensitivity Factor, BG target range)
+- [x] Step 7: GluCrew setup (invite caregivers by email/phone)
+- [x] Persist all setup data to AsyncStorage (child-profile key)
+- [ ] Show setup wizard on first launch (check AsyncStorage flag)
+- [ ] Allow re-running setup from Settings
+
+### GluCrew Caregiver Group Sharing (Gluroo parity)
+- [x] Create GluCrew screen showing all connected caregivers
+- [x] Real-time BG display for all GluCrew members
+- [x] Shared event log (chat-style, like Gluroo GEL)
+- [x] Caregiver can log meals/insulin/notes on behalf of child
+- [x] BG annotation on every chat message (show BG at time of message)
+- [x] Day separator with daily carb/insulin totals
+- [x] GluCrew invite via email or phone number
+
+### Live CGM Feed with Trend Arrows (Gluroo parity)
+- [x] Trend arrow display (↑↑ rapid rise, ↑ rise, → flat, ↓ fall, ↓↓ rapid fall)
+- [x] Rate-of-change display (mg/dL per 5 min)
+- [ ] Sparkline mini-chart (last 1 hour of readings)
+- [ ] Carbs on Board (COB) calculation and display
+- [ ] Insulin on Board (IOB) calculation and display
+- [ ] Estimated BG by completion (COB vs IOB projection)
+- [ ] CGM warm-up period status display
+
+### Natural Language Event Logging (Gluroo parity)
+- [x] Chat-style event log screen (JACS Event Log - JEL)
+- [x] Parse "45g pizza" → carb log entry
+- [x] Parse "2u rapid" → insulin bolus entry
+- [x] Parse "walked 20 min" → activity entry
+- [x] Parse "BG 145" → glucose reading entry
+- [x] Parse "1 juice box" → intervention snack (fast-acting sugar)
+- [x] Show event type icon on each message (fork=carbs, syringe=insulin, shoe=exercise)
+- [ ] Future event logging ("45g sandwich at 12:30pm" → pre-bolus reminder)
+- [x] Search through event log
+
+### Advanced Stats & Time-in-Range (Gluroo parity)
+- [ ] Glucose Management Indicator (GMI / estimated A1C)
+- [ ] Time in Range (TIR) visualization (pie/bar: very low / low / in-range / high / very high)
+- [ ] Daily TIR pill on day separators
+- [ ] Average BG over selectable periods (24h, 7d, 14d, 30d, 90d)
+- [ ] Total daily insulin display
+- [ ] Total daily carbs display
+- [ ] "Unicorn" counter (exact 100 mg/dL readings - fun metric for kids)
+
+### Device Lifespan Tracker (Gluroo parity)
+- [ ] CGM sensor lifespan progress bar (with warm-up phase)
+- [ ] Pod/pump site lifespan progress bar
+- [ ] Transmitter lifespan display
+- [ ] Device expiration date and time-remaining display
+- [ ] Replacement reminder notifications (24h before expiry)
+- [ ] QR code scan to log new device
+- [ ] Device lot number and sensor code storage
+
+### Prescription / Dosing Table (Gluroo parity)
+- [ ] Carb Ratio (CR) entry with time-of-day splits (breakfast/lunch/dinner/bedtime)
+- [ ] Insulin Sensitivity Factor (ISF) with time-of-day splits
+- [ ] BG target range entry
+- [ ] Basal dose reminder (for MDI long-acting insulin)
+- [ ] Bolus calculator using CR, ISF, COB, IOB
+- [ ] Show prescription values on bolus calculator screen
+
+### Healthcare Provider Dashboard (Gluroo parity)
+- [ ] Create provider access screen
+- [ ] Share read-only link with school nurse / endocrinologist
+- [ ] Real-time BG display for provider view
+- [ ] 14-day AGP (Ambulatory Glucose Profile) report
+- [ ] Provider can add notes to event log
+- [ ] Clinic / school nurse contact storage
+
+### JACS-Exclusive Features (Beyond Gluroo)
+- [ ] Wheat/Gluten Food Scanner (already built - surface on home screen)
+- [ ] Emergency Anaphylaxis Protocol screen (EpiPen guide)
+- [ ] Low-Income Insulin Resource Finder (already built - surface on home screen)
+- [ ] Kids World gamified companion (already built - surface on home screen)
+- [ ] 8-language support selector in setup wizard
+- [ ] Overnight glucose monitoring alarm (already built - surface prominently)
+- [ ] School 504 Plan guide in Caregiver Education Hub

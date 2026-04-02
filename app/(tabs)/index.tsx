@@ -331,6 +331,84 @@ export default function PatientCommandCenter() {
         <Text style={{ color: '#C084FC', fontSize: 18 }}>→</Text>
       </Pressable>
 
+      {/* ── NEW: Setup Wizard ── */}
+      <Pressable
+        onPress={() => {
+          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          router.push('/setup-wizard');
+        }}
+        style={({ pressed }) => [{
+          backgroundColor: pressed ? '#1E3A5FCC' : '#1E3A5F',
+          borderWidth: 2,
+          borderColor: pressed ? '#38BDF8' : '#38BDF880',
+          transform: [{ scale: pressed ? 0.98 : 1 }],
+          borderRadius: 16,
+          marginBottom: 12,
+          padding: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }]}
+      >
+        <Text style={{ fontSize: 28, marginRight: 12 }}>⚙️</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#38BDF8', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>⚙️ SETUP PROFILE</Text>
+          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Age • Devices • Allergies • Prescription • Care Team</Text>
+        </View>
+        <Text style={{ color: '#38BDF8', fontSize: 18 }}>→</Text>
+      </Pressable>
+
+      {/* ── NEW: JACS Event Log ── */}
+      <Pressable
+        onPress={() => {
+          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          router.push('/jacs-event-log');
+        }}
+        style={({ pressed }) => [{
+          backgroundColor: pressed ? '#14532DCC' : '#14532D',
+          borderWidth: 2,
+          borderColor: pressed ? '#4ADE80' : '#4ADE8080',
+          transform: [{ scale: pressed ? 0.98 : 1 }],
+          borderRadius: 16,
+          marginBottom: 12,
+          padding: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }]}
+      >
+        <Text style={{ fontSize: 28, marginRight: 12 }}>📋</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#4ADE80', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>📋 JACS EVENT LOG</Text>
+          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Chat-style diary • "45g pizza" • "2u bolus" • Trend arrows</Text>
+        </View>
+        <Text style={{ color: '#4ADE80', fontSize: 18 }}>→</Text>
+      </Pressable>
+
+      {/* ── NEW: GluCrew / Care Team ── */}
+      <Pressable
+        onPress={() => {
+          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          router.push('/glucrew');
+        }}
+        style={({ pressed }) => [{
+          backgroundColor: pressed ? '#3B0764CC' : '#3B0764',
+          borderWidth: 2,
+          borderColor: pressed ? '#C084FC' : '#C084FC80',
+          transform: [{ scale: pressed ? 0.98 : 1 }],
+          borderRadius: 16,
+          marginBottom: 12,
+          padding: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }]}
+      >
+        <Text style={{ fontSize: 28, marginRight: 12 }}>👨‍👩‍👧</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#C084FC', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>👨‍👩‍👧 CARE TEAM (GLUCREW)</Text>
+          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Invite family • School nurse • Live BG sharing • Alerts</Text>
+        </View>
+        <Text style={{ color: '#C084FC', fontSize: 18 }}>→</Text>
+      </Pressable>
+
         {/* Share App — Seamless QR + One-tap sharing */}
       <Pressable
         onPress={() => {

@@ -636,7 +636,7 @@ const styles = StyleSheet.create({
   moodEmoji: { fontSize: 20 },
   moodLabel: { fontSize: 10, fontWeight: "600" },
   vitalsGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  vitalField: { width: "48%", gap: 4 },
+  vitalField: { width: "48%" as any, gap: 4 },
   vitalLabel: { fontSize: 11, fontWeight: "600" },
   vitalInput: { borderWidth: 1, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, fontSize: 15, fontWeight: "700" },
   notesInput: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 10, fontSize: 14, minHeight: 72 },

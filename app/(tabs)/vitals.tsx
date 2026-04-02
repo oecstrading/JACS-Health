@@ -502,7 +502,7 @@ export default function HealthScreen() {
               <View className="h-3 bg-border rounded-full overflow-hidden">
                 <View
                   className="h-full rounded-full"
-                  style={{ width: "65%", backgroundColor: colors.primary }}
+                  style={{ flex: 0.65, backgroundColor: colors.primary }}
                 />
               </View>
               <Text className="text-base text-muted mt-2 text-center" style={{ lineHeight: 22 }}>

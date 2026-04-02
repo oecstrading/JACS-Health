@@ -214,7 +214,7 @@ export default function InsuranceScannerScreen() {
               <Text className="text-lg font-bold text-foreground mb-3">Card Image</Text>
               <Image
                 source={{ uri: capturedPhoto }}
-                style={{ width: "100%", height: 200, borderRadius: 12 }}
+                style={{ height: 200, borderRadius: 12, alignSelf: "stretch" }}
                 resizeMode="cover"
               />
             </View>

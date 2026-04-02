@@ -34,7 +34,7 @@ export default function NutritionTrackingScreen() {
                   </Text>
                 </View>
                 <View className="bg-muted/20 rounded-full h-2">
-                  <View style={{ width: "56%", backgroundColor: colors.success }} className="h-2 rounded-full" />
+                  <View style={{ flex: 0.56, backgroundColor: colors.success }} className="h-2 rounded-full" />
                 </View>
               </View>
               <View className="flex-row gap-3">

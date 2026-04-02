@@ -157,7 +157,7 @@ export default function SocialScreen() {
                 <View
                   key={achievement.id}
                   className="bg-surface p-5 rounded-2xl items-center"
-                  style={{ width: "47%" }}
+                  style={{ width: "47%" as any }}
                 >
                   <Text className="text-5xl mb-3">{achievement.icon}</Text>
                   <Text className="text-lg font-bold text-foreground text-center mb-1">

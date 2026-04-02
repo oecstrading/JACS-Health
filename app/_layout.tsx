@@ -22,6 +22,7 @@ import type { EdgeInsets, Metrics, Rect } from "react-native-safe-area-context";
 import { trpc, createTRPCClient } from "@/lib/trpc";
 import { initManusRuntime, subscribeSafeAreaInsets } from "@/lib/_core/manus-runtime";
 import updateService from "@/services/updateService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UpdateNotificationModal } from "@/components/UpdateNotificationModal";
 import type { UpdateCheckResult } from "@/services/updateService";
 import { UpdateChecker } from "@/components/update-checker";
@@ -41,6 +42,24 @@ function AppContent() {
   // Gate is always open — no blocking. useHardGate now only fires gentle 30-min reminders.
   // Users can use the full app freely whether or not they have logged vitals.
   useHardGate();
+  return null;
+}
+
+/**
+ * SetupWizardLauncher — checks AsyncStorage on mount.
+ * If @jacs_setup_complete is not set, redirects to /setup-wizard on first launch.
+ */
+function SetupWizardLauncher() {
+  const router = useRouter();
+  useEffect(() => {
+    AsyncStorage.getItem("@jacs_setup_complete").then((val) => {
+      if (!val) {
+        // Small delay so the tab navigator has time to mount
+        setTimeout(() => router.push("/setup-wizard" as any), 600);
+      }
+    }).catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return null;
 }
 
@@ -186,6 +205,7 @@ export default function RootLayout() {
           <UpdateChecker />
           <PersonalizationPrompt />
           <AppContent />
+          <SetupWizardLauncher />
           <QuickLogFAB />
           {updateAvailable && (
             <UpdateNotificationModal

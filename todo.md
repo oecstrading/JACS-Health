@@ -4403,3 +4403,9 @@
 - [ ] 8-language support selector in setup wizard
 - [ ] Overnight glucose monitoring alarm (already built - surface prominently)
 - [ ] School 504 Plan guide in Caregiver Education Hub
+
+## Phase 12 — COB/IOB, Auto-Setup, TIR Chart
+
+- [x] COB/IOB real-time header in Diabetes Portal (Carbs on Board, Insulin on Board)
+- [x] Auto-launch Setup Wizard on first install via _layout.tsx AsyncStorage flag check
+- [x] Time-in-Range (TIR) ring chart on Diabetes Dashboard (ADA 5-zone: very low / low / in-range / high / very high)

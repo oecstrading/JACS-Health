@@ -66,9 +66,17 @@ interface T1DSettings {
   childName: string;
 }
 
+interface MealEntry {
+  id: string;
+  carbs: number;       // grams
+  description: string;
+  timestamp: number;
+}
+
 interface T1DData {
   readings: GlucoseReading[];
   doses: InsulinDose[];
+  meals: MealEntry[];
   settings: T1DSettings;
 }
 
@@ -144,6 +152,15 @@ function getTrend(readings: GlucoseReading[]): string {
   return "↓↓";
 }
 
+// Carbs on Board: exponential decay over 3 hours (180 min)
+function calcCOB(meals: MealEntry[]): number {
+  const now = Date.now();
+  const result = meals
+    .filter(m => (now - m.timestamp) < 180 * 60000)
+    .reduce((sum, m) => sum + m.carbs * Math.exp(-(now - m.timestamp) / (60 * 60000)), 0);
+  return Math.round(result);
+}
+
 function calcIOB(doses: InsulinDose[]): number {
   const now = Date.now();
   return Math.round(
@@ -187,7 +204,7 @@ function estimateA1c(readings: GlucoseReading[]): number | null {
 
 export default function DiabetesPortal() {
   const colors = useColors();
-  const [data, setData] = useState<T1DData>({ readings: [], doses: [], settings: DEFAULT_SETTINGS });
+  const [data, setData] = useState<T1DData>({ readings: [], doses: [], meals: [], settings: DEFAULT_SETTINGS });
   const [tab, setTab] = useState<"home" | "bolus" | "log" | "reports" | "safety">("home");
   const [glucoseInput, setGlucoseInput] = useState("");
   const [carbInput, setCarbInput] = useState("");
@@ -210,6 +227,7 @@ export default function DiabetesPortal() {
   const recent = data.readings.slice(-288);
   const latest = data.readings[data.readings.length - 1];
   const iob = calcIOB(data.doses);
+  const cob = calcCOB(data.meals ?? []);
   const tir = calcTIR(recent, s.ageGroup);
   const a1c = estimateA1c(data.readings);
   const trend = getTrend(data.readings.slice(-6));
@@ -278,6 +296,56 @@ export default function DiabetesPortal() {
         <TouchableOpacity style={styles.sosBtn} onPress={() => router.push("/hypo-first-aid")}>
           <Text style={styles.sosBtnText}>🚨 SOS</Text>
         </TouchableOpacity>
+      </View>
+
+      {/* COB / IOB Strip */}
+      <View style={[styles.cobIobStrip, { backgroundColor: "#0C1B33", borderBottomColor: "#1E3A5F" }]}>
+        {/* COB */}
+        <View style={styles.cobIobItem}>
+          <Text style={styles.cobIobEmoji}>🍽️</Text>
+          <View>
+            <Text style={styles.cobIobValue}>
+              {cob > 0 ? `${cob}g` : "0g"}
+            </Text>
+            <Text style={styles.cobIobLabel}>Carbs on Board</Text>
+          </View>
+          {cob > 0 && (
+            <View style={[styles.cobIobBadge, { backgroundColor: "#F59E0B20", borderColor: "#F59E0B" }]}>
+              <Text style={{ color: "#F59E0B", fontSize: 10, fontWeight: "700" }}>ACTIVE</Text>
+            </View>
+          )}
+        </View>
+
+        <View style={styles.cobIobDivider} />
+
+        {/* IOB */}
+        <View style={styles.cobIobItem}>
+          <Text style={styles.cobIobEmoji}>💉</Text>
+          <View>
+            <Text style={[styles.cobIobValue, { color: iob > 0 ? "#60A5FA" : "#9BA1A6" }]}>
+              {iob > 0 ? `${iob}u` : "0u"}
+            </Text>
+            <Text style={styles.cobIobLabel}>Insulin on Board</Text>
+          </View>
+          {iob > 0 && (
+            <View style={[styles.cobIobBadge, { backgroundColor: "#3B82F620", borderColor: "#3B82F6" }]}>
+              <Text style={{ color: "#60A5FA", fontSize: 10, fontWeight: "700" }}>ACTIVE</Text>
+            </View>
+          )}
+        </View>
+
+        <View style={styles.cobIobDivider} />
+
+        {/* Net Effect */}
+        <View style={styles.cobIobItem}>
+          <Text style={styles.cobIobEmoji}>{cob > 0 && iob > 0 ? "⚖️" : cob > 0 ? "📈" : iob > 0 ? "📉" : "✅"}</Text>
+          <View>
+            <Text style={[styles.cobIobValue, { color: cob > 0 && iob > 0 ? "#22C55E" : cob > 0 ? "#F59E0B" : iob > 0 ? "#60A5FA" : "#22C55E" }]}>
+              {cob > 0 && iob > 0 ? "Balanced" : cob > 0 ? "Rising" : iob > 0 ? "Falling" : "Stable"}
+            </Text>
+            <Text style={styles.cobIobLabel}>Net Effect</Text>
+          </View>
+        </View>
       </View>
 
       {/* Tabs */}
@@ -805,4 +873,12 @@ const styles = StyleSheet.create({
   modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "flex-end" },
   modalBox: { borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24 },
   successBanner: { position: "absolute", bottom: 80, left: 20, right: 20, borderRadius: 12, padding: 14, alignItems: "center" },
+  // COB/IOB Strip
+  cobIobStrip: { flexDirection: "row", alignItems: "center", paddingHorizontal: 12, paddingVertical: 8, borderBottomWidth: 1 },
+  cobIobItem: { flex: 1, flexDirection: "row", alignItems: "center", gap: 6 },
+  cobIobEmoji: { fontSize: 18 },
+  cobIobValue: { fontSize: 16, fontWeight: "800", color: "#F59E0B" },
+  cobIobLabel: { fontSize: 9, color: "#9BA1A6", fontWeight: "600", textTransform: "uppercase", letterSpacing: 0.3 },
+  cobIobBadge: { borderRadius: 6, borderWidth: 1, paddingHorizontal: 4, paddingVertical: 1, marginLeft: 2 },
+  cobIobDivider: { width: 1, height: 32, backgroundColor: "#1E3A5F", marginHorizontal: 4 },
 });

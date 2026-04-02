@@ -1,9 +1,10 @@
-import { ScrollView, Text, View, Pressable, ActivityIndicator } from "react-native";
+import { ScrollView, Text, View, Pressable, ActivityIndicator, StyleSheet } from "react-native";
 import { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
+import Svg, { Circle, Text as SvgText, G } from "react-native-svg";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
@@ -251,44 +252,8 @@ export default function DiabetesDashboard() {
           </View>
         )}
 
-        {/* Time in Range */}
-        <View className="bg-surface rounded-3xl p-6 mb-6 border border-border">
-          <Text className="text-xl font-semibold text-foreground mb-4" style={{ lineHeight: 28 }}>
-            Time in Range (24h)
-          </Text>
-          <View className="gap-3">
-            <View className="flex-row items-center justify-between">
-              <Text className="text-base text-foreground">Very Low (&lt;54)</Text>
-              <Text className="text-base font-semibold" style={{ color: colors.error }}>
-                {timeInRange.veryLow.toFixed(1)}%
-              </Text>
-            </View>
-            <View className="flex-row items-center justify-between">
-              <Text className="text-base text-foreground">Low (54-69)</Text>
-              <Text className="text-base font-semibold" style={{ color: colors.warning }}>
-                {timeInRange.low.toFixed(1)}%
-              </Text>
-            </View>
-            <View className="flex-row items-center justify-between">
-              <Text className="text-base text-foreground font-semibold">In Range (70-180)</Text>
-              <Text className="text-base font-bold" style={{ color: colors.success }}>
-                {timeInRange.inRange.toFixed(1)}%
-              </Text>
-            </View>
-            <View className="flex-row items-center justify-between">
-              <Text className="text-base text-foreground">High (181-250)</Text>
-              <Text className="text-base font-semibold" style={{ color: colors.warning }}>
-                {timeInRange.high.toFixed(1)}%
-              </Text>
-            </View>
-            <View className="flex-row items-center justify-between">
-              <Text className="text-base text-foreground">Very High (&gt;250)</Text>
-              <Text className="text-base font-semibold" style={{ color: colors.error }}>
-                {timeInRange.veryHigh.toFixed(1)}%
-              </Text>
-            </View>
-          </View>
-        </View>
+        {/* Time in Range — ADA Ring Chart */}
+        <TIRRingChart timeInRange={timeInRange} />
 
         {/* Omnipod Status */}
         {omnipodStatus && (
@@ -352,3 +317,202 @@ export default function DiabetesDashboard() {
     </ScreenContainer>
   );
 }
+
+// ─── TIR Ring Chart Component ─────────────────────────────────────────────────
+// ADA 2024 Time-in-Range targets:
+//   Very Low  (<54):   <1%
+//   Low       (54-69): <4%
+//   In Range  (70-180): >70%
+//   High      (181-250): <25%
+//   Very High (>250):  <5%
+
+interface TIRData {
+  veryLow: number;
+  low: number;
+  inRange: number;
+  high: number;
+  veryHigh: number;
+}
+
+const TIR_ZONES = [
+  { key: "veryLow" as const,  label: "Very Low",  range: "<54",     color: "#DC2626", adaTarget: "<1%"  },
+  { key: "low" as const,      label: "Low",        range: "54–69",   color: "#F97316", adaTarget: "<4%"  },
+  { key: "inRange" as const,  label: "In Range",   range: "70–180",  color: "#22C55E", adaTarget: ">70%" },
+  { key: "high" as const,     label: "High",       range: "181–250", color: "#F59E0B", adaTarget: "<25%" },
+  { key: "veryHigh" as const, label: "Very High",  range: ">250",    color: "#EF4444", adaTarget: "<5%"  },
+];
+
+function TIRRingChart({ timeInRange }: { timeInRange: TIRData }) {
+  const size = 200;
+  const cx = size / 2;
+  const cy = size / 2;
+  const strokeWidth = 22;
+  const radius = (size - strokeWidth) / 2 - 4;
+  const circumference = 2 * Math.PI * radius;
+
+  // Build cumulative arc offsets
+  const total = Object.values(timeInRange).reduce((s, v) => s + v, 0) || 100;
+  let cumulative = 0;
+  const arcs = TIR_ZONES.map((z) => {
+    const pct = (timeInRange[z.key] / total) * 100;
+    const dashArray = (pct / 100) * circumference;
+    const dashOffset = circumference - cumulative * circumference / 100;
+    cumulative += pct;
+    return { ...z, pct, dashArray, dashOffset };
+  });
+
+  const inRangePct = timeInRange.inRange.toFixed(1);
+  const adaMet = timeInRange.inRange >= 70;
+
+  return (
+    <View style={tirStyles.card}>
+      <View style={tirStyles.headerRow}>
+        <Text style={tirStyles.title}>⏱ Time in Range (24h)</Text>
+        <View style={[tirStyles.adaBadge, { backgroundColor: adaMet ? "#22C55E20" : "#F59E0B20", borderColor: adaMet ? "#22C55E" : "#F59E0B" }]}>
+          <Text style={[tirStyles.adaBadgeText, { color: adaMet ? "#22C55E" : "#F59E0B" }]}>
+            {adaMet ? "✓ ADA Goal Met" : "ADA Goal: >70%"}
+          </Text>
+        </View>
+      </View>
+
+      <View style={tirStyles.chartRow}>
+        {/* Ring */}
+        <View style={{ width: size, height: size }}>
+          <Svg width={size} height={size}>
+            {/* Background ring */}
+            <Circle
+              cx={cx} cy={cy} r={radius}
+              stroke="#1E3A5F" strokeWidth={strokeWidth}
+              fill="none"
+            />
+            {/* Colored arcs */}
+            {arcs.map((arc) => (
+              arc.pct > 0 ? (
+                <Circle
+                  key={arc.key}
+                  cx={cx} cy={cy} r={radius}
+                  stroke={arc.color}
+                  strokeWidth={strokeWidth}
+                  fill="none"
+                  strokeDasharray={`${arc.dashArray} ${circumference - arc.dashArray}`}
+                  strokeDashoffset={arc.dashOffset}
+                  strokeLinecap="butt"
+                  rotation={-90}
+                  origin={`${cx}, ${cy}`}
+                />
+              ) : null
+            ))}
+            {/* Center label */}
+            <G>
+              <SvgText
+                x={cx} y={cy - 8}
+                textAnchor="middle"
+                fontSize="32"
+                fontWeight="800"
+                fill={adaMet ? "#22C55E" : "#F59E0B"}
+              >
+                {inRangePct}%
+              </SvgText>
+              <SvgText
+                x={cx} y={cy + 14}
+                textAnchor="middle"
+                fontSize="11"
+                fill="#9BA1A6"
+              >
+                In Range
+              </SvgText>
+            </G>
+          </Svg>
+        </View>
+
+        {/* Legend */}
+        <View style={tirStyles.legend}>
+          {TIR_ZONES.map((z) => {
+            const pct = timeInRange[z.key].toFixed(1);
+            return (
+              <View key={z.key} style={tirStyles.legendRow}>
+                <View style={[tirStyles.legendDot, { backgroundColor: z.color }]} />
+                <View style={{ flex: 1 }}>
+                  <Text style={tirStyles.legendLabel}>{z.label}</Text>
+                  <Text style={tirStyles.legendRange}>{z.range} mg/dL</Text>
+                </View>
+                <View style={{ alignItems: "flex-end" }}>
+                  <Text style={[tirStyles.legendPct, { color: z.color }]}>{pct}%</Text>
+                  <Text style={tirStyles.legendTarget}>ADA {z.adaTarget}</Text>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      </View>
+
+      {/* GMI / Estimated A1c */}
+      <View style={tirStyles.gmiRow}>
+        <Text style={tirStyles.gmiLabel}>Glucose Management Indicator (GMI)</Text>
+        <Text style={[tirStyles.gmiValue, { color: adaMet ? "#22C55E" : "#F59E0B" }]}>
+          {timeInRange.inRange >= 70
+            ? `~${(3.31 + 0.02392 * (100 - timeInRange.inRange + 70)).toFixed(1)}%`
+            : "Insufficient data"}
+        </Text>
+      </View>
+      <Text style={tirStyles.adaNote}>
+        Source: ADA 2024 Standards of Care — Sec. 6 (Glycemic Targets)
+      </Text>
+    </View>
+  );
+}
+
+const tirStyles = StyleSheet.create({
+  card: {
+    backgroundColor: "#0C1B33",
+    borderRadius: 24,
+    padding: 20,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: "#1E3A5F",
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 16,
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  title: { fontSize: 17, fontWeight: "700", color: "#ECEDEE" },
+  adaBadge: {
+    borderRadius: 10,
+    borderWidth: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  adaBadgeText: { fontSize: 11, fontWeight: "700" },
+  chartRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  legend: { flex: 1, gap: 6 },
+  legendRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  legendDot: { width: 10, height: 10, borderRadius: 5 },
+  legendLabel: { fontSize: 12, fontWeight: "600", color: "#ECEDEE" },
+  legendRange: { fontSize: 10, color: "#9BA1A6" },
+  legendPct: { fontSize: 13, fontWeight: "800" },
+  legendTarget: { fontSize: 9, color: "#9BA1A6" },
+  gmiRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 16,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: "#1E3A5F",
+  },
+  gmiLabel: { fontSize: 12, color: "#9BA1A6", flex: 1 },
+  gmiValue: { fontSize: 16, fontWeight: "800" },
+  adaNote: { fontSize: 9, color: "#687076", marginTop: 6, textAlign: "right" },
+});

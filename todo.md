@@ -4409,3 +4409,13 @@
 - [x] COB/IOB real-time header in Diabetes Portal (Carbs on Board, Insulin on Board)
 - [x] Auto-launch Setup Wizard on first install via _layout.tsx AsyncStorage flag check
 - [x] Time-in-Range (TIR) ring chart on Diabetes Dashboard (ADA 5-zone: very low / low / in-range / high / very high)
+
+## Build Fix — Android minSdkVersion CMake Error
+
+- [x] Set minSdkVersion: 24 in expo-build-properties (was already set but Hermes still failed)
+- [x] Add compileSdkVersion: 35 to expo-build-properties (aligns all CMakeLists.txt SDK levels)
+- [x] Add targetSdkVersion: 35 to expo-build-properties
+- [x] Add kotlinVersion: "1.9.25" (required by RN 0.81 + Expo SDK 54)
+- [x] Add iOS deploymentTarget: "15.1" (required by Expo SDK 54)
+- [x] Confirmed no android/ directory override (managed workflow — correct)
+- [x] Confirmed eas.json has no minSdkVersion override

@@ -126,8 +126,21 @@ const config: ExpoConfig = {
       "expo-build-properties",
       {
         android: {
-          buildArchs: ["armeabi-v7a", "arm64-v8a"],
+          // minSdkVersion 24 is required by Hermes C++ toolchain and expo-modules-core.
+          // Setting compileSdk and targetSdk to 35 (latest stable) ensures all native
+          // CMakeLists.txt files agree on the same SDK level — prevents the
+          // "User has minSdkVersion 22 but library was built for 24" CMake error.
           minSdkVersion: 24,
+          compileSdkVersion: 35,
+          targetSdkVersion: 35,
+          // Kotlin 1.9.x is required by React Native 0.81 + Expo SDK 54
+          kotlinVersion: "1.9.25",
+          // Build only the two ABIs needed for Play Store / Amazon Appstore
+          buildArchs: ["armeabi-v7a", "arm64-v8a"],
+        },
+        ios: {
+          // iOS 15.1+ required by Expo SDK 54
+          deploymentTarget: "15.1",
         },
       },
     ],

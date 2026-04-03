@@ -1,29 +1,30 @@
 /**
- * Custom Expo Config Plugin: withAndroidXFix
+ * withAndroidXFix.js — Expo Config Plugin (applied LAST in app.config.ts)
  *
- * Fixes two Android Gradle build errors:
+ * Permanently fixes the recurring Android CMake build error:
+ *   [CXX1214] User has minSdkVersion 22 but library was built for 24
  *
- * Error 1: Duplicate class androidx.versionedparcelable.*
- *   "Duplicate class found in versionedparcelable-1.1.1.aar (androidx) and
- *    versionedparcelable-28.0.0.aar (com.android.support)"
- *   Fix: Force androidx version, exclude legacy com.android.support module.
+ * ROOT CAUSE: expo-build-properties sets gradle.properties keys, but the EAS
+ * cloud build CMake toolchain reads minSdkVersion from android/app/build.gradle
+ * defaultConfig, NOT from gradle.properties. This plugin directly patches that
+ * file so the value is always 24 regardless of what any other plugin sets.
  *
- * Error 2: Kotlin compilation error in expo module
- *   "Cannot access 'OnUserLeaveHintProvider' which is a supertype of 'AppCompatActivity'"
- *   Root cause: expo SDK 54 requires androidx.appcompat >= 1.6.1 which introduced
- *   OnUserLeaveHintProvider. An older transitive appcompat version on the classpath
- *   causes this compile-time failure.
- *   Fix: Force androidx.appcompat:appcompat:1.6.1 in resolution strategy.
+ * Also fixes:
+ *   - Duplicate class androidx.versionedparcelable.*
+ *   - Cannot access 'OnUserLeaveHintProvider' (appcompat mismatch)
  */
 
 const { withDangerousMod, withGradleProperties } = require("@expo/config-plugins");
 const fs = require("fs");
 const path = require("path");
 
+const MIN_SDK = "24";
+const COMPILE_SDK = "35";
+const TARGET_SDK = "35";
+const KOTLIN_VERSION = "2.0.21";
+
 const RESOLUTION_STRATEGY = `
-    // ── AndroidX dependency conflict fixes ────────────────────────────────────
-    // Fix 1: Duplicate class androidx.versionedparcelable.* (androidx vs com.android.support)
-    // Fix 2: Cannot access 'OnUserLeaveHintProvider' (appcompat version mismatch with expo SDK 54)
+    // ── AndroidX dependency conflict fixes (withAndroidXFix) ─────────────────
     configurations.all {
         resolutionStrategy {
             force 'androidx.appcompat:appcompat:1.6.1'
@@ -45,7 +46,37 @@ const RESOLUTION_STRATEGY = `
 `;
 
 const withAndroidXFix = (config) => {
-  // Step 1: Patch android/build.gradle (root-level) to add allprojects resolution
+  // ── PRIMARY FIX: Directly patch android/app/build.gradle defaultConfig ─────
+  // CMake reads minSdkVersion from this Gradle DSL file, not gradle.properties.
+  // This is the authoritative fix for [CXX1214] minSdkVersion mismatch.
+  config = withDangerousMod(config, [
+    "android",
+    async (config) => {
+      const appBuildGradlePath = path.join(
+        config.modRequest.platformProjectRoot,
+        "app",
+        "build.gradle"
+      );
+
+      if (!fs.existsSync(appBuildGradlePath)) {
+        console.warn("[withAndroidXFix] android/app/build.gradle not found, skipping.");
+        return config;
+      }
+
+      let contents = fs.readFileSync(appBuildGradlePath, "utf8");
+
+      // Replace all forms: "minSdkVersion 22", "minSdkVersion = 22", "minSdkVersion=22"
+      contents = contents.replace(/minSdkVersion\s*=?\s*\d+/g, `minSdkVersion ${MIN_SDK}`);
+      contents = contents.replace(/compileSdkVersion\s*=?\s*\d+/g, `compileSdkVersion ${COMPILE_SDK}`);
+      contents = contents.replace(/targetSdkVersion\s*=?\s*\d+/g, `targetSdkVersion ${TARGET_SDK}`);
+
+      fs.writeFileSync(appBuildGradlePath, contents);
+      console.log(`[withAndroidXFix] Patched app/build.gradle → minSdk=${MIN_SDK}, compileSdk=${COMPILE_SDK}, targetSdk=${TARGET_SDK}`);
+      return config;
+    },
+  ]);
+
+  // ── SECONDARY FIX: Patch root android/build.gradle allprojects resolution ──
   config = withDangerousMod(config, [
     "android",
     async (config) => {
@@ -53,73 +84,44 @@ const withAndroidXFix = (config) => {
         config.modRequest.platformProjectRoot,
         "build.gradle"
       );
-
       if (!fs.existsSync(rootBuildGradlePath)) {
         console.warn("[withAndroidXFix] android/build.gradle not found, skipping.");
         return config;
       }
-
       let contents = fs.readFileSync(rootBuildGradlePath, "utf8");
-
-      // Only inject once (idempotent)
       if (contents.includes("AndroidX dependency conflict fixes")) {
         console.log("[withAndroidXFix] Resolution strategy already injected, skipping.");
         return config;
       }
-
-      // Inject inside the existing allprojects block, or create one
       if (contents.includes("allprojects {")) {
-        contents = contents.replace(
-          /allprojects\s*\{/,
-          `allprojects {\n${RESOLUTION_STRATEGY}`
-        );
+        contents = contents.replace(/allprojects\s*\{/, `allprojects {\n${RESOLUTION_STRATEGY}`);
       } else {
         contents += `\nallprojects {\n${RESOLUTION_STRATEGY}\n}\n`;
       }
-
       fs.writeFileSync(rootBuildGradlePath, contents);
       console.log("[withAndroidXFix] Injected resolution strategy into android/build.gradle");
       return config;
     },
   ]);
 
-  // Step 2: Ensure gradle.properties has AndroidX, Jetifier, and sufficient heap
+  // ── BELT-AND-SUSPENDERS: Also set gradle.properties ────────────────────────
   config = withGradleProperties(config, (config) => {
     const props = config.modResults;
-
     const setOrReplace = (key, value) => {
       const existing = props.find((p) => p.type === "property" && p.key === key);
-      if (existing) {
-        existing.value = value;
-      } else {
-        props.push({ type: "property", key, value });
-      }
+      if (existing) { existing.value = value; }
+      else { props.push({ type: "property", key, value }); }
     };
-
-    // ── SDK versions (CMake fix) ──────────────────────────────────────────────
-    // minSdkVersion 24 is required by Hermes C++ toolchain, react-native-screens,
-    // and expo-modules-core. Hardcoding here ensures CMakeLists.txt files always
-    // agree, fixing: "[CXX1214] User has minSdkVersion 22 but library was built for 24"
-    // This runs AFTER expo-build-properties so it takes final precedence.
-    setOrReplace("android.minSdkVersion", "24");
-    setOrReplace("android.compileSdkVersion", "35");
-    setOrReplace("android.targetSdkVersion", "35");
-    // Kotlin 1.9.25 required by React Native 0.81 + Expo SDK 54
-    setOrReplace("android.kotlinVersion", "2.0.21");
-
-    // ── AndroidX migration ────────────────────────────────────────────────────
+    setOrReplace("android.minSdkVersion", MIN_SDK);
+    setOrReplace("android.compileSdkVersion", COMPILE_SDK);
+    setOrReplace("android.targetSdkVersion", TARGET_SDK);
+    setOrReplace("android.kotlinVersion", KOTLIN_VERSION);
     setOrReplace("android.useAndroidX", "true");
-    // Jetifier rewrites legacy support library references to AndroidX at build time
     setOrReplace("android.enableJetifier", "true");
-    // Increase heap to handle large dependency trees without OOM during build
     setOrReplace("org.gradle.jvmargs", "-Xmx4096m -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError");
-    // Parallel builds for faster compilation
     setOrReplace("org.gradle.parallel", "true");
-    // Gradle daemon reuse
     setOrReplace("org.gradle.daemon", "true");
-    // Enable configuration on demand
     setOrReplace("org.gradle.configureondemand", "true");
-
     return config;
   });
 

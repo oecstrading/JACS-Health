@@ -21,7 +21,7 @@ const path = require("path");
 const MIN_SDK = "24";
 const COMPILE_SDK = "35";
 const TARGET_SDK = "35";
-const KOTLIN_VERSION = "2.0.21";
+const KOTLIN_VERSION = "2.1.20";
 
 const RESOLUTION_STRATEGY = `
     // ── AndroidX dependency conflict fixes (withAndroidXFix) ─────────────────

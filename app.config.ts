@@ -132,7 +132,7 @@ const config: ExpoConfig = {
           compileSdkVersion: 35,
           targetSdkVersion: 35,
           // Kotlin 1.9.x is required by React Native 0.81 + Expo SDK 54
-          kotlinVersion: "2.0.21",
+          kotlinVersion: "2.1.20",
           // Build only the two ABIs needed for Play Store / Amazon Appstore
           buildArchs: ["armeabi-v7a", "arm64-v8a"],
         },

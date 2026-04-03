@@ -96,7 +96,18 @@ const withAndroidXFix = (config) => {
       }
     };
 
-    // Required for AndroidX migration
+    // ── SDK versions (CMake fix) ──────────────────────────────────────────────
+    // minSdkVersion 24 is required by Hermes C++ toolchain, react-native-screens,
+    // and expo-modules-core. Hardcoding here ensures CMakeLists.txt files always
+    // agree, fixing: "[CXX1214] User has minSdkVersion 22 but library was built for 24"
+    // This runs AFTER expo-build-properties so it takes final precedence.
+    setOrReplace("android.minSdkVersion", "24");
+    setOrReplace("android.compileSdkVersion", "35");
+    setOrReplace("android.targetSdkVersion", "35");
+    // Kotlin 1.9.25 required by React Native 0.81 + Expo SDK 54
+    setOrReplace("android.kotlinVersion", "1.9.25");
+
+    // ── AndroidX migration ────────────────────────────────────────────────────
     setOrReplace("android.useAndroidX", "true");
     // Jetifier rewrites legacy support library references to AndroidX at build time
     setOrReplace("android.enableJetifier", "true");
@@ -106,6 +117,8 @@ const withAndroidXFix = (config) => {
     setOrReplace("org.gradle.parallel", "true");
     // Gradle daemon reuse
     setOrReplace("org.gradle.daemon", "true");
+    // Enable configuration on demand
+    setOrReplace("org.gradle.configureondemand", "true");
 
     return config;
   });

@@ -95,8 +95,6 @@ const config: ExpoConfig = {
   },
   plugins: [
     "expo-router",
-    // Fix: duplicate class androidx.versionedparcelable vs com.android.support:versionedparcelable
-    "./plugins/withAndroidXFix",
     [
       "expo-audio",
       {
@@ -144,6 +142,9 @@ const config: ExpoConfig = {
         },
       },
     ],
+    // Must be LAST — overrides any SDK version set by expo-build-properties above
+    // Fixes: [CXX1214] User has minSdkVersion 22 but library was built for 24
+    "./plugins/withAndroidXFix",
   ],
   experiments: {
     typedRoutes: true,

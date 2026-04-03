@@ -102,7 +102,7 @@ class EncryptionService {
    * Web-specific encryption using Web Crypto API
    */
   private async encryptWeb(plaintext: string, ivHex: string): Promise<EncryptedData> {
-    if (typeof window === 'undefined' || !window.crypto || !window.crypto.subtle) {
+    if (typeof crypto === 'undefined' || !crypto.subtle) {
       throw new Error('Web Crypto API not available');
     }
 
@@ -113,7 +113,7 @@ class EncryptionService {
       );
 
       // Import key
-      const cryptoKey = await window.crypto.subtle.importKey(
+      const cryptoKey = await globalThis.crypto.subtle.importKey(
         'raw',
         keyData,
         { name: 'AES-GCM', length: KEY_SIZE },
@@ -130,7 +130,7 @@ class EncryptionService {
       const encoder = new TextEncoder();
       const data = encoder.encode(plaintext);
       
-      const encrypted = await window.crypto.subtle.encrypt(
+      const encrypted = await globalThis.crypto.subtle.encrypt(
         { name: 'AES-GCM', iv, tagLength: 128 },
         cryptoKey,
         data
@@ -186,7 +186,7 @@ class EncryptionService {
    * Web-specific decryption using Web Crypto API
    */
   private async decryptWeb(encryptedData: EncryptedData): Promise<string> {
-    if (typeof window === 'undefined' || !window.crypto || !window.crypto.subtle) {
+    if (typeof crypto === 'undefined' || !crypto.subtle) {
       throw new Error('Web Crypto API not available');
     }
 
@@ -197,7 +197,7 @@ class EncryptionService {
       );
 
       // Import key
-      const cryptoKey = await window.crypto.subtle.importKey(
+      const cryptoKey = await globalThis.crypto.subtle.importKey(
         'raw',
         keyData,
         { name: 'AES-GCM', length: KEY_SIZE },
@@ -223,7 +223,7 @@ class EncryptionService {
       combined.set(tag, ciphertext.length);
 
       // Decrypt
-      const decrypted = await window.crypto.subtle.decrypt(
+      const decrypted = await globalThis.crypto.subtle.decrypt(
         { name: 'AES-GCM', iv, tagLength: 128 },
         cryptoKey,
         combined

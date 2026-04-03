@@ -270,4 +270,17 @@ class SpecialistBookingService {
   }
 }
 
-export default SpecialistBookingService.getInstance();
+// Lazy singleton — defers AsyncStorage/window access until first use (fixes SSR build errors)
+let _instance: SpecialistBookingService | null = null;
+const _lazy = new Proxy({} as SpecialistBookingService, {
+  get(_: SpecialistBookingService, prop: string | symbol) {
+    if (!_instance) _instance = SpecialistBookingService.getInstance();
+    return (_instance as any)[prop];
+  },
+  set(_: SpecialistBookingService, prop: string | symbol, value: unknown) {
+    if (!_instance) _instance = SpecialistBookingService.getInstance();
+    (_instance as any)[prop] = value;
+    return true;
+  },
+});
+export default _lazy;

@@ -611,4 +611,17 @@ class CGMService {
   }
 }
 
-export default CGMService.getInstance();
+// Lazy singleton — defers AsyncStorage/window access until first use (fixes SSR build errors)
+let _instance: CGMService | null = null;
+const _lazy = new Proxy({} as CGMService, {
+  get(_: CGMService, prop: string | symbol) {
+    if (!_instance) _instance = CGMService.getInstance();
+    return (_instance as any)[prop];
+  },
+  set(_: CGMService, prop: string | symbol, value: unknown) {
+    if (!_instance) _instance = CGMService.getInstance();
+    (_instance as any)[prop] = value;
+    return true;
+  },
+});
+export default _lazy;

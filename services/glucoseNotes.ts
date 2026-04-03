@@ -337,4 +337,17 @@ class GlucoseNotesService {
   }
 }
 
-export default GlucoseNotesService.getInstance();
+// Lazy singleton — defers AsyncStorage/window access until first use (fixes SSR build errors)
+let _instance: GlucoseNotesService | null = null;
+const _lazy = new Proxy({} as GlucoseNotesService, {
+  get(_: GlucoseNotesService, prop: string | symbol) {
+    if (!_instance) _instance = GlucoseNotesService.getInstance();
+    return (_instance as any)[prop];
+  },
+  set(_: GlucoseNotesService, prop: string | symbol, value: unknown) {
+    if (!_instance) _instance = GlucoseNotesService.getInstance();
+    (_instance as any)[prop] = value;
+    return true;
+  },
+});
+export default _lazy;

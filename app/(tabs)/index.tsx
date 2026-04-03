@@ -1,4 +1,4 @@
-import { Text, View, ScrollView, Pressable, Image, type ViewStyle, Platform } from 'react-native';
+import { Linking, Text, View, ScrollView, Pressable, Image, type ViewStyle, Platform } from 'react-native';
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import * as Sharing from "expo-sharing";
@@ -46,7 +46,7 @@ export default function PatientCommandCenter() {
       
       if (Platform.OS === 'web') {
         // On web, open PDF in new tab
-        window.open(pdfUrl, '_blank');
+        Linking.openURL(pdfUrl);
       } else {
         // On native, download and share
         const fileUri = FileSystem.documentDirectory + 'JACS Medical Monitoring System_Platform_Presentation.pdf';
@@ -80,7 +80,7 @@ export default function PatientCommandCenter() {
       
       if (Platform.OS === 'web') {
         // On web, open PDF in new tab
-        window.open(pdfUrl, '_blank');
+        Linking.openURL(pdfUrl);
       } else {
         // On native, download and share
         const fileUri = FileSystem.documentDirectory + 'JACS Medical Monitoring System_Hospice_Edition.pdf';

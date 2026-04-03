@@ -136,7 +136,7 @@ export default function JACSBrandHub() {
     try {
       const pdfUrl = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663129142386/yPQrDHBmRfahtaLt.pdf";
       if (Platform.OS === "web") {
-        window.open(pdfUrl, "_blank");
+        Linking.openURL(pdfUrl);
       } else {
         const fileUri = (FileSystem.documentDirectory ?? "") + "JACS_Hospice_Edition.pdf";
         const dl = await FileSystem.downloadAsync(pdfUrl, fileUri);

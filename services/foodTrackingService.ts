@@ -269,4 +269,17 @@ class FoodTrackingService {
   }
 }
 
-export default FoodTrackingService.getInstance();
+// Lazy singleton — defers AsyncStorage/window access until first use (fixes SSR build errors)
+let _instance: FoodTrackingService | null = null;
+const _lazy = new Proxy({} as FoodTrackingService, {
+  get(_: FoodTrackingService, prop: string | symbol) {
+    if (!_instance) _instance = FoodTrackingService.getInstance();
+    return (_instance as any)[prop];
+  },
+  set(_: FoodTrackingService, prop: string | symbol, value: unknown) {
+    if (!_instance) _instance = FoodTrackingService.getInstance();
+    (_instance as any)[prop] = value;
+    return true;
+  },
+});
+export default _lazy;

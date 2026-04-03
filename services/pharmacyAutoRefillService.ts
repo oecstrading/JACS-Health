@@ -416,4 +416,17 @@ class PharmacyAutoRefillService {
   }
 }
 
-export default PharmacyAutoRefillService.getInstance();
+// Lazy singleton — defers AsyncStorage/window access until first use (fixes SSR build errors)
+let _instance: PharmacyAutoRefillService | null = null;
+const _lazy = new Proxy({} as PharmacyAutoRefillService, {
+  get(_: PharmacyAutoRefillService, prop: string | symbol) {
+    if (!_instance) _instance = PharmacyAutoRefillService.getInstance();
+    return (_instance as any)[prop];
+  },
+  set(_: PharmacyAutoRefillService, prop: string | symbol, value: unknown) {
+    if (!_instance) _instance = PharmacyAutoRefillService.getInstance();
+    (_instance as any)[prop] = value;
+    return true;
+  },
+});
+export default _lazy;

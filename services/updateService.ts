@@ -264,4 +264,17 @@ class UpdateService {
   }
 }
 
-export default UpdateService.getInstance();
+// Lazy singleton — defers AsyncStorage/window access until first use (fixes SSR build errors)
+let _instance: UpdateService | null = null;
+const _lazy = new Proxy({} as UpdateService, {
+  get(_: UpdateService, prop: string | symbol) {
+    if (!_instance) _instance = UpdateService.getInstance();
+    return (_instance as any)[prop];
+  },
+  set(_: UpdateService, prop: string | symbol, value: unknown) {
+    if (!_instance) _instance = UpdateService.getInstance();
+    (_instance as any)[prop] = value;
+    return true;
+  },
+});
+export default _lazy;

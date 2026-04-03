@@ -519,4 +519,17 @@ class AIMealPlannerService {
   }
 }
 
-export default AIMealPlannerService.getInstance();
+// Lazy singleton — defers AsyncStorage/window access until first use (fixes SSR build errors)
+let _instance: AIMealPlannerService | null = null;
+const _lazy = new Proxy({} as AIMealPlannerService, {
+  get(_: AIMealPlannerService, prop: string | symbol) {
+    if (!_instance) _instance = AIMealPlannerService.getInstance();
+    return (_instance as any)[prop];
+  },
+  set(_: AIMealPlannerService, prop: string | symbol, value: unknown) {
+    if (!_instance) _instance = AIMealPlannerService.getInstance();
+    (_instance as any)[prop] = value;
+    return true;
+  },
+});
+export default _lazy;

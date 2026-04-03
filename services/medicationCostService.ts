@@ -233,4 +233,17 @@ class MedicationCostService {
   }
 }
 
-export default MedicationCostService.getInstance();
+// Lazy singleton — defers AsyncStorage/window access until first use (fixes SSR build errors)
+let _instance: MedicationCostService | null = null;
+const _lazy = new Proxy({} as MedicationCostService, {
+  get(_: MedicationCostService, prop: string | symbol) {
+    if (!_instance) _instance = MedicationCostService.getInstance();
+    return (_instance as any)[prop];
+  },
+  set(_: MedicationCostService, prop: string | symbol, value: unknown) {
+    if (!_instance) _instance = MedicationCostService.getInstance();
+    (_instance as any)[prop] = value;
+    return true;
+  },
+});
+export default _lazy;

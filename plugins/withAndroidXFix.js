@@ -105,7 +105,7 @@ const withAndroidXFix = (config) => {
     setOrReplace("android.compileSdkVersion", "35");
     setOrReplace("android.targetSdkVersion", "35");
     // Kotlin 1.9.25 required by React Native 0.81 + Expo SDK 54
-    setOrReplace("android.kotlinVersion", "1.9.25");
+    setOrReplace("android.kotlinVersion", "2.0.21");
 
     // ── AndroidX migration ────────────────────────────────────────────────────
     setOrReplace("android.useAndroidX", "true");

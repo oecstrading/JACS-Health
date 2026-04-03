@@ -10,16 +10,142 @@ import { ComplianceDashboard } from '@/components/compliance-dashboard';
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { OnboardingTour, DEFAULT_ONBOARDING_STEPS } from '@/components/onboarding-tour';
 
-/**
- * Module I: Patient Command Center (Home Dashboard)
- * 
- * Daily status and rapid logging dashboard prioritizing immediate health status.
- * Features:
- * - Daily Vitals Ribbon (Glucose, BP, Weight)
- * - Quick Log section (Medication, Insulin, Meals)
- * - Master Dashboard access
- * - Medicare Compliance tracking
- */
+// ── Feature card data ─────────────────────────────────────────────────────────
+const FEATURE_CARDS = [
+  {
+    emoji: '🌟',
+    label: 'Brand Hub',
+    sub: 'Pitch • Social • Share',
+    route: '/jacs-brand-hub',
+    bg: '#0A0F1E',
+    border: '#D4AF3780',
+    borderActive: '#D4AF37',
+    text: '#D4AF37',
+    haptic: 'medium',
+  },
+  {
+    emoji: '🩸',
+    label: 'Blood Sugar',
+    sub: 'Log • History • Chart',
+    route: '/blood-sugar-log',
+    bg: '#7F1D1D',
+    border: '#EF444480',
+    borderActive: '#FCA5A5',
+    text: '#FCA5A5',
+    haptic: 'light',
+  },
+  {
+    emoji: '🛡️',
+    label: 'Guardian',
+    sub: 'Wheat • Hypo • SOS',
+    route: '/guardian-agent',
+    bg: '#0C1B33',
+    border: '#D4AF3780',
+    borderActive: '#D4AF37',
+    text: '#D4AF37',
+    haptic: 'heavy',
+  },
+  {
+    emoji: '🥗',
+    label: 'Meal Planner',
+    sub: 'Wheat-Free • Carbs',
+    route: '/meal-planner',
+    bg: '#14532D',
+    border: '#4ADE8080',
+    borderActive: '#4ADE80',
+    text: '#4ADE80',
+    haptic: 'light',
+  },
+  {
+    emoji: '🌟',
+    label: 'Kids World',
+    sub: 'Games • Badges • Fun',
+    route: '/kids-world',
+    bg: '#1A0A3B',
+    border: '#FFD70080',
+    borderActive: '#FFD700',
+    text: '#FFD700',
+    haptic: 'light',
+  },
+  {
+    emoji: '🌍',
+    label: 'Learning Hub',
+    sub: '6 Languages • Education',
+    route: '/learning-hub',
+    bg: '#0C1B33',
+    border: '#60A5FA80',
+    borderActive: '#60A5FA',
+    text: '#60A5FA',
+    haptic: 'light',
+  },
+  {
+    emoji: '⏰',
+    label: 'BG Reminders',
+    sub: 'Daily alerts • Never miss',
+    route: '/bg-reminders',
+    bg: '#1E3A5F',
+    border: '#60A5FA80',
+    borderActive: '#60A5FA',
+    text: '#60A5FA',
+    haptic: 'light',
+  },
+  {
+    emoji: '🎙️',
+    label: 'My T1D Story',
+    sub: 'Voice journal • Record',
+    route: '/my-t1d-story',
+    bg: '#3B0764',
+    border: '#C084FC80',
+    borderActive: '#C084FC',
+    text: '#C084FC',
+    haptic: 'light',
+  },
+  {
+    emoji: '⚙️',
+    label: 'Setup Profile',
+    sub: 'Age • Devices • Rx',
+    route: '/setup-wizard',
+    bg: '#1E3A5F',
+    border: '#38BDF880',
+    borderActive: '#38BDF8',
+    text: '#38BDF8',
+    haptic: 'light',
+  },
+  {
+    emoji: '📋',
+    label: 'Event Log',
+    sub: '"45g pizza" • "2u bolus"',
+    route: '/jacs-event-log',
+    bg: '#14532D',
+    border: '#4ADE8080',
+    borderActive: '#4ADE80',
+    text: '#4ADE80',
+    haptic: 'light',
+  },
+  {
+    emoji: '👨‍👩‍👧',
+    label: 'Care Team',
+    sub: 'GluCrew • Live BG share',
+    route: '/glucrew',
+    bg: '#3B0764',
+    border: '#C084FC80',
+    borderActive: '#C084FC',
+    text: '#C084FC',
+    haptic: 'light',
+  },
+  {
+    emoji: '📲',
+    label: 'Share JACS',
+    sub: 'WhatsApp • SMS • QR',
+    route: '/share-app',
+    bg: '#0C4A6E',
+    border: '#38BDF880',
+    borderActive: '#38BDF8',
+    text: '#38BDF8',
+    haptic: 'medium',
+  },
+] as const;
+
 export default function PatientCommandCenter() {
   const router = useRouter();
   const colors = useColors();
@@ -37,596 +163,239 @@ export default function PatientCommandCenter() {
   };
 
   const handleDownloadPresentation = async () => {
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }
-    
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const pdfUrl = 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663129142386/mTCKjTTSeiMtQkHN.pdf';
     try {
-      const pdfUrl = 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663129142386/mTCKjTTSeiMtQkHN.pdf';
-      
       if (Platform.OS === 'web') {
-        // On web, open PDF in new tab
         Linking.openURL(pdfUrl);
       } else {
-        // On native, download and share
-        const fileUri = FileSystem.documentDirectory + 'JACS Medical Monitoring System_Platform_Presentation.pdf';
-        const downloadResult = await FileSystem.downloadAsync(pdfUrl, fileUri);
-        
-        if (downloadResult.uri) {
-          if (await Sharing.isAvailableAsync()) {
-            await Sharing.shareAsync(downloadResult.uri, {
-              mimeType: 'application/pdf',
-              dialogTitle: 'JACS Medical Monitoring System Platform Presentation',
-            });
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          } else {
-            alert('Sharing is not available on this device');
-          }
+        const fileUri = FileSystem.documentDirectory + 'JACS_Platform_Presentation.pdf';
+        const dl = await FileSystem.downloadAsync(pdfUrl, fileUri);
+        if (dl.uri && await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync(dl.uri, { mimeType: 'application/pdf', dialogTitle: 'JACS Platform Presentation' });
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         }
       }
-    } catch (error) {
-      console.error('Error downloading presentation:', error);
-      alert('Could not download presentation. Please try again.');
-    }
+    } catch { alert('Could not download presentation. Please try again.'); }
   };
 
   const handleDownloadHospiceEdition = async () => {
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }
-    
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const pdfUrl = 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663129142386/yPQrDHBmRfahtaLt.pdf';
     try {
-      const pdfUrl = 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663129142386/yPQrDHBmRfahtaLt.pdf';
-      
       if (Platform.OS === 'web') {
-        // On web, open PDF in new tab
         Linking.openURL(pdfUrl);
       } else {
-        // On native, download and share
-        const fileUri = FileSystem.documentDirectory + 'JACS Medical Monitoring System_Hospice_Edition.pdf';
-        const downloadResult = await FileSystem.downloadAsync(pdfUrl, fileUri);
-        
-        if (downloadResult.uri) {
-          if (await Sharing.isAvailableAsync()) {
-            await Sharing.shareAsync(downloadResult.uri, {
-              mimeType: 'application/pdf',
-              dialogTitle: 'JACS Medical Monitoring System Hospice Edition',
-            });
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          } else {
-            alert('Sharing is not available on this device');
-          }
+        const fileUri = FileSystem.documentDirectory + 'JACS_Hospice_Edition.pdf';
+        const dl = await FileSystem.downloadAsync(pdfUrl, fileUri);
+        if (dl.uri && await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync(dl.uri, { mimeType: 'application/pdf', dialogTitle: 'JACS Hospice Edition' });
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         }
       }
-    } catch (error) {
-      console.error('Error downloading Hospice Edition:', error);
-      alert('Could not download Hospice Edition. Please try again.');
-    }
+    } catch { alert('Could not download Hospice Edition. Please try again.'); }
+  };
+
+  const fireHaptic = (level: string) => {
+    if (Platform.OS === 'web') return;
+    if (level === 'heavy') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    else if (level === 'medium') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    else Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   return (
     <ScreenContainer>
-      {/* Onboarding Tour */}
       <OnboardingTour steps={DEFAULT_ONBOARDING_STEPS} />
-      {/* Header with greeting and emergency button */}
-      <View className="px-6 pt-6 pb-4">
-        <View className="flex-row items-center justify-between mb-3">
-          <View className="flex-1">
-            <Text className="text-3xl font-bold text-foreground" style={{ lineHeight: 40 }}>
-              Hello! 👋
-            </Text>
-            <Text className="text-lg text-muted mt-1" style={{ lineHeight: 26 }}>
-              Your Health Command Center
-            </Text>
-          </View>
-        </View>
-        
-        {/* JACS Brand Hub shortcut — replaces the old 3-button row */}
-        <Pressable
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            router.push('/jacs-brand-hub');
-          }}
-          style={({ pressed }) => [{
-            backgroundColor: pressed ? '#0A0F1ECC' : '#0A0F1E',
-            borderWidth: 2,
-            borderColor: pressed ? '#D4AF37' : '#D4AF3780',
-            transform: [{ scale: pressed ? 0.98 : 1 }],
-            borderRadius: 14,
-            marginBottom: 12,
-            padding: 14,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }]}
-        >
-          <Text style={{ fontSize: 24, marginRight: 10 }}>🌟</Text>
-          <View style={{ flex: 1 }}>
-            <Text style={{ color: '#D4AF37', fontWeight: '900', fontSize: 15 }} allowFontScaling={false}>JACS Brand Hub</Text>
-            <Text style={{ color: '#9BA1A6', fontSize: 11, marginTop: 1 }} allowFontScaling={false}>Features Deck • Consumer Pitch • Social Media • Share</Text>
-          </View>
-          <Text style={{ color: '#D4AF37', fontSize: 16 }}>→</Text>
-        </Pressable>
 
-
-        
-      {/* Blood Sugar Log — Quick Access */}
-      <Pressable
-        onPress={() => {
-          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          router.push('/blood-sugar-log');
-        }}
-        style={({ pressed }) => [{
-          backgroundColor: pressed ? '#7F1D1DCC' : '#7F1D1D',
-          borderWidth: 2,
-          borderColor: pressed ? '#FCA5A5' : '#EF444480',
-          transform: [{ scale: pressed ? 0.98 : 1 }],
-          borderRadius: 16,
-          marginBottom: 12,
-          padding: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }]}
-      >
-        <Text style={{ fontSize: 28, marginRight: 12 }}>🩸</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={{ color: '#FCA5A5', fontWeight: '800', fontSize: 16 }} allowFontScaling={false}>Blood Sugar Log</Text>
-          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Log reading • View history • 7-day chart</Text>
-        </View>
-        <Text style={{ color: '#FCA5A5', fontSize: 18 }}>→</Text>
-      </Pressable>
-
-      {/* Guardian Agent — Life Safety */}
-      <Pressable
-        onPress={() => {
-          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-          router.push('/guardian-agent');
-        }}
-        style={({ pressed }) => [{
-          backgroundColor: pressed ? '#0C1B33CC' : '#0C1B33',
-          borderWidth: 2,
-          borderColor: pressed ? '#D4AF37' : '#D4AF3780',
-          transform: [{ scale: pressed ? 0.98 : 1 }],
-          borderRadius: 16,
-          marginBottom: 12,
-          padding: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }]}
-      >
-        <Text style={{ fontSize: 28, marginRight: 12 }}>🛡️</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={{ color: '#D4AF37', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>🛡️ GUARDIAN AGENT</Text>
-          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Wheat Scanner • Hypo Checker • Emergency Protocol</Text>
-        </View>
-        <Text style={{ color: '#D4AF37', fontSize: 18 }}>→</Text>
-      </Pressable>
-
-      {/* Kids World — Child-Facing */}
-      <Pressable
-        onPress={() => {
-          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          router.push('/kids-world');
-        }}
-        style={({ pressed }) => [{
-          backgroundColor: pressed ? '#1A0A3BCC' : '#1A0A3B',
-          borderWidth: 2,
-          borderColor: pressed ? '#FFD700' : '#FFD70080',
-          transform: [{ scale: pressed ? 0.98 : 1 }],
-          borderRadius: 16,
-          marginBottom: 12,
-          padding: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }]}
-      >
-        <Text style={{ fontSize: 28, marginRight: 12 }}>🌟</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={{ color: '#FFD700', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>🌟 KIDS WORLD</Text>
-          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>For your child • Games • Badges • Education</Text>
-        </View>
-        <Text style={{ color: '#FFD700', fontSize: 18 }}>→</Text>
-      </Pressable>
-
-      {/* Learning Hub — Caregiver Education */}
-      <Pressable
-        onPress={() => {
-          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          router.push('/learning-hub');
-        }}
-        style={({ pressed }) => [{
-          backgroundColor: pressed ? '#0C1B33CC' : '#0C1B33',
-          borderWidth: 2,
-          borderColor: pressed ? '#60A5FA' : '#60A5FA80',
-          transform: [{ scale: pressed ? 0.98 : 1 }],
-          borderRadius: 16,
-          marginBottom: 12,
-          padding: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }]}
-      >
-        <Text style={{ fontSize: 28, marginRight: 12 }}>🌍</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={{ color: '#60A5FA', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>🌍 LEARNING HUB</Text>
-          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Caregiver education • 6 languages • Handoff card</Text>
-        </View>
-        <Text style={{ color: '#60A5FA', fontSize: 18 }}>→</Text>
-      </Pressable>
-
-      {/* Meal Planner — Wheat-Free */}
-      <Pressable
-        onPress={() => {
-          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          router.push('/meal-planner');
-        }}
-        style={({ pressed }) => [{
-          backgroundColor: pressed ? '#14532DCC' : '#14532D',
-          borderWidth: 2,
-          borderColor: pressed ? '#4ADE80' : '#4ADE8080',
-          transform: [{ scale: pressed ? 0.98 : 1 }],
-          borderRadius: 16,
-          marginBottom: 12,
-          padding: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }]}
-      >
-        <Text style={{ fontSize: 28, marginRight: 12 }}>🥗</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={{ color: '#4ADE80', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>🥗 WHEAT-FREE MEAL PLANNER</Text>
-          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>1-tap weekly plan • Carb counts • Shopping list</Text>
-        </View>
-        <Text style={{ color: '#4ADE80', fontSize: 18 }}>→</Text>
-      </Pressable>
-
-      {/* BG Reminders */}
-      <Pressable
-        onPress={() => {
-          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          router.push('/bg-reminders');
-        }}
-        style={({ pressed }) => [{
-          backgroundColor: pressed ? '#1E3A5FCC' : '#1E3A5F',
-          borderWidth: 2,
-          borderColor: pressed ? '#60A5FA' : '#60A5FA80',
-          transform: [{ scale: pressed ? 0.98 : 1 }],
-          borderRadius: 16,
-          marginBottom: 12,
-          padding: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }]}
-      >
-        <Text style={{ fontSize: 28, marginRight: 12 }}>⏰</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={{ color: '#60A5FA', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>⏰ BG CHECK REMINDERS</Text>
-          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Set daily alerts • Never miss a check</Text>
-        </View>
-        <Text style={{ color: '#60A5FA', fontSize: 18 }}>→</Text>
-      </Pressable>
-
-      {/* My T1D Story */}
-      <Pressable
-        onPress={() => {
-          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          router.push('/my-t1d-story');
-        }}
-        style={({ pressed }) => [{
-          backgroundColor: pressed ? '#3B0764CC' : '#3B0764',
-          borderWidth: 2,
-          borderColor: pressed ? '#C084FC' : '#C084FC80',
-          transform: [{ scale: pressed ? 0.98 : 1 }],
-          borderRadius: 16,
-          marginBottom: 12,
-          padding: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }]}
-      >
-        <Text style={{ fontSize: 28, marginRight: 12 }}>🎙️</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={{ color: '#C084FC', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>🎙️ MY T1D STORY</Text>
-          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Kids voice journal • Record your day • Build your story</Text>
-        </View>
-        <Text style={{ color: '#C084FC', fontSize: 18 }}>→</Text>
-      </Pressable>
-
-      {/* ── NEW: Setup Wizard ── */}
-      <Pressable
-        onPress={() => {
-          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          router.push('/setup-wizard');
-        }}
-        style={({ pressed }) => [{
-          backgroundColor: pressed ? '#1E3A5FCC' : '#1E3A5F',
-          borderWidth: 2,
-          borderColor: pressed ? '#38BDF8' : '#38BDF880',
-          transform: [{ scale: pressed ? 0.98 : 1 }],
-          borderRadius: 16,
-          marginBottom: 12,
-          padding: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }]}
-      >
-        <Text style={{ fontSize: 28, marginRight: 12 }}>⚙️</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={{ color: '#38BDF8', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>⚙️ SETUP PROFILE</Text>
-          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Age • Devices • Allergies • Prescription • Care Team</Text>
-        </View>
-        <Text style={{ color: '#38BDF8', fontSize: 18 }}>→</Text>
-      </Pressable>
-
-      {/* ── NEW: JACS Event Log ── */}
-      <Pressable
-        onPress={() => {
-          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          router.push('/jacs-event-log');
-        }}
-        style={({ pressed }) => [{
-          backgroundColor: pressed ? '#14532DCC' : '#14532D',
-          borderWidth: 2,
-          borderColor: pressed ? '#4ADE80' : '#4ADE8080',
-          transform: [{ scale: pressed ? 0.98 : 1 }],
-          borderRadius: 16,
-          marginBottom: 12,
-          padding: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }]}
-      >
-        <Text style={{ fontSize: 28, marginRight: 12 }}>📋</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={{ color: '#4ADE80', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>📋 JACS EVENT LOG</Text>
-          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Chat-style diary • "45g pizza" • "2u bolus" • Trend arrows</Text>
-        </View>
-        <Text style={{ color: '#4ADE80', fontSize: 18 }}>→</Text>
-      </Pressable>
-
-      {/* ── NEW: GluCrew / Care Team ── */}
-      <Pressable
-        onPress={() => {
-          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          router.push('/glucrew');
-        }}
-        style={({ pressed }) => [{
-          backgroundColor: pressed ? '#3B0764CC' : '#3B0764',
-          borderWidth: 2,
-          borderColor: pressed ? '#C084FC' : '#C084FC80',
-          transform: [{ scale: pressed ? 0.98 : 1 }],
-          borderRadius: 16,
-          marginBottom: 12,
-          padding: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }]}
-      >
-        <Text style={{ fontSize: 28, marginRight: 12 }}>👨‍👩‍👧</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={{ color: '#C084FC', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>👨‍👩‍👧 CARE TEAM (GLUCREW)</Text>
-          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Invite family • School nurse • Live BG sharing • Alerts</Text>
-        </View>
-        <Text style={{ color: '#C084FC', fontSize: 18 }}>→</Text>
-      </Pressable>
-
-        {/* Share App — Seamless QR + One-tap sharing */}
-      <Pressable
-        onPress={() => {
-          if (typeof Haptics !== 'undefined') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-          router.push('/share-app');
-        }}
-        style={({ pressed }) => [{
-          backgroundColor: pressed ? '#0C4A6ECC' : '#0C4A6E',
-          borderWidth: 2,
-          borderColor: pressed ? '#38BDF8' : '#38BDF880',
-          transform: [{ scale: pressed ? 0.98 : 1 }],
-          borderRadius: 16,
-          marginBottom: 12,
-          padding: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }]}
-      >
-        <Text style={{ fontSize: 28, marginRight: 12 }}>📲</Text>
-        <View style={{ flex: 1 }}>
-          <Text style={{ color: '#38BDF8', fontWeight: '900', fontSize: 16 }} allowFontScaling={false}>📲 SHARE JACS APP</Text>
-          <Text style={{ color: '#9BA1A6', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>WhatsApp · Email · SMS · QR Code · Any App — Instant, no friction</Text>
-        </View>
-        <Text style={{ color: '#38BDF8', fontSize: 18 }}>→</Text>
-      </Pressable>
-        
-        <View className="flex-row items-center justify-end">
-          <Pressable
-            onPress={handleEmergency}
-            style={({ pressed }) => [
-              {
-                transform: [{ scale: pressed ? 0.95 : 1 }],
-                opacity: pressed ? 0.8 : 1,
-                backgroundColor: colors.error,
-                width: 56,
-                height: 56,
-                borderRadius: 28,
-                alignItems: "center",
-                justifyContent: "center",
-              } as ViewStyle,
-            ]}
-          >
-            <IconSymbol name="phone.fill" size={24} color="#ffffff" />
-          </Pressable>
-        </View>
-      </View>
-
-      <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        {/* ── MEDICAL ID EMERGENCY CARD ─────────────────────────────────── */}
-        <Pressable
-          onPress={() => {
-            if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-            router.push('/medical-id-card');
-          }}
-          style={({ pressed }) => ({
-            backgroundColor: pressed ? '#B91C1C' : '#DC2626',
-            borderRadius: 16,
-            padding: 16,
-            marginBottom: 16,
-            marginTop: 4,
-            flexDirection: 'row',
-            alignItems: 'center',
-            shadowColor: '#DC2626',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.4,
-            shadowRadius: 8,
-            elevation: 8,
-            transform: [{ scale: pressed ? 0.97 : 1 }],
-          })}
-        >
-          <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: '#ffffff30', alignItems: 'center', justifyContent: 'center', marginRight: 14 }}>
-            <Text style={{ fontSize: 26 }}>🪪</Text>
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={{ color: '#fff', fontWeight: '900', fontSize: 17, letterSpacing: 0.3 }}>MEDICAL ID CARD</Text>
-            <Text style={{ color: '#FFB3B3', fontSize: 12, marginTop: 2 }}>Type 1 Diabetes • Tap for emergency info</Text>
-          </View>
-          <View style={{ backgroundColor: '#ffffff25', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6 }}>
-            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 12 }}>OPEN →</Text>
-          </View>
-        </Pressable>
-
-        {/* Daily Vitals Ribbon */}
-        <View className="bg-surface rounded-3xl p-6 mb-6 border border-border">
-          <Text className="text-xl font-semibold text-foreground mb-4" style={{ lineHeight: 28 }}>
-            Today's Vitals
-          </Text>
-          <View className="flex-row justify-between gap-3">
-            {/* Glucose */}
-            <Pressable
-              onPress={() => router.push('/vitals-tracker')}
-              className="flex-1 bg-background rounded-2xl p-4 border border-border"
-              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
-            >
-              <View className="flex-row items-center justify-between mb-2">
-                <IconSymbol name="drop.fill" size={20} color={colors.primary} />
-                <Text className="text-xs text-muted">mg/dL</Text>
-              </View>
-              <Text className="text-2xl font-bold text-foreground">128</Text>
-              <Text className="text-sm text-muted mt-1">Glucose</Text>
-            </Pressable>
-
-            {/* Blood Pressure */}
-            <Pressable
-              onPress={() => router.push('/vitals-tracker')}
-              className="flex-1 bg-background rounded-2xl p-4 border border-border"
-              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
-            >
-              <View className="flex-row items-center justify-between mb-2">
-                <IconSymbol name="heart.fill" size={20} color={colors.error} />
-                <Text className="text-xs text-muted">mmHg</Text>
-              </View>
-              <Text className="text-2xl font-bold text-foreground">120/80</Text>
-              <Text className="text-sm text-muted mt-1">Blood Pressure</Text>
-            </Pressable>
-
-            {/* Weight */}
-            <Pressable
-              onPress={() => router.push('/vitals-tracker')}
-              className="flex-1 bg-background rounded-2xl p-4 border border-border"
-              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
-            >
-              <View className="flex-row items-center justify-between mb-2">
-                <IconSymbol name="figure.walk" size={20} color={colors.success} />
-                <Text className="text-xs text-muted">lbs</Text>
-              </View>
-              <Text className="text-2xl font-bold text-foreground">165</Text>
-              <Text className="text-sm text-muted mt-1">Weight</Text>
-            </Pressable>
-          </View>
-        </View>
-
-        {/* Quick Log Section */}
-        <View className="bg-surface rounded-3xl p-6 mb-6 border border-border">
-          <Text className="text-xl font-semibold text-foreground mb-4" style={{ lineHeight: 28 }}>
-            Quick Log
-          </Text>
-          <View className="gap-3">
-            <Pressable
-              onPress={() => handleQuickLog('medication')}
-              className="flex-row items-center bg-background rounded-2xl p-4 border border-border"
-              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
-            >
-              <View
-                className="w-12 h-12 rounded-full items-center justify-center mr-4"
-                style={{ backgroundColor: `${colors.primary}20` }}
-              >
-                <IconSymbol name="pills.fill" size={24} color={colors.primary} />
-              </View>
-              <View className="flex-1">
-                <Text className="text-lg font-semibold text-foreground">Log Medication</Text>
-                <Text className="text-sm text-muted">Record medication taken</Text>
-              </View>
-              <IconSymbol name="chevron.right" size={24} color={colors.muted} />
-            </Pressable>
-
-            <Pressable
-              onPress={() => handleQuickLog('insulin')}
-              className="flex-row items-center bg-background rounded-2xl p-4 border border-border"
-              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
-            >
-              <View
-                className="w-12 h-12 rounded-full items-center justify-center mr-4"
-                style={{ backgroundColor: `${colors.primary}20` }}
-              >
-                <IconSymbol name="syringe.fill" size={24} color={colors.primary} />
-              </View>
-              <View className="flex-1">
-                <Text className="text-lg font-semibold text-foreground">Log Insulin</Text>
-                <Text className="text-sm text-muted">Record insulin dose</Text>
-              </View>
-              <IconSymbol name="chevron.right" size={24} color={colors.muted} />
-            </Pressable>
-
-            <Pressable
-              onPress={() => handleQuickLog('meal')}
-              className="flex-row items-center bg-background rounded-2xl p-4 border border-border"
-              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
-            >
-              <View
-                className="w-12 h-12 rounded-full items-center justify-center mr-4"
-                style={{ backgroundColor: `${colors.success}20` }}
-              >
-                <IconSymbol name="fork.knife" size={24} color={colors.success} />
-              </View>
-              <View className="flex-1">
-                <Text className="text-lg font-semibold text-foreground">Log Meal</Text>
-                <Text className="text-sm text-muted">Track food and carbs</Text>
-              </View>
-              <IconSymbol name="chevron.right" size={24} color={colors.muted} />
-            </Pressable>
-          </View>
-        </View>
-
-        {/* Master Dashboard Access */}
-        <Pressable
-          onPress={() => router.push('/master-dashboard')}
-          className="bg-primary rounded-3xl p-6 mb-6"
-          style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1 })}
-        >
-          <View className="flex-row items-center justify-between">
-            <View className="flex-1">
-              <Text className="text-xl font-bold text-white mb-2">Master Dashboard</Text>
-              <Text className="text-white opacity-90">
-                View complete health trends and history
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* ── COMPACT HEADER ─────────────────────────────────────────────── */}
+        <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 8 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 13, color: '#9BA1A6', fontWeight: '600', letterSpacing: 0.5 }} allowFontScaling={false}>
+                👋 Hello!
+              </Text>
+              <Text style={{ fontSize: 17, fontWeight: '800', color: '#ECEDEE', lineHeight: 22 }} allowFontScaling={false}>
+                Your Health Command Center
               </Text>
             </View>
-            <IconSymbol name="chart.bar.fill" size={32} color="#ffffff" />
+            {/* Emergency SOS button */}
+            <Pressable
+              onPress={handleEmergency}
+              style={({ pressed }) => ({
+                backgroundColor: colors.error,
+                width: 44,
+                height: 44,
+                borderRadius: 22,
+                alignItems: 'center',
+                justifyContent: 'center',
+                transform: [{ scale: pressed ? 0.93 : 1 }],
+                opacity: pressed ? 0.85 : 1,
+              } as ViewStyle)}
+            >
+              <IconSymbol name="phone.fill" size={20} color="#ffffff" />
+            </Pressable>
           </View>
-        </Pressable>
+        </View>
 
-        {/* Medicare Compliance Dashboard */}
-        <ComplianceDashboard />
+        {/* ── MEDICAL ID EMERGENCY CARD ───────────────────────────────────── */}
+        <View style={{ paddingHorizontal: 16, marginBottom: 10 }}>
+          <Pressable
+            onPress={() => {
+              if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+              router.push('/medical-id-card');
+            }}
+            style={({ pressed }) => ({
+              backgroundColor: pressed ? '#B91C1C' : '#DC2626',
+              borderRadius: 14,
+              padding: 12,
+              flexDirection: 'row',
+              alignItems: 'center',
+              transform: [{ scale: pressed ? 0.97 : 1 }],
+            })}
+          >
+            <Text style={{ fontSize: 22, marginRight: 10 }}>🪪</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: '#fff', fontWeight: '900', fontSize: 14 }} allowFontScaling={false}>MEDICAL ID CARD</Text>
+              <Text style={{ color: '#FFB3B3', fontSize: 11, marginTop: 1 }} allowFontScaling={false}>T1D • Tap for emergency info</Text>
+            </View>
+            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 12 }}>OPEN →</Text>
+          </Pressable>
+        </View>
 
-        {/* ── HOSPICE EDITION FOOTER ──────────────────────────────────────────── */}
-        <View style={{ marginTop: 8, marginBottom: 8 }}>
-          <View style={{ height: 1, backgroundColor: '#334155', marginBottom: 16 }} />
-          <Text style={{ color: '#9BA1A6', fontSize: 11, fontWeight: '700', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 10, textAlign: 'center' }} allowFontScaling={false}>
+        {/* ── 2-COLUMN FEATURE GRID ──────────────────────────────────────── */}
+        <View style={{ paddingHorizontal: 12, marginBottom: 12 }}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+            {FEATURE_CARDS.map((card) => (
+              <Pressable
+                key={card.route}
+                onPress={() => { fireHaptic(card.haptic); router.push(card.route as any); }}
+                style={({ pressed }) => ({
+                  width: '48%',
+                  backgroundColor: card.bg,
+                  borderWidth: 1.5,
+                  borderColor: pressed ? card.borderActive : card.border,
+                  borderRadius: 14,
+                  padding: 12,
+                  transform: [{ scale: pressed ? 0.96 : 1 }],
+                  opacity: pressed ? 0.92 : 1,
+                })}
+              >
+                <Text style={{ fontSize: 22, marginBottom: 6 }}>{card.emoji}</Text>
+                <Text style={{ color: card.text, fontWeight: '800', fontSize: 13, lineHeight: 17 }} allowFontScaling={false}>
+                  {card.label}
+                </Text>
+                <Text style={{ color: '#9BA1A6', fontSize: 10, marginTop: 2, lineHeight: 14 }} allowFontScaling={false}>
+                  {card.sub}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+
+        {/* ── DAILY VITALS RIBBON ────────────────────────────────────────── */}
+        <View style={{ paddingHorizontal: 16, marginBottom: 12 }}>
+          <View style={{ backgroundColor: '#1e2022', borderRadius: 20, padding: 14, borderWidth: 1, borderColor: '#334155' }}>
+            <Text style={{ color: '#ECEDEE', fontWeight: '700', fontSize: 14, marginBottom: 10 }} allowFontScaling={false}>
+              Today's Vitals
+            </Text>
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              <Pressable
+                onPress={() => router.push('/vitals-tracker')}
+                style={({ pressed }) => ({ flex: 1, backgroundColor: '#151718', borderRadius: 12, padding: 10, borderWidth: 1, borderColor: '#334155', opacity: pressed ? 0.7 : 1 })}
+              >
+                <Text style={{ color: '#9BA1A6', fontSize: 10 }} allowFontScaling={false}>mg/dL</Text>
+                <Text style={{ color: '#ECEDEE', fontWeight: '800', fontSize: 20 }} allowFontScaling={false}>128</Text>
+                <Text style={{ color: '#9BA1A6', fontSize: 11 }} allowFontScaling={false}>Glucose</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => router.push('/vitals-tracker')}
+                style={({ pressed }) => ({ flex: 1, backgroundColor: '#151718', borderRadius: 12, padding: 10, borderWidth: 1, borderColor: '#334155', opacity: pressed ? 0.7 : 1 })}
+              >
+                <Text style={{ color: '#9BA1A6', fontSize: 10 }} allowFontScaling={false}>mmHg</Text>
+                <Text style={{ color: '#ECEDEE', fontWeight: '800', fontSize: 20 }} allowFontScaling={false}>120/80</Text>
+                <Text style={{ color: '#9BA1A6', fontSize: 11 }} allowFontScaling={false}>Blood Pressure</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => router.push('/vitals-tracker')}
+                style={({ pressed }) => ({ flex: 1, backgroundColor: '#151718', borderRadius: 12, padding: 10, borderWidth: 1, borderColor: '#334155', opacity: pressed ? 0.7 : 1 })}
+              >
+                <Text style={{ color: '#9BA1A6', fontSize: 10 }} allowFontScaling={false}>lbs</Text>
+                <Text style={{ color: '#ECEDEE', fontWeight: '800', fontSize: 20 }} allowFontScaling={false}>165</Text>
+                <Text style={{ color: '#9BA1A6', fontSize: 11 }} allowFontScaling={false}>Weight</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+
+        {/* ── QUICK LOG ──────────────────────────────────────────────────── */}
+        <View style={{ paddingHorizontal: 16, marginBottom: 12 }}>
+          <View style={{ backgroundColor: '#1e2022', borderRadius: 20, padding: 14, borderWidth: 1, borderColor: '#334155' }}>
+            <Text style={{ color: '#ECEDEE', fontWeight: '700', fontSize: 14, marginBottom: 10 }} allowFontScaling={false}>
+              Quick Log
+            </Text>
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              {[
+                { icon: 'pills.fill', label: 'Medication', type: 'medication', color: colors.primary },
+                { icon: 'syringe.fill', label: 'Insulin', type: 'insulin', color: colors.primary },
+                { icon: 'fork.knife', label: 'Meal', type: 'meal', color: colors.success },
+              ].map((item) => (
+                <Pressable
+                  key={item.type}
+                  onPress={() => handleQuickLog(item.type)}
+                  style={({ pressed }) => ({
+                    flex: 1,
+                    backgroundColor: '#151718',
+                    borderRadius: 12,
+                    padding: 10,
+                    alignItems: 'center',
+                    borderWidth: 1,
+                    borderColor: '#334155',
+                    opacity: pressed ? 0.7 : 1,
+                  })}
+                >
+                  <IconSymbol name={item.icon as any} size={22} color={item.color} />
+                  <Text style={{ color: '#ECEDEE', fontSize: 11, marginTop: 4, fontWeight: '600' }} allowFontScaling={false}>
+                    {item.label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        </View>
+
+        {/* ── MASTER DASHBOARD ───────────────────────────────────────────── */}
+        <View style={{ paddingHorizontal: 16, marginBottom: 12 }}>
+          <Pressable
+            onPress={() => router.push('/master-dashboard')}
+            style={({ pressed }) => ({
+              backgroundColor: colors.primary,
+              borderRadius: 16,
+              padding: 14,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              opacity: pressed ? 0.88 : 1,
+              transform: [{ scale: pressed ? 0.98 : 1 }],
+            })}
+          >
+            <View>
+              <Text style={{ color: '#fff', fontWeight: '800', fontSize: 15 }} allowFontScaling={false}>Master Dashboard</Text>
+              <Text style={{ color: '#ffffffcc', fontSize: 12, marginTop: 2 }} allowFontScaling={false}>Complete health trends & history</Text>
+            </View>
+            <IconSymbol name="chart.bar.fill" size={28} color="#ffffff" />
+          </Pressable>
+        </View>
+
+        {/* ── MEDICARE COMPLIANCE ────────────────────────────────────────── */}
+        <View style={{ paddingHorizontal: 16, marginBottom: 12 }}>
+          <ComplianceDashboard />
+        </View>
+
+        {/* ── HOSPICE PROFESSIONAL SUITE ─────────────────────────────────── */}
+        <View style={{ paddingHorizontal: 16, marginBottom: 24 }}>
+          <View style={{ height: 1, backgroundColor: '#334155', marginBottom: 12 }} />
+          <Text style={{ color: '#9BA1A6', fontSize: 10, fontWeight: '700', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8, textAlign: 'center' }} allowFontScaling={false}>
             JACS PROFESSIONAL SUITE
           </Text>
           <Pressable
@@ -635,32 +404,25 @@ export default function PatientCommandCenter() {
               backgroundColor: pressed ? '#78350F' : '#92400E',
               borderWidth: 2,
               borderColor: pressed ? '#FCD34D' : '#F59E0B',
-              borderRadius: 16,
-              padding: 18,
+              borderRadius: 14,
+              padding: 14,
               flexDirection: 'row',
               alignItems: 'center',
               transform: [{ scale: pressed ? 0.98 : 1 }],
             })}
           >
-            <View style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: '#F59E0B30', alignItems: 'center', justifyContent: 'center', marginRight: 14 }}>
-              <Text style={{ fontSize: 26 }}>🏥</Text>
-            </View>
+            <Text style={{ fontSize: 22, marginRight: 12 }}>🏥</Text>
             <View style={{ flex: 1 }}>
-              <Text style={{ color: '#FCD34D', fontWeight: '900', fontSize: 17, marginBottom: 3 }} allowFontScaling={false}>
+              <Text style={{ color: '#FCD34D', fontWeight: '900', fontSize: 14, marginBottom: 2 }} allowFontScaling={false}>
                 Hospice Edition
               </Text>
-              <Text style={{ color: '#FDE68A', fontSize: 12, lineHeight: 18 }} allowFontScaling={false}>
+              <Text style={{ color: '#FDE68A', fontSize: 11 }} allowFontScaling={false}>
                 JACS Medical Monitoring System • Professional PDF
               </Text>
-              <Text style={{ color: '#F59E0B', fontSize: 11, marginTop: 4, fontWeight: '700' }} allowFontScaling={false}>
-                Tap to download • Share with care teams
-              </Text>
             </View>
-            <Text style={{ color: '#FCD34D', fontSize: 22 }}>↓</Text>
+            <Text style={{ color: '#FCD34D', fontSize: 20 }}>↓</Text>
           </Pressable>
         </View>
-
-        <View className="h-8" />
       </ScrollView>
     </ScreenContainer>
   );

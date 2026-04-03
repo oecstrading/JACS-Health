@@ -4419,3 +4419,11 @@
 - [x] Add iOS deploymentTarget: "15.1" (required by Expo SDK 54)
 - [x] Confirmed no android/ directory override (managed workflow — correct)
 - [x] Confirmed eas.json has no minSdkVersion override
+
+## Phase 13 — Publish Automation
+
+- [x] Add autoIncrement to preview build profile in eas.json
+- [x] Add preview-simulator profile for iOS simulator testing
+- [x] Create PUBLISH_GUIDE.md with step-by-step personal device install instructions
+- [ ] Add google-service-account.json for Google Play automated submission (pending user credentials)
+- [ ] Update submit.production.ios with real Apple ID / Team ID (pending user credentials)

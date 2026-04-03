@@ -31,7 +31,8 @@
       },
       "env": {
         "NODE_ENV": "production"
-      }
+      },
+      "autoIncrement": true
     },
     "production": {
       "autoIncrement": true,
@@ -58,6 +59,21 @@
       "env": {
         "NODE_ENV": "production",
         "STORE_TARGET": "amazon"
+      }
+    },
+    "preview-simulator": {
+      "distribution": "internal",
+      "autoIncrement": true,
+      "ios": {
+        "buildConfiguration": "Release",
+        "simulator": true
+      },
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease"
+      },
+      "env": {
+        "NODE_ENV": "production"
       }
     }
   },

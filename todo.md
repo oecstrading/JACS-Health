@@ -4456,3 +4456,6 @@
 - [x] Animate tab bar active pill with smooth reanimated slide transition
 - [x] Update web portal App Store/Google Play buttons with real published listing URLs
 - [x] Add Visit Our Website button in mobile app linking to public portal URL
+- [x] Add Visit Our Website link to Home screen hero
+- [x] Add QR code section to web portal for Expo Go scanning
+- [x] Update web portal Web Browser button to open Expo web preview URL

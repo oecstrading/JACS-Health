@@ -60,7 +60,8 @@ async function startServer() {
   // ── Public web portal (static files) ──────────────────────────────────────
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
   const publicDir = path.resolve(__dirname, "../../public");
-  // Serve static assets (CSS, JS, images) from /public
+  // Serve static assets (CSS, JS, images) from /public — both at root and /portal
+  app.use(express.static(publicDir));
   app.use("/portal", express.static(publicDir));
   // Root route serves the public landing page
   app.get("/portal", (_req, res) => {

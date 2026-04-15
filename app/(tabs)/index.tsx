@@ -218,6 +218,16 @@ export default function PatientCommandCenter() {
               <Text style={{ fontSize: 17, fontWeight: '800', color: '#ECEDEE', lineHeight: 22 }} allowFontScaling={false}>
                 Your Health Command Center
               </Text>
+              <Pressable
+                onPress={() => {
+                  if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  Linking.openURL('https://healthcompa-8ujrlxsn.manus.space');
+                }}
+                style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1, marginTop: 4, flexDirection: 'row', alignItems: 'center', gap: 4 } as ViewStyle)}
+              >
+                <Text style={{ fontSize: 11, color: '#38BDF8', fontWeight: '600' }} allowFontScaling={false}>🌐 Visit our website</Text>
+                <Text style={{ fontSize: 10, color: '#38BDF8' }} allowFontScaling={false}>→</Text>
+              </Pressable>
             </View>
             {/* Emergency SOS button */}
             <Pressable

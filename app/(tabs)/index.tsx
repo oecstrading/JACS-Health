@@ -387,6 +387,40 @@ export default function PatientCommandCenter() {
           </Pressable>
         </View>
 
+        {/* ── 4 HEALTH CARE PILLARS ──────────────────────────────────────── */}
+        <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
+          <View style={{ height: 1, backgroundColor: '#334155', marginBottom: 12 }} />
+          <Text style={{ color: '#9BA1A6', fontSize: 10, fontWeight: '700', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 10, textAlign: 'center' }} allowFontScaling={false}>
+            YOUR HEALTH CARE PILLARS
+          </Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+            {[
+              { icon: '🩸', label: 'Type 1 Diabetes', sub: 'CGM · Bolus · Kids Mode', route: '/(tabs)/diabetes-portal', bg: '#2D0A0A', border: '#F87171', text: '#FCA5A5' },
+              { icon: '🍊', label: 'Type 2 Diabetes', sub: 'A1C · Oral Meds · Lifestyle', route: '/(tabs)/diabetes2-portal', bg: '#2D1A0A', border: '#FF9F43', text: '#FED7AA' },
+              { icon: '💚', label: 'My General Health', sub: 'Vitals · Wellness · Family', route: '/(tabs)/my-health', bg: '#0A2D1A', border: '#4ADE80', text: '#BBF7D0' },
+              { icon: '🏥', label: 'Hospice Care', sub: 'Revenue · Compliance · HQRP', route: '/(tabs)/hospice-revenue-command', bg: '#1A0A0A', border: '#FB923C', text: '#FED7AA' },
+            ].map((pillar, i) => (
+              <Pressable
+                key={i}
+                onPress={() => { if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); router.push(pillar.route as any); }}
+                style={({ pressed }) => ({
+                  width: '47.5%',
+                  backgroundColor: pillar.bg,
+                  borderWidth: 1.5,
+                  borderColor: pressed ? pillar.border : pillar.border + '88',
+                  borderRadius: 16,
+                  padding: 14,
+                  opacity: pressed ? 0.85 : 1,
+                  transform: [{ scale: pressed ? 0.97 : 1 }],
+                })}
+              >
+                <Text style={{ fontSize: 28, marginBottom: 6 }}>{pillar.icon}</Text>
+                <Text style={{ color: pillar.text, fontWeight: '800', fontSize: 13, lineHeight: 18 }} allowFontScaling={false}>{pillar.label}</Text>
+                <Text style={{ color: pillar.text + 'bb', fontSize: 11, marginTop: 2 }} allowFontScaling={false}>{pillar.sub}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
         {/* ── MEDICARE COMPLIANCE ────────────────────────────────────────── */}
         <View style={{ paddingHorizontal: 16, marginBottom: 12 }}>
           <ComplianceDashboard />

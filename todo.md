@@ -4451,3 +4451,6 @@
 - [x] Redesign tab bar: taller height, bigger label fonts, vibrant per-tab accent colors, nano banana world-class visual style
 - [x] Move Hospice Edition JACS Professional Suite PDF link into My Health tab Hospice & Specialty Care section
 - [x] Redesign tab bar: taller height, bigger label fonts, vibrant per-tab accent colors, nano banana world-class visual style
+- [x] Add Type 2 Diabetes portal tab reusing all T1D features with T2D-specific adaptations (oral meds, A1C, insulin resistance, lifestyle)
+- [x] Add Meds tab badge counter showing number of medications due today
+- [x] Animate tab bar active pill with smooth reanimated slide transition

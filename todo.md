@@ -4427,3 +4427,16 @@
 - [x] Create PUBLISH_GUIDE.md with step-by-step personal device install instructions
 - [ ] Add google-service-account.json for Google Play automated submission (pending user credentials)
 - [ ] Update submit.production.ios with real Apple ID / Team ID (pending user credentials)
+
+## Phase 14 — My Health Master Tab
+- [x] Create app/(tabs)/my-health.tsx — My Health master hub screen
+- [x] Section 1: Patient Info (profile, medical ID, setup wizard)
+- [x] Section 2: Intake & Forms (voice intake, intake review, NPP review, voice consent)
+- [x] Section 3: Medical History (history summary, records, lab results, imaging, conditions)
+- [x] Section 4: Wellness & Monitoring (vitals, wellness dashboard, mood, symptom checker, overnight)
+- [x] Section 5: General Medications (tracker, reminders, pill identifier, pharmacy finder, refill)
+- [x] Section 6: Insurance & Finance (insurance scanner, claims, cost optimizer, medicare compliance)
+- [x] Section 7: Hospice & Specialty (hospice tab link, physical therapy, rheumatoid arthritis, surgeon comms)
+- [x] Section 8: Tools & Resources (telemedicine, learning hub, medical library, social, voice assistant)
+- [x] Register my-health tab in (tabs)/_layout.tsx with heart icon
+- [x] Keep all existing cards and screens unchanged

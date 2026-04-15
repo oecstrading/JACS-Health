@@ -132,6 +132,16 @@ export default function TabLayout() {
         }}
       />
 
+      {/* My Health — General health hub for all patients */}
+      <Tabs.Screen
+        name="my-health"
+        options={{
+          title: "My Health",
+          tabBarIcon: ({ color }) => <IconSymbol size={iconSize} name={"heart.text.square.fill" as any} color={color} />,
+          tabBarAccessibilityLabel: "My Health hub",
+        }}
+      />
+
       {/* Features Tab — hidden from tab bar; accessible via JACS Brand Hub */}
       <Tabs.Screen
         name="features"

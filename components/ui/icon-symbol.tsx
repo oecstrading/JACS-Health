@@ -59,6 +59,7 @@ const MAPPING = {
   "star.fill": "star",
   "megaphone.fill": "campaign",
   "globe": "public",
+  "heart.text.square.fill": "health-and-safety",
 } as IconMapping;
 
 type IconSymbolName = keyof typeof MAPPING;

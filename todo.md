@@ -4459,3 +4459,6 @@
 - [x] Add Visit Our Website link to Home screen hero
 - [x] Add QR code section to web portal for Expo Go scanning
 - [x] Update web portal Web Browser button to open Expo web preview URL
+- [x] Add Share App button to Home screen hero using expo-sharing
+- [x] Embed Expo Go QR code in Settings screen for clinician onboarding
+- [x] Add What's New ribbon banner to web portal

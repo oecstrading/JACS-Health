@@ -323,7 +323,24 @@
 </head>
 <body>
 
-  <!-- NAV -->
+
+  <- [ ] Redesign tab bar: taller height, bigger label fonts, vibrant per-tab accent colors, nano banana world-class visual WHAT'S NEW RIBBON -->
+  <div id="whats-new-ribbon" style="background: linear-gradient(90deg, #7C3AED 0%, #2563EB 50%, #0891B2 100%); padding: 10px 20px; text-align: center; position: relative; z-index: 100;">
+    <div style="display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;">
+      <span style="font-size:18px;">&#x1F195;</span>
+      <span style="color:#ffffff; font-weight:700; font-size:14px; letter-spacing:0.3px;">What&rsquo;s New in JACS &mdash; April 2026</span>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+        <span style="background:rgba(255,255,255,0.18); color:#ffffff; font-size:12px; font-weight:600; padding:3px 10px; border-radius:20px; border:1px solid rgba(255,255,255,0.3);">&#x1F34A; Type 2 Diabetes Portal Live</span>
+        <span style="background:rgba(255,255,255,0.18); color:#ffffff; font-size:12px; font-weight:600; padding:3px 10px; border-radius:20px; border:1px solid rgba(255,255,255,0.3);">&#x1F48A; Meds Badge Counter</span>
+        <span style="background:rgba(255,255,255,0.18); color:#ffffff; font-size:12px; font-weight:600; padding:3px 10px; border-radius:20px; border:1px solid rgba(255,255,255,0.3);">&#x1F4F1; Animated Tab Bar</span>
+        <span style="background:rgba(255,255,255,0.18); color:#ffffff; font-size:12px; font-weight:600; padding:3px 10px; border-radius:20px; border:1px solid rgba(255,255,255,0.3);">&#x1F3E5; Hospice Edition Updated</span>
+      </div>
+      <a href="#features" style="color:#FDE68A; font-size:12px; font-weight:700; text-decoration:none; white-space:nowrap;">Explore &rarr;</a>
+    </div>
+    <button onclick="document.getElementById('whats-new-ribbon').style.display='none'" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); background:none; border:none; color:rgba(255,255,255,0.7); font-size:18px; cursor:pointer; line-height:1; padding:4px;" aria-label="Dismiss">&times;</button>
+  </div>
+
+  <- [ ] Redesign tab bar: taller height, bigger label fonts, vibrant per-tab accent colors, nano banana world-class visual NAV -->
   <nav>
     <a href="#" class="nav-logo">🩺 <span>JACS</span> Medical</a>
     <ul class="nav-links">

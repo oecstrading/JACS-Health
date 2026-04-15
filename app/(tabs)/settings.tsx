@@ -1,4 +1,4 @@
-import { ScrollView, Text, View, Pressable, Switch, type ViewStyle, Linking, Platform } from "react-native";
+import { ScrollView, Text, View, Pressable, Switch, type ViewStyle, Linking, Platform, Image } from "react-native";
 import { useState, useEffect } from "react";
 import { router } from "expo-router";
 import * as Haptics from "expo-haptics";
@@ -365,6 +365,60 @@ export default function SettingsScreen() {
             {accountSettings.map(item => (
               <SettingCard key={item.id} item={item} />
             ))}
+          </View>
+        </View>
+
+        {/* Clinician QR Code Card */}
+        <View className="mb-6">
+          <Text className="text-xl font-semibold text-foreground mb-4" style={{ lineHeight: 28 }}>
+            📱 Onboard a Patient
+          </Text>
+          <View style={{
+            backgroundColor: '#0F1A2A',
+            borderRadius: 24,
+            borderWidth: 1.5,
+            borderColor: '#38BDF833',
+            padding: 24,
+            alignItems: 'center',
+          }}>
+            <Text style={{ color: '#38BDF8', fontWeight: '800', fontSize: 16, lineHeight: 22, marginBottom: 4 }} allowFontScaling={false}>
+              Scan to Open JACS in Expo Go
+            </Text>
+            <Text style={{ color: '#8888AA', fontSize: 12, lineHeight: 18, marginBottom: 16, textAlign: 'center' }} allowFontScaling={false}>
+              Show this QR code to a patient. They scan it with their phone camera to launch the app instantly — no download needed.
+            </Text>
+            <View style={{ backgroundColor: '#ffffff', borderRadius: 16, padding: 12 }}>
+              <Image
+                source={{ uri: 'https://healthcompa-8ujrlxsn.manus.space/qr-expo.png' }}
+                style={{ width: 200, height: 200, borderRadius: 8 }}
+                resizeMode="contain"
+              />
+            </View>
+            <Text style={{ color: '#8888AA', fontSize: 11, marginTop: 12, textAlign: 'center' }} allowFontScaling={false}>
+              exps://8081-ixzctx7dytt92n1c5e6lq-11b74fa4.us2.manus.computer
+            </Text>
+            <Pressable
+              onPress={() => {
+                if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                Linking.openURL('https://healthcompa-8ujrlxsn.manus.space');
+              }}
+              style={({ pressed }) => ({
+                marginTop: 16,
+                backgroundColor: pressed ? '#1a3a5a' : '#0A2540',
+                borderWidth: 1,
+                borderColor: '#38BDF8',
+                borderRadius: 12,
+                paddingVertical: 10,
+                paddingHorizontal: 20,
+                flexDirection: 'row' as const,
+                alignItems: 'center' as const,
+                gap: 8,
+                opacity: pressed ? 0.85 : 1,
+              })}
+            >
+              <Text style={{ fontSize: 14 }}>🌐</Text>
+              <Text style={{ color: '#38BDF8', fontWeight: '700', fontSize: 13 }}>Open Web Portal</Text>
+            </Pressable>
           </View>
         </View>
 

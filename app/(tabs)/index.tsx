@@ -218,16 +218,54 @@ export default function PatientCommandCenter() {
               <Text style={{ fontSize: 17, fontWeight: '800', color: '#ECEDEE', lineHeight: 22 }} allowFontScaling={false}>
                 Your Health Command Center
               </Text>
-              <Pressable
-                onPress={() => {
-                  if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  Linking.openURL('https://healthcompa-8ujrlxsn.manus.space');
-                }}
-                style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1, marginTop: 4, flexDirection: 'row', alignItems: 'center', gap: 4 } as ViewStyle)}
-              >
-                <Text style={{ fontSize: 11, color: '#38BDF8', fontWeight: '600' }} allowFontScaling={false}>🌐 Visit our website</Text>
-                <Text style={{ fontSize: 10, color: '#38BDF8' }} allowFontScaling={false}>→</Text>
-              </Pressable>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 4 }}>
+                <Pressable
+                  onPress={() => {
+                    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    Linking.openURL('https://healthcompa-8ujrlxsn.manus.space');
+                  }}
+                  style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1, flexDirection: 'row', alignItems: 'center', gap: 4 } as ViewStyle)}
+                >
+                  <Text style={{ fontSize: 11, color: '#38BDF8', fontWeight: '600' }} allowFontScaling={false}>🌐 Visit our website</Text>
+                  <Text style={{ fontSize: 10, color: '#38BDF8' }} allowFontScaling={false}>→</Text>
+                </Pressable>
+                <Text style={{ fontSize: 10, color: '#334155' }} allowFontScaling={false}>•</Text>
+                <Pressable
+                  onPress={async () => {
+                    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                    const message = '🏥 JACS Medical Monitoring System\n\nYour complete AI-powered health companion for Type 1 & Type 2 Diabetes, General Health, and Hospice Care.\n\n🌐 Learn more: https://healthcompa-8ujrlxsn.manus.space\n\n📱 Try the app: https://8081-ixzctx7dytt92n1c5e6lq-11b74fa4.us2.manus.computer';
+                    if (Platform.OS === 'web') {
+                      if (navigator.share) {
+                        navigator.share({ title: 'JACS Medical Monitoring System', text: message, url: 'https://healthcompa-8ujrlxsn.manus.space' });
+                      } else {
+                        Linking.openURL('https://healthcompa-8ujrlxsn.manus.space');
+                      }
+                    } else {
+                      const isAvailable = await Sharing.isAvailableAsync();
+                      if (isAvailable) {
+                        // Download QR image and share it along with the message
+                        try {
+                          const qrUri = FileSystem.documentDirectory + 'jacs-qr.png';
+                          const dl = await FileSystem.downloadAsync('https://healthcompa-8ujrlxsn.manus.space/qr-expo.png', qrUri);
+                          await Sharing.shareAsync(dl.uri, {
+                            mimeType: 'image/png',
+                            dialogTitle: 'Share JACS App',
+                            UTI: 'public.png',
+                          });
+                        } catch {
+                          // Fallback: share URL text via Linking
+                          Linking.openURL(`sms:?body=${encodeURIComponent(message)}`);
+                        }
+                      } else {
+                        Linking.openURL(`sms:?body=${encodeURIComponent(message)}`);
+                      }
+                    }
+                  }}
+                  style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1, flexDirection: 'row', alignItems: 'center', gap: 4 } as ViewStyle)}
+                >
+                  <Text style={{ fontSize: 11, color: '#A78BFA', fontWeight: '600' }} allowFontScaling={false}>📤 Share App</Text>
+                </Pressable>
+              </View>
             </View>
             {/* Emergency SOS button */}
             <Pressable

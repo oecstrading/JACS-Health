@@ -4462,3 +4462,4 @@
 - [x] Add Share App button to Home screen hero using expo-sharing
 - [x] Embed Expo Go QR code in Settings screen for clinician onboarding
 - [x] Add What's New ribbon banner to web portal
+- [x] Fix QR code to use exps:// Expo Go URL instead of web portal URL

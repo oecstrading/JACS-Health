@@ -176,6 +176,7 @@ const SECTIONS: Section[] = [
     borderColor: "#F59E0B",
     items: [
       { label: "Hospice Command", emoji: "🏥", route: "/(tabs)/hospice-revenue-command", description: "Hospice revenue & compliance hub" },
+      { label: "JACS Professional Suite", emoji: "📋", route: "/jacs-professional-suite", description: "Hospice Edition — JACS Professional Suite PDF & overview" },
       { label: "Physical Therapy", emoji: "🦵", route: "/physical-therapy", description: "PT exercises & progress tracking" },
       { label: "Rheumatoid Arthritis", emoji: "🦴", route: "/rheumatoid-arthritis", description: "RA management & monitoring" },
       { label: "Surgeon Comms", emoji: "🩺", route: "/surgeon-communication", description: "Communicate with your surgeon" },

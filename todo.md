@@ -4446,3 +4446,8 @@
 - [ ] Add Quick Access pinned row at top of My Health (3 pinnable features, persisted via AsyncStorage)
 - [ ] Add full-text search bar to My Health tab (searches across all sections and items in real time)
 - [ ] Add New Patient onboarding shortcut in Patient Info section with "Complete this first" banner
+- [ ] Background OTA update check using expo-updates: silently fetch on app resume, prompt user with upgrade modal when new update is available
+- [x] Move Hospice Edition JACS Professional Suite PDF link into My Health tab Hospice & Specialty Care section
+- [x] Redesign tab bar: taller height, bigger label fonts, vibrant per-tab accent colors, nano banana world-class visual style
+- [x] Move Hospice Edition JACS Professional Suite PDF link into My Health tab Hospice & Specialty Care section
+- [x] Redesign tab bar: taller height, bigger label fonts, vibrant per-tab accent colors, nano banana world-class visual style

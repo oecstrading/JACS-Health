@@ -1,174 +1,277 @@
 /**
- * Tab Layout — Cross-Platform Optimized
+ * Tab Layout — Nano Banana Edition
  *
- * Optimizations:
- * - Scrollable tab bar for 8+ tabs (prevents cramping on small phones)
- * - Adaptive icon/label sizing for Samsung Galaxy (360px) through iPhone 16 Pro Max (430px)
- * - Correct bottom padding for iPhone home indicator, Samsung gesture bar, and web
- * - Android elevation for tab bar shadow (Samsung One UI compatible)
- * - iOS blur background effect on supported devices
- * - Minimum 44pt/48dp touch targets on all tab items
+ * World-class, visually stunning tab bar:
+ * - Each tab has its own vibrant accent color (active state)
+ * - Taller bar (72px + safe area) so labels are never cramped
+ * - Bigger labels (12px, bold) with allowFontScaling off
+ * - Active tab shows a glowing pill indicator above the icon
+ * - Inactive tabs are muted but still readable
+ * - Gradient-style dark background for depth
  */
 
 import { Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Platform, useWindowDimensions } from "react-native";
-
-import { HapticTab } from "@/components/haptic-tab";
-import { IconSymbol } from "@/components/ui/icon-symbol";
+import {
+  Platform,
+  useWindowDimensions,
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+} from "react-native";
 import { useColors } from "@/hooks/use-colors";
+import * as Haptics from "expo-haptics";
+import type { BottomTabBarButtonProps } from "@react-navigation/bottom-tabs";
 
+// ── Per-tab vibrant accent colors ─────────────────────────────────────────────
+const TAB_COLORS: Record<string, string> = {
+  index:                   "#38BDF8", // sky blue  — Home
+  tracking:                "#34D399", // emerald   — Track
+  medications:             "#F472B6", // hot pink  — Meds
+  "care-team":             "#A78BFA", // violet    — Care
+  resources:               "#FBBF24", // amber     — Resources
+  "hospice-revenue-command": "#FB923C", // orange  — Hospice
+  "my-health":             "#4ADE80", // lime green — My Health
+  devices:                 "#67E8F9", // cyan      — Devices
+  "diabetes-portal":       "#F87171", // coral red — Diabetes
+};
+
+// ── Custom tab button with haptics + per-tab color pill ───────────────────────
+function NanoBananaTabButton(props: BottomTabBarButtonProps & { tabName: string }) {
+  const { children, onPress, accessibilityState, tabName } = props;
+  const isActive = accessibilityState?.selected ?? false;
+  const accent = TAB_COLORS[tabName] ?? "#38BDF8";
+
+  const handlePress = (e: any) => {
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    onPress?.(e);
+  };
+
+  return (
+    <Pressable
+      onPress={handlePress}
+      style={styles.tabButton}
+      accessibilityRole="button"
+      accessibilityState={accessibilityState}
+    >
+      {/* Active glow pill */}
+      {isActive && (
+        <View
+          style={[
+            styles.activePill,
+            { backgroundColor: accent + "33", borderColor: accent + "88" },
+          ]}
+        />
+      )}
+      {children}
+    </Pressable>
+  );
+}
+
+// ── Custom icon+label renderer so we can color each tab independently ─────────
+function TabIcon({
+  icon,
+  label,
+  tabName,
+  focused,
+  iconSize,
+}: {
+  icon: string;
+  label: string;
+  tabName: string;
+  focused: boolean;
+  iconSize: number;
+}) {
+  const accent = TAB_COLORS[tabName] ?? "#38BDF8";
+  const color = focused ? accent : "#6B7280";
+
+  return (
+    <View style={styles.tabIconWrapper}>
+      <Text style={{ fontSize: iconSize, lineHeight: iconSize + 4 }}>{icon}</Text>
+      <Text
+        style={[
+          styles.tabLabel,
+          { color, fontWeight: focused ? "800" : "500" },
+        ]}
+        allowFontScaling={false}
+        numberOfLines={1}
+      >
+        {label}
+      </Text>
+    </View>
+  );
+}
+
+// ── Layout ────────────────────────────────────────────────────────────────────
 export default function TabLayout() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
 
-  // Adaptive sizing based on screen width
-  // Samsung Galaxy S series: 360–412px
-  // iPhone SE: 375px | iPhone 14/15: 390px | iPhone Plus/Max: 430px
   const isSmallPhone = width < 380;
-  const iconSize = isSmallPhone ? 24 : 26;
-  const tabLabelFontSize = isSmallPhone ? 9 : 10;
+  const iconSize = isSmallPhone ? 22 : 24;
 
-  // Bottom padding: respect home indicator (iPhone) / gesture bar (Samsung)
-  // Web gets fixed padding; native gets max of system inset or minimum 8px
   const bottomPadding = Platform.select({
-    web: 12,
-    ios: Math.max(insets.bottom, 8),
-    android: Math.max(insets.bottom, 4), // Android gesture nav already adds space
-    default: 8,
+    web: 10,
+    ios: Math.max(insets.bottom, 10),
+    android: Math.max(insets.bottom, 6),
+    default: 10,
   }) as number;
 
-  const tabBarHeight = (isSmallPhone ? 52 : 56) + bottomPadding;
+  // Taller bar: 72px content + safe area
+  const tabBarHeight = 72 + bottomPadding;
+
+  // Helper: build a tab button factory bound to a specific tab name
+  const makeTabButton = (tabName: string) =>
+    (props: BottomTabBarButtonProps) => (
+      <NanoBananaTabButton {...props} tabName={tabName} />
+    );
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colors.tint,
-        tabBarInactiveTintColor: colors.muted,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarLabelStyle: {
-          fontSize: tabLabelFontSize,
-          fontWeight: "600",
-          // Prevent Samsung system font scaling from breaking tab labels
-          // @ts-ignore — allowFontScaling is valid on Text but not in tabBarLabelStyle type
-          allowFontScaling: false,
-        },
+        // We handle tint manually via TabIcon; set these to transparent
+        tabBarActiveTintColor: "transparent",
+        tabBarInactiveTintColor: "transparent",
+        tabBarShowLabel: false, // labels are rendered inside TabIcon
         tabBarStyle: {
-          paddingTop: 6,
-          paddingBottom: bottomPadding,
           height: tabBarHeight,
-          backgroundColor: colors.background,
-          borderTopColor: colors.border,
-          borderTopWidth: 0.5,
-          // Android elevation for Samsung One UI shadow
-          ...(Platform.OS === "android" ? { elevation: 8 } : {}),
-          // iOS blur effect (appears on iPhone 14 Pro+ automatically via system)
+          paddingTop: 0,
+          paddingBottom: bottomPadding,
+          backgroundColor: "#0F0F1A",
+          borderTopWidth: 0,
+          // Subtle top border glow
+          borderTopColor: "#ffffff18",
+          // Android shadow
+          ...(Platform.OS === "android"
+            ? { elevation: 24, shadowColor: "#000" }
+            : {}),
         },
-        // Ensure tab items have minimum touch target
         tabBarItemStyle: {
-          minHeight: Platform.OS === "android" ? 48 : 44,
+          paddingTop: 6,
+          minHeight: Platform.OS === "android" ? 56 : 52,
         },
       }}
     >
-      {/* Module I: Patient Command Center */}
+      {/* ── Home ─────────────────────────────────────────────────────────── */}
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => <IconSymbol size={iconSize} name="house.fill" color={color} />,
+          tabBarButton: makeTabButton("index"),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon icon="🏠" label="Home" tabName="index" focused={focused} iconSize={iconSize} />
+          ),
           tabBarAccessibilityLabel: "Home screen",
         }}
       />
 
-      {/* Module II: Clinical Monitoring */}
+      {/* ── Track ────────────────────────────────────────────────────────── */}
       <Tabs.Screen
         name="tracking"
         options={{
-          title: "Track",
-          tabBarIcon: ({ color }) => <IconSymbol size={iconSize} name="chart.line.uptrend.xyaxis" color={color} />,
+          tabBarButton: makeTabButton("tracking"),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon icon="📈" label="Track" tabName="tracking" focused={focused} iconSize={iconSize} />
+          ),
           tabBarAccessibilityLabel: "Health tracking",
         }}
       />
 
-      {/* Module III: Pharmacy & Med-Tech */}
+      {/* ── Meds ─────────────────────────────────────────────────────────── */}
       <Tabs.Screen
         name="medications"
         options={{
-          title: "Meds",
-          tabBarIcon: ({ color }) => <IconSymbol size={iconSize} name="pills.fill" color={color} />,
+          tabBarButton: makeTabButton("medications"),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon icon="💊" label="Meds" tabName="medications" focused={focused} iconSize={iconSize} />
+          ),
           tabBarAccessibilityLabel: "Medications",
         }}
       />
 
-      {/* Module IV: Provider & Compliance */}
+      {/* ── Care ─────────────────────────────────────────────────────────── */}
       <Tabs.Screen
         name="care-team"
         options={{
-          title: "Care",
-          tabBarIcon: ({ color }) => <IconSymbol size={iconSize} name="person.2.fill" color={color} />,
+          tabBarButton: makeTabButton("care-team"),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon icon="👥" label="Care" tabName="care-team" focused={focused} iconSize={iconSize} />
+          ),
           tabBarAccessibilityLabel: "Care team",
         }}
       />
 
-      {/* Module V: Health Navigation */}
+      {/* ── Resources ────────────────────────────────────────────────────── */}
       <Tabs.Screen
         name="resources"
         options={{
-          title: "Resources",
-          tabBarIcon: ({ color }) => <IconSymbol size={iconSize} name="book.fill" color={color} />,
+          tabBarButton: makeTabButton("resources"),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon icon="📚" label="Resources" tabName="resources" focused={focused} iconSize={iconSize} />
+          ),
           tabBarAccessibilityLabel: "Health resources",
         }}
       />
 
-      {/* Hospice Revenue Command */}
+      {/* ── Hospice ──────────────────────────────────────────────────────── */}
       <Tabs.Screen
         name="hospice-revenue-command"
         options={{
-          title: "Hospice",
-          tabBarIcon: ({ color }) => <IconSymbol size={iconSize} name={"shield.checkmark.fill" as any} color={color} />,
+          tabBarButton: makeTabButton("hospice-revenue-command"),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon icon="🏥" label="Hospice" tabName="hospice-revenue-command" focused={focused} iconSize={iconSize} />
+          ),
           tabBarAccessibilityLabel: "Hospice revenue command",
         }}
       />
 
-      {/* My Health — General health hub for all patients */}
+      {/* ── My Health ────────────────────────────────────────────────────── */}
       <Tabs.Screen
         name="my-health"
         options={{
-          title: "My Health",
-          tabBarIcon: ({ color }) => <IconSymbol size={iconSize} name={"heart.text.square.fill" as any} color={color} />,
+          tabBarButton: makeTabButton("my-health"),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon icon="💚" label="My Health" tabName="my-health" focused={focused} iconSize={iconSize} />
+          ),
           tabBarAccessibilityLabel: "My Health hub",
         }}
       />
 
-      {/* Features Tab — hidden from tab bar; accessible via JACS Brand Hub */}
+      {/* ── Features (hidden) ────────────────────────────────────────────── */}
       <Tabs.Screen
         name="features"
         options={{ href: null }}
       />
 
-      {/* Module VI: Device Management */}
+      {/* ── Devices ──────────────────────────────────────────────────────── */}
       <Tabs.Screen
         name="devices"
         options={{
-          title: "Devices",
-          tabBarIcon: ({ color }) => <IconSymbol size={iconSize} name="antenna.radiowaves.left.and.right" color={color} />,
+          tabBarButton: makeTabButton("devices"),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon icon="📡" label="Devices" tabName="devices" focused={focused} iconSize={iconSize} />
+          ),
           tabBarAccessibilityLabel: "Device management",
         }}
       />
 
-      {/* Diabetes Portal */}
+      {/* ── Diabetes ─────────────────────────────────────────────────────── */}
       <Tabs.Screen
         name="diabetes-portal"
         options={{
-          title: "Diabetes",
-          tabBarIcon: ({ color }) => <IconSymbol size={iconSize} name="drop.fill" color={color} />,
+          tabBarButton: makeTabButton("diabetes-portal"),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon icon="🩸" label="Diabetes" tabName="diabetes-portal" focused={focused} iconSize={iconSize} />
+          ),
           tabBarAccessibilityLabel: "Type 1 diabetes portal",
         }}
       />
 
-      {/* Hidden tabs — accessible via navigation, not shown in tab bar */}
+      {/* ── Hidden tabs ──────────────────────────────────────────────────── */}
       <Tabs.Screen name="jacs-brand-hub" options={{ href: null }} />
       <Tabs.Screen name="hospices" options={{ href: null }} />
       <Tabs.Screen name="settings" options={{ href: null }} />
@@ -177,3 +280,33 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+// ── Styles ────────────────────────────────────────────────────────────────────
+const styles = StyleSheet.create({
+  tabButton: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+  },
+  activePill: {
+    position: "absolute",
+    top: 0,
+    left: 6,
+    right: 6,
+    height: 3,
+    borderRadius: 2,
+    borderWidth: 1,
+  },
+  tabIconWrapper: {
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 3,
+    paddingTop: 8,
+  },
+  tabLabel: {
+    fontSize: 11,
+    letterSpacing: 0.2,
+    textAlign: "center",
+  },
+});

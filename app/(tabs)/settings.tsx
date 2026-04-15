@@ -1,4 +1,4 @@
-import { ScrollView, Text, View, Pressable, Switch, type ViewStyle } from "react-native";
+import { ScrollView, Text, View, Pressable, Switch, type ViewStyle, Linking, Platform } from "react-native";
 import { useState, useEffect } from "react";
 import { router } from "expo-router";
 import * as Haptics from "expo-haptics";
@@ -376,6 +376,86 @@ export default function SettingsScreen() {
           <Text className="text-sm text-muted mt-1" style={{ lineHeight: 18 }}>
             Your AI Health Companion
           </Text>
+
+          {/* Visit Our Website */}
+          <Pressable
+            onPress={() => {
+              if (Platform.OS !== 'web') {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              }
+              Linking.openURL('https://healthcompa-8ujrlxsn.manus.space');
+            }}
+            style={({ pressed }) => ({
+              marginTop: 20,
+              backgroundColor: pressed ? '#1a2a3a' : '#0F1A2A',
+              borderWidth: 1.5,
+              borderColor: '#38BDF8',
+              borderRadius: 16,
+              paddingVertical: 14,
+              paddingHorizontal: 28,
+              flexDirection: 'row' as const,
+              alignItems: 'center' as const,
+              gap: 10,
+              opacity: pressed ? 0.85 : 1,
+            })}
+          >
+            <Text style={{ fontSize: 20 }}>🌐</Text>
+            <View>
+              <Text style={{ color: '#38BDF8', fontWeight: '700', fontSize: 15, lineHeight: 20 }}>
+                Visit Our Website
+              </Text>
+              <Text style={{ color: '#8888AA', fontSize: 12, lineHeight: 16 }}>
+                healthcompa-8ujrlxsn.manus.space
+              </Text>
+            </View>
+            <Text style={{ color: '#38BDF8', marginLeft: 4, fontSize: 16 }}>→</Text>
+          </Pressable>
+
+          {/* Store Links */}
+          <View style={{ flexDirection: 'row', gap: 12, marginTop: 16 }}>
+            <Pressable
+              onPress={() => Linking.openURL('https://apps.apple.com/app/id/space.manus.health_companion.t20260208103805')}
+              style={({ pressed }) => ({
+                backgroundColor: pressed ? '#1a1a2e' : '#14141F',
+                borderWidth: 1,
+                borderColor: '#ffffff22',
+                borderRadius: 12,
+                paddingVertical: 10,
+                paddingHorizontal: 16,
+                flexDirection: 'row' as const,
+                alignItems: 'center' as const,
+                gap: 8,
+                opacity: pressed ? 0.8 : 1,
+              })}
+            >
+              <Text style={{ fontSize: 18 }}>🍎</Text>
+              <View>
+                <Text style={{ color: '#8888AA', fontSize: 10, lineHeight: 14 }}>Download on the</Text>
+                <Text style={{ color: '#F0F0FF', fontWeight: '700', fontSize: 13, lineHeight: 18 }}>App Store</Text>
+              </View>
+            </Pressable>
+            <Pressable
+              onPress={() => Linking.openURL('https://play.google.com/store/apps/details?id=space.manus.health_companion.t20260208103805')}
+              style={({ pressed }) => ({
+                backgroundColor: pressed ? '#1a1a2e' : '#14141F',
+                borderWidth: 1,
+                borderColor: '#ffffff22',
+                borderRadius: 12,
+                paddingVertical: 10,
+                paddingHorizontal: 16,
+                flexDirection: 'row' as const,
+                alignItems: 'center' as const,
+                gap: 8,
+                opacity: pressed ? 0.8 : 1,
+              })}
+            >
+              <Text style={{ fontSize: 18 }}>▶</Text>
+              <View>
+                <Text style={{ color: '#8888AA', fontSize: 10, lineHeight: 14 }}>Get it on</Text>
+                <Text style={{ color: '#F0F0FF', fontWeight: '700', fontSize: 13, lineHeight: 18 }}>Google Play</Text>
+              </View>
+            </Pressable>
+          </View>
         </View>
       </ScrollView>
     </ScreenContainer>

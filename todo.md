@@ -4454,3 +4454,5 @@
 - [x] Add Type 2 Diabetes portal tab reusing all T1D features with T2D-specific adaptations (oral meds, A1C, insulin resistance, lifestyle)
 - [x] Add Meds tab badge counter showing number of medications due today
 - [x] Animate tab bar active pill with smooth reanimated slide transition
+- [x] Update web portal App Store/Google Play buttons with real published listing URLs
+- [x] Add Visit Our Website button in mobile app linking to public portal URL

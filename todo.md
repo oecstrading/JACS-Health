@@ -4440,3 +4440,9 @@
 - [x] Section 8: Tools & Resources (telemedicine, learning hub, medical library, social, voice assistant)
 - [x] Register my-health tab in (tabs)/_layout.tsx with heart icon
 - [x] Keep all existing cards and screens unchanged
+
+## Phase 15 — My Health Tab Enhancements
+- [ ] Add Family Medical Records section (9th section) with family member profiles, shared records, hereditary conditions
+- [ ] Add Quick Access pinned row at top of My Health (3 pinnable features, persisted via AsyncStorage)
+- [ ] Add full-text search bar to My Health tab (searches across all sections and items in real time)
+- [ ] Add New Patient onboarding shortcut in Patient Info section with "Complete this first" banner

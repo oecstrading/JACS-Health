@@ -2,6 +2,8 @@ import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import net from "net";
+import path from "path";
+import { fileURLToPath } from "url";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
@@ -55,6 +57,20 @@ async function startServer() {
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+  // ── Public web portal (static files) ──────────────────────────────────────
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  const publicDir = path.resolve(__dirname, "../../public");
+  // Serve static assets (CSS, JS, images) from /public
+  app.use("/portal", express.static(publicDir));
+  // Root route serves the public landing page
+  app.get("/portal", (_req, res) => {
+    res.sendFile(path.join(publicDir, "index.html"));
+  });
+  // Also serve at root "/" for convenience
+  app.get("/", (_req, res) => {
+    res.sendFile(path.join(publicDir, "index.html"));
+  });
+
   registerOAuthRoutes(app);
 
   app.get("/api/health", (_req, res) => {
@@ -78,6 +94,7 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`[api] server listening on port ${port}`);
+    console.log(`[web] public portal available at http://localhost:${port}/`);
     
     // Initialize hospice compliance monitoring
     initializeComplianceMonitoring();

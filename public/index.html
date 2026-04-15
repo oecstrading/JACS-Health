@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JACS Medical Monitoring System — AI-Powered Health Platform</title>
+  <meta name="description" content="JACS Medical Monitoring System: AI-powered health platform for Type 1 Diabetes, Type 2 Diabetes, General Health, and Hospice Care. Download the app or access the web portal." />
+  <meta property="og:title" content="JACS Medical Monitoring System" />
+  <meta property="og:description" content="AI-powered health platform for T1D, T2D, General Health & Hospice Care" />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0A0A12;
+      --bg2: #0F0F1A;
+      --bg3: #14141F;
+      --surface: #1A1A2E;
+      --border: #ffffff14;
+      --text: #F0F0FF;
+      --muted: #8888AA;
+      --t1d: #F87171;
+      --t2d: #FF9F43;
+      --health: #4ADE80;
+      --hospice: #FB923C;
+      --primary: #38BDF8;
+      --gold: #D4AF37;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ──────────────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 40px;
+      background: rgba(10,10,18,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px; font-weight: 700; color: var(--text);
+      text-decoration: none; display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--primary); color: #000; padding: 10px 22px;
+      border-radius: 50px; font-weight: 700; font-size: 14px;
+      text-decoration: none; transition: opacity .2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ── HERO ─────────────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute; width: 800px; height: 800px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(56,189,248,0.08) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.3);
+      border-radius: 50px; padding: 6px 16px; font-size: 13px; font-weight: 600;
+      color: var(--primary); margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(36px, 6vw, 72px); font-weight: 800;
+      line-height: 1.1; max-width: 900px; margin-bottom: 24px;
+    }
+    .hero h1 .accent { color: var(--primary); }
+    .hero p {
+      font-size: clamp(16px, 2vw, 20px); color: var(--muted);
+      max-width: 640px; margin-bottom: 40px;
+    }
+    .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      background: var(--primary); color: #000;
+      padding: 14px 32px; border-radius: 50px;
+      font-weight: 700; font-size: 16px; text-decoration: none;
+      transition: transform .15s, opacity .15s;
+    }
+    .btn-primary:hover { transform: scale(1.03); opacity: 0.9; }
+    .btn-outline {
+      background: transparent; color: var(--text);
+      border: 1.5px solid var(--border);
+      padding: 14px 32px; border-radius: 50px;
+      font-weight: 600; font-size: 16px; text-decoration: none;
+      transition: border-color .2s, background .2s;
+    }
+    .btn-outline:hover { border-color: var(--primary); background: rgba(56,189,248,0.06); }
+
+    .hero-stats {
+      display: flex; gap: 48px; margin-top: 64px; flex-wrap: wrap; justify-content: center;
+    }
+    .stat { text-align: center; }
+    .stat-num { font-size: 32px; font-weight: 800; color: var(--text); }
+    .stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+    /* ── SECTION COMMON ───────────────────────────────────────────────── */
+    section { padding: 96px 24px; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .section-label {
+      font-size: 12px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--primary); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(28px, 4vw, 44px); font-weight: 700;
+      line-height: 1.2; margin-bottom: 16px;
+    }
+    .section-sub { font-size: 18px; color: var(--muted); max-width: 600px; }
+    .section-header { margin-bottom: 56px; }
+
+    /* ── 4 PILLARS ────────────────────────────────────────────────────── */
+    .pillars { background: var(--bg2); }
+    .pillars-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;
+    }
+    .pillar-card {
+      border-radius: 20px; padding: 32px;
+      border: 1.5px solid var(--border);
+      transition: transform .2s, border-color .2s;
+      text-decoration: none; display: block;
+    }
+    .pillar-card:hover { transform: translateY(-4px); }
+    .pillar-card.t1d { background: linear-gradient(135deg, #2D0A0A 0%, #1A0505 100%); }
+    .pillar-card.t1d:hover { border-color: var(--t1d); }
+    .pillar-card.t2d { background: linear-gradient(135deg, #2D1A0A 0%, #1A0F05 100%); }
+    .pillar-card.t2d:hover { border-color: var(--t2d); }
+    .pillar-card.health { background: linear-gradient(135deg, #0A2D1A 0%, #051A0F 100%); }
+    .pillar-card.health:hover { border-color: var(--health); }
+    .pillar-card.hospice { background: linear-gradient(135deg, #1A0A05 0%, #120703 100%); }
+    .pillar-card.hospice:hover { border-color: var(--hospice); }
+
+    .pillar-icon { font-size: 48px; margin-bottom: 16px; }
+    .pillar-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px; font-weight: 700; margin-bottom: 8px;
+    }
+    .pillar-card.t1d .pillar-title { color: var(--t1d); }
+    .pillar-card.t2d .pillar-title { color: var(--t2d); }
+    .pillar-card.health .pillar-title { color: var(--health); }
+    .pillar-card.hospice .pillar-title { color: var(--hospice); }
+
+    .pillar-desc { color: var(--muted); font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+    .pillar-features { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .pillar-features li { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+    .pillar-features li::before { content: '✓'; font-weight: 700; font-size: 12px; }
+    .pillar-card.t1d .pillar-features li::before { color: var(--t1d); }
+    .pillar-card.t2d .pillar-features li::before { color: var(--t2d); }
+    .pillar-card.health .pillar-features li::before { color: var(--health); }
+    .pillar-card.hospice .pillar-features li::before { color: var(--hospice); }
+
+    /* ── FEATURES GRID ────────────────────────────────────────────────── */
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;
+    }
+    .feature-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px;
+      transition: transform .2s, border-color .2s;
+    }
+    .feature-card:hover { transform: translateY(-3px); border-color: rgba(56,189,248,0.3); }
+    .feature-icon { font-size: 32px; margin-bottom: 12px; }
+    .feature-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+    .feature-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    /* ── PROFESSIONAL SUITE ───────────────────────────────────────────── */
+    .suite { background: var(--bg3); }
+    .suite-inner {
+      background: linear-gradient(135deg, #1A0F00 0%, #0F0A00 100%);
+      border: 2px solid rgba(212,175,55,0.3);
+      border-radius: 24px; padding: 48px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
+    }
+    .suite-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.4);
+      border-radius: 50px; padding: 6px 16px; font-size: 12px; font-weight: 700;
+      color: var(--gold); margin-bottom: 16px; letter-spacing: 1px; text-transform: uppercase;
+    }
+    .suite-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 32px; font-weight: 800; color: var(--gold); margin-bottom: 12px;
+    }
+    .suite-desc { color: var(--muted); font-size: 15px; margin-bottom: 24px; line-height: 1.7; }
+    .suite-features { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .suite-features li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; }
+    .suite-features li .check { color: var(--gold); font-weight: 700; margin-top: 2px; }
+    .suite-cta {
+      background: var(--gold); color: #000;
+      padding: 14px 28px; border-radius: 50px;
+      font-weight: 800; font-size: 15px; text-decoration: none;
+      display: inline-block; margin-top: 24px;
+      transition: opacity .2s, transform .15s;
+    }
+    .suite-cta:hover { opacity: 0.88; transform: scale(1.02); }
+    .suite-pdf-preview {
+      background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 16px; padding: 32px; text-align: center;
+    }
+    .suite-pdf-icon { font-size: 64px; margin-bottom: 16px; }
+    .suite-pdf-title { font-size: 18px; font-weight: 700; color: var(--gold); margin-bottom: 8px; }
+    .suite-pdf-sub { font-size: 13px; color: var(--muted); }
+    .suite-pdf-pages {
+      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 16px;
+    }
+    .suite-pdf-pages span {
+      background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 8px; padding: 4px 10px; font-size: 12px; color: var(--gold);
+    }
+
+    /* ── APP DOWNLOAD ─────────────────────────────────────────────────── */
+    .download { text-align: center; }
+    .download-inner {
+      background: linear-gradient(135deg, var(--surface) 0%, var(--bg2) 100%);
+      border: 1px solid var(--border); border-radius: 24px; padding: 64px 48px;
+      max-width: 800px; margin: 0 auto;
+    }
+    .download h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 36px; font-weight: 800; margin-bottom: 16px;
+    }
+    .download p { color: var(--muted); font-size: 18px; margin-bottom: 40px; }
+    .download-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .store-btn {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 14px; padding: 14px 24px; text-decoration: none;
+      transition: border-color .2s, transform .15s;
+    }
+    .store-btn:hover { border-color: var(--primary); transform: scale(1.02); }
+    .store-btn-icon { font-size: 28px; }
+    .store-btn-text { text-align: left; }
+    .store-btn-sub { font-size: 11px; color: var(--muted); }
+    .store-btn-name { font-size: 16px; font-weight: 700; color: var(--text); }
+
+    /* ── TESTIMONIALS ─────────────────────────────────────────────────── */
+    .testimonials { background: var(--bg2); }
+    .testimonials-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;
+    }
+    .testimonial-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px;
+    }
+    .testimonial-stars { color: #FBBF24; font-size: 16px; margin-bottom: 12px; }
+    .testimonial-text { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+    .testimonial-author { display: flex; align-items: center; gap: 12px; }
+    .testimonial-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; color: #000;
+    }
+    .testimonial-name { font-weight: 700; font-size: 14px; }
+    .testimonial-role { font-size: 12px; color: var(--muted); }
+
+    /* ── FOOTER ───────────────────────────────────────────────────────── */
+    footer {
+      background: var(--bg3); border-top: 1px solid var(--border);
+      padding: 64px 24px 32px;
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+    }
+    .footer-brand p { color: var(--muted); font-size: 14px; line-height: 1.7; margin-top: 12px; max-width: 280px; }
+    .footer-col h4 { font-weight: 700; font-size: 14px; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul a { color: var(--muted); text-decoration: none; font-size: 14px; transition: color .2s; }
+    .footer-col ul a:hover { color: var(--text); }
+    .footer-bottom {
+      max-width: 1200px; margin: 48px auto 0;
+      padding-top: 24px; border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-bottom p { color: var(--muted); font-size: 13px; }
+    .footer-disclaimer { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .suite-inner { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      section { padding: 64px 16px; }
+      .hero { padding: 100px 16px 60px; }
+      .suite-inner { padding: 28px; }
+      .download-inner { padding: 40px 24px; }
+      .footer-inner { grid-template-columns: 1fr; }
+    }
+
+    /* ── SCROLL ANIMATIONS ────────────────────────────────────────────── */
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">🩺 <span>JACS</span> Medical</a>
+    <ul class="nav-links">
+      <li><a href="#pillars">Health Pillars</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#suite">Professional Suite</a></li>
+      <li><a href="#download">Download</a></li>
+    </ul>
+    <a href="#download" class="nav-cta">Get the App</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-badge">🚀 AI-Powered Health Monitoring Platform</div>
+    <h1>Your Complete <span class="accent">Health Command</span> Center</h1>
+    <p>JACS Medical Monitoring System delivers intelligent, real-time health management for Type 1 Diabetes, Type 2 Diabetes, General Wellness, and Hospice Care — all in one platform.</p>
+    <div class="hero-buttons">
+      <a href="#download" class="btn-primary">Download Free App</a>
+      <a href="#pillars" class="btn-outline">Explore Features</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">4</div><div class="stat-label">Health Pillars</div></div>
+      <div class="stat"><div class="stat-num">50+</div><div class="stat-label">Clinical Features</div></div>
+      <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">AI Monitoring</div></div>
+      <div class="stat"><div class="stat-num">ADA</div><div class="stat-label">2024 Guidelines</div></div>
+    </div>
+  </section>
+
+  <!-- 4 PILLARS -->
+  <section class="pillars" id="pillars">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-label">Health Care Pillars</div>
+        <h2 class="section-title">One Platform. Four Complete Care Pathways.</h2>
+        <p class="section-sub">Whether you're managing diabetes, tracking general wellness, or coordinating hospice care — JACS has a dedicated, clinically-informed portal for you.</p>
+      </div>
+      <div class="pillars-grid">
+        <a href="#download" class="pillar-card t1d fade-in">
+          <div class="pillar-icon">🩸</div>
+          <div class="pillar-title">Type 1 Diabetes</div>
+          <p class="pillar-desc">Comprehensive T1D management with CGM integration, bolus calculator, hypo/hyper alerts, and Kids Mode for young patients.</p>
+          <ul class="pillar-features">
+            <li>Continuous Glucose Monitor (CGM) sync</li>
+            <li>Insulin bolus calculator</li>
+            <li>Hypo/Hyper Guardian alerts</li>
+            <li>Kids World gamification mode</li>
+            <li>6-language learning hub</li>
+            <li>Wheat-free meal planner</li>
+          </ul>
+        </a>
+        <a href="#download" class="pillar-card t2d fade-in">
+          <div class="pillar-icon">🍊</div>
+          <div class="pillar-title">Type 2 Diabetes</div>
+          <p class="pillar-desc">Full T2D lifecycle management: A1C tracking, oral medication classes, BMI calculator, HOMA-IR, and ADA 2024 lifestyle protocols.</p>
+          <ul class="pillar-features">
+            <li>A1C logger & trend analysis</li>
+            <li>7 oral medication classes (Metformin, GLP-1, SGLT2…)</li>
+            <li>BMI & HOMA-IR calculator</li>
+            <li>ADA 2024 glucose targets</li>
+            <li>Lifestyle intervention tools</li>
+            <li>Free medication program finder</li>
+          </ul>
+        </a>
+        <a href="#download" class="pillar-card health fade-in">
+          <div class="pillar-icon">💚</div>
+          <div class="pillar-title">My General Health</div>
+          <p class="pillar-desc">Holistic wellness tracking for vitals, medications, family health history, and preventive care — all in one place.</p>
+          <ul class="pillar-features">
+            <li>Vitals dashboard (BP, HR, weight, O₂)</li>
+            <li>Medication adherence tracker</li>
+            <li>Family health history records</li>
+            <li>Appointment scheduling</li>
+            <li>JACS Professional Suite PDF</li>
+            <li>Medicare compliance dashboard</li>
+          </ul>
+        </a>
+        <a href="#download" class="pillar-card hospice fade-in">
+          <div class="pillar-icon">🏥</div>
+          <div class="pillar-title">Hospice Care</div>
+          <p class="pillar-desc">Professional-grade hospice revenue cycle management, HQRP compliance, and clinical documentation tools for care teams.</p>
+          <ul class="pillar-features">
+            <li>Revenue Command Center</li>
+            <li>HQRP quality reporting</li>
+            <li>Medicare compliance monitoring</li>
+            <li>Care team coordination</li>
+            <li>Clinical documentation</li>
+            <li>Hospice Edition PDF suite</li>
+          </ul>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-label">Platform Features</div>
+        <h2 class="section-title">Everything You Need. Nothing You Don't.</h2>
+        <p class="section-sub">50+ clinical and wellness features built to the highest standards of modern health technology.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🤖</div>
+          <div class="feature-title">AI Health Assistant</div>
+          <p class="feature-desc">Voice-powered AI that answers health questions, detects emergencies, and provides personalized recommendations 24/7.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">📊</div>
+          <div class="feature-title">Master Dashboard</div>
+          <p class="feature-desc">Complete health trends, historical data, and predictive analytics in a single, beautifully designed view.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">💊</div>
+          <div class="feature-title">Smart Medication Tracker</div>
+          <p class="feature-desc">Daily medication checklist with due-today badge, interaction checker, refill reminders, and adherence streaks.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">📡</div>
+          <div class="feature-title">Device Integration</div>
+          <p class="feature-desc">Connects to CGMs, Apple Health, Google Fit, and wearables for automatic data sync without manual entry.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🚨</div>
+          <div class="feature-title">Emergency SOS</div>
+          <p class="feature-desc">One-tap emergency calling with automatic location sharing and instant alerts to all caregivers.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">👨‍👩‍👧</div>
+          <div class="feature-title">Caregiver Connect</div>
+          <p class="feature-desc">Share health data with family and care teams in real time. Caregivers receive critical alerts automatically.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">📋</div>
+          <div class="feature-title">Health Report Export</div>
+          <p class="feature-desc">Generate and share professional PDF health reports with vitals, medications, and trend charts for doctor visits.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🎮</div>
+          <div class="feature-title">Kids World</div>
+          <p class="feature-desc">Gamified diabetes management for children — badges, challenges, and fun education in 6 languages.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🔔</div>
+          <div class="feature-title">Smart Notifications</div>
+          <p class="feature-desc">Background OTA updates, medication reminders, glucose alerts, and compliance notifications — all intelligent and timely.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROFESSIONAL SUITE -->
+  <section class="suite" id="suite">
+    <div class="container">
+      <div class="suite-inner fade-in">
+        <div>
+          <div class="suite-badge">🏆 JACS Professional Suite</div>
+          <div class="suite-title">Hospice Edition</div>
+          <p class="suite-desc">
+            The JACS Professional Suite — Hospice Edition is a comprehensive clinical and operational toolkit for hospice care teams, administrators, and revenue cycle managers. Sponsored free for all users.
+          </p>
+          <ul class="suite-features">
+            <li><span class="check">✦</span><span>Revenue Command Center with real-time billing analytics</span></li>
+            <li><span class="check">✦</span><span>HQRP quality measure reporting & submission</span></li>
+            <li><span class="check">✦</span><span>Medicare compliance monitoring with automated alerts</span></li>
+            <li><span class="check">✦</span><span>Clinical documentation templates (IDT, care plans)</span></li>
+            <li><span class="check">✦</span><span>Bereavement program management tools</span></li>
+            <li><span class="check">✦</span><span>Volunteer coordination & scheduling</span></li>
+            <li><span class="check">✦</span><span>Family communication portal</span></li>
+            <li><span class="check">✦</span><span>Regulatory compliance calendar</span></li>
+          </ul>
+          <a href="#download" class="suite-cta">Access Free in App →</a>
+        </div>
+        <div class="suite-pdf-preview">
+          <div class="suite-pdf-icon">📄</div>
+          <div class="suite-pdf-title">JACS Hospice Edition PDF</div>
+          <p class="suite-pdf-sub">Complete professional reference guide — available free inside the My Health tab</p>
+          <div class="suite-pdf-pages">
+            <span>Revenue Cycle</span>
+            <span>HQRP Reporting</span>
+            <span>Compliance</span>
+            <span>IDT Templates</span>
+            <span>Bereavement</span>
+            <span>Volunteer Mgmt</span>
+            <span>Family Portal</span>
+            <span>Reg. Calendar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <div class="container">
+      <div class="section-header fade-in" style="text-align:center;">
+        <div class="section-label">Trusted by Patients & Professionals</div>
+        <h2 class="section-title">What Our Users Say</h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"Managing my Type 1 diabetes has never been easier. The CGM sync and bolus calculator save me hours every week. The Kids Mode is perfect for my daughter."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:#F87171;">S</div>
+            <div>
+              <div class="testimonial-name">Sarah M.</div>
+              <div class="testimonial-role">T1D Patient, 12 years</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"The A1C tracker and Metformin reminders have helped me bring my numbers from 9.2 down to 6.8 in six months. The lifestyle tools are genuinely life-changing."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:#FF9F43;">R</div>
+            <div>
+              <div class="testimonial-name">Robert K.</div>
+              <div class="testimonial-role">T2D Patient, diagnosed 2021</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"As a hospice administrator, the Revenue Command Center and HQRP compliance tools have transformed our billing accuracy. The Professional Suite is worth its weight in gold."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:#FB923C;">D</div>
+            <div>
+              <div class="testimonial-name">Dr. Diana L.</div>
+              <div class="testimonial-role">Hospice Medical Director</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD -->
+  <section class="download" id="download">
+    <div class="container">
+      <div class="download-inner fade-in">
+        <h2>Start Your Health Journey Today</h2>
+        <p>Download JACS Medical Monitoring System free on iOS and Android. All four health pillars included. No subscription required.</p>
+        <div class="download-buttons">
+          <a href="#" class="store-btn">
+            <div class="store-btn-icon">🍎</div>
+            <div class="store-btn-text">
+              <div class="store-btn-sub">Download on the</div>
+              <div class="store-btn-name">App Store</div>
+            </div>
+          </a>
+          <a href="#" class="store-btn">
+            <div class="store-btn-icon">▶</div>
+            <div class="store-btn-text">
+              <div class="store-btn-sub">Get it on</div>
+              <div class="store-btn-name">Google Play</div>
+            </div>
+          </a>
+          <a href="#" class="store-btn" style="border-color:rgba(56,189,248,0.3);">
+            <div class="store-btn-icon">🌐</div>
+            <div class="store-btn-text">
+              <div class="store-btn-sub">Open in</div>
+              <div class="store-btn-name">Web Browser</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo" style="font-size:18px;">🩺 <span>JACS</span> Medical</a>
+        <p>AI-powered health monitoring for Type 1 Diabetes, Type 2 Diabetes, General Health, and Hospice Care. Built with clinical precision and compassion.</p>
+        <p class="footer-disclaimer" style="margin-top:12px;">⚕️ For informational purposes only. Not a substitute for professional medical advice.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Health Pillars</h4>
+        <ul>
+          <li><a href="#pillars">Type 1 Diabetes</a></li>
+          <li><a href="#pillars">Type 2 Diabetes</a></li>
+          <li><a href="#pillars">My General Health</a></li>
+          <li><a href="#pillars">Hospice Care</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#suite">Professional Suite</a></li>
+          <li><a href="#download">Download App</a></li>
+          <li><a href="/api/health">API Status</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">HIPAA Compliance</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 JACS Medical Monitoring System. All rights reserved.</p>
+      <p>Built with ❤️ for patients, caregivers, and clinicians worldwide.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll-triggered fade-in animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Smooth nav link highlighting
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+      navLinks.forEach(a => {
+        a.style.color = a.getAttribute('href') === '#' + current ? '#F0F0FF' : '';
+      });
+    });
+  </script>
+</body>
+</html>

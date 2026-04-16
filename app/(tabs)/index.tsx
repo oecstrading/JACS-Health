@@ -1,4 +1,5 @@
 import { Linking, Text, View, ScrollView, Pressable, Image, type ViewStyle, Platform } from 'react-native';
+import { useJacsProfile } from '@/hooks/use-jacs-profile';
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import * as Sharing from "expo-sharing";
@@ -146,6 +147,36 @@ const FEATURE_CARDS = [
   },
 ] as const;
 
+// ── Personalised hero greeting based on onboarding profile ────────────────────
+function PersonalisedHero() {
+  const { profile } = useJacsProfile();
+  const hour = new Date().getHours();
+  const timeGreet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const name = profile?.name ? `, ${profile.name}` : '';
+
+  const conditionLabel =
+    !profile ? 'Your Health Command Center' :
+    profile.primaryGoal === 'diabetes'
+      ? profile.diabetesType === 'type1' ? '🩸 Type 1 Diabetes Dashboard'
+        : profile.diabetesType === 'type2' ? '🍊 Type 2 Diabetes Dashboard'
+        : profile.diabetesType === 'both' ? '🔄 T1D & T2D Dashboard'
+        : '⚠️ Pre-Diabetes Dashboard'
+    : profile.primaryGoal === 'general' ? '💚 General Health Dashboard'
+    : profile.primaryGoal === 'hospice' ? '🏥 Hospice Care Dashboard'
+    : '👩\u200d⚕️ Caregiver Dashboard';
+
+  return (
+    <>
+      <Text style={{ fontSize: 13, color: '#9BA1A6', fontWeight: '600', letterSpacing: 0.5 }} allowFontScaling={false}>
+        {timeGreet}{name}!
+      </Text>
+      <Text style={{ fontSize: 17, fontWeight: '800', color: '#ECEDEE', lineHeight: 22 }} allowFontScaling={false}>
+        {conditionLabel}
+      </Text>
+    </>
+  );
+}
+
 export default function PatientCommandCenter() {
   const router = useRouter();
   const colors = useColors();
@@ -212,12 +243,7 @@ export default function PatientCommandCenter() {
         <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 8 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 13, color: '#9BA1A6', fontWeight: '600', letterSpacing: 0.5 }} allowFontScaling={false}>
-                👋 Hello!
-              </Text>
-              <Text style={{ fontSize: 17, fontWeight: '800', color: '#ECEDEE', lineHeight: 22 }} allowFontScaling={false}>
-                Your Health Command Center
-              </Text>
+              <PersonalisedHero />
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 4 }}>
                 <Pressable
                   onPress={() => {

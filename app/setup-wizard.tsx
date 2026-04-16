@@ -1,910 +1,475 @@
 /**
- * JACS Health Companion — First-Run Setup Wizard
+ * JACS Health Companion — Smart First-Run Setup Wizard
  *
- * 7-step onboarding collecting:
- *   1. Role (Parent/Guardian, Child self-managing, Caregiver, Provider)
- *   2. Child profile (name, date of birth)
- *   3. Diagnosis info (T1D date, years)
- *   4. Device setup (CGM, Pump)
- *   5. Allergy setup
- *   6. Prescription (CR, ISF, BG target)
- *   7. GluCrew invite
+ * Branching onboarding flow:
+ *   Step 0: Welcome
+ *   Step 1: Primary goal (Diabetes · General Health · Hospice Care · Caregiver)
+ *   Step 2a [Diabetes]: T1D or T2D?
+ *   Step 2b [General]: What to monitor?
+ *   Step 2c [Hospice]: Role
+ *   Step 2d [Caregiver]: Straight to profile
+ *   Step 3: Name + language
+ *   Step 4: Benefits discovery — ALL platform features shown to EVERY user
+ *
+ * Saves to AsyncStorage:
+ *   @jacs_setup_complete  = "true"
+ *   @jacs_user_profile    = JSON
  */
 import React, { useState, useRef } from "react";
 import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
-  Dimensions,
-  Platform,
-  KeyboardAvoidingView,
-  Alert,
+  View, Text, ScrollView, TouchableOpacity,
+  TextInput, StyleSheet, Dimensions, Platform,
 } from "react-native";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import { ScreenContainer } from "@/components/screen-container";
-import { useColors } from "@/hooks/use-colors";
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const { width: _W } = Dimensions.get("window");
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-export type UserRole = "parent" | "child" | "caregiver" | "provider";
-export type CGMDevice = "dexcom_g7" | "dexcom_g6" | "dexcom_one" | "libre_2" | "libre_3" | "none";
-export type PumpDevice = "omnipod_5" | "omnipod_dash" | "tandem_tslim" | "mdi" | "none";
+export type PrimaryGoal = "diabetes" | "general" | "hospice" | "caregiver";
+export type DiabetesType = "type1" | "type2" | "both" | "prediabetes";
+export type GeneralGoal = "weight" | "heart" | "sleep" | "nutrition" | "fitness" | "mental" | "medication" | "bloodpressure";
 
-export interface ChildProfile {
+export interface JacsUserProfile {
+  primaryGoal: PrimaryGoal;
+  diabetesType?: DiabetesType;
+  generalGoals?: GeneralGoal[];
+  hospiceRole?: string;
   name: string;
-  dateOfBirth: string; // ISO date string YYYY-MM-DD
-  ageYears: number;
-  diagnosisDate: string; // ISO date string YYYY-MM-DD
-  cgmDevice: CGMDevice;
-  pumpDevice: PumpDevice;
-  allergies: string[];
-  carbRatio: number;       // grams of carbs per 1 unit insulin
-  isf: number;             // mg/dL drop per 1 unit insulin
-  bgTargetLow: number;     // mg/dL
-  bgTargetHigh: number;    // mg/dL
-  glucoseUnit: "mgdl" | "mmol";
   language: string;
-}
-
-export interface SetupProfile {
-  role: UserRole;
-  caregiverName: string;
-  child: ChildProfile;
-  glucrewInvites: string[]; // email or phone
   setupComplete: boolean;
   setupDate: string;
 }
 
-const ALLERGIES_LIST = [
-  { id: "wheat", label: "Wheat / Gluten", emoji: "🌾" },
-  { id: "peanut", label: "Peanuts", emoji: "🥜" },
-  { id: "tree_nuts", label: "Tree Nuts", emoji: "🌰" },
-  { id: "dairy", label: "Dairy / Milk", emoji: "🥛" },
-  { id: "egg", label: "Eggs", emoji: "🥚" },
-  { id: "soy", label: "Soy", emoji: "🫘" },
-  { id: "shellfish", label: "Shellfish", emoji: "🦐" },
-  { id: "fish", label: "Fish", emoji: "🐟" },
-  { id: "sesame", label: "Sesame", emoji: "🌿" },
-];
-
-const CGM_DEVICES: { id: CGMDevice; label: string; desc: string }[] = [
-  { id: "dexcom_g7", label: "Dexcom G7", desc: "10-day wear, no fingerstick calibration" },
-  { id: "dexcom_g6", label: "Dexcom G6", desc: "10-day wear, factory calibrated" },
-  { id: "dexcom_one", label: "Dexcom ONE", desc: "10-day wear, simplified" },
-  { id: "libre_3", label: "FreeStyle Libre 3", desc: "14-day wear, real-time alerts" },
-  { id: "libre_2", label: "FreeStyle Libre 2", desc: "14-day wear, optional alarms" },
-  { id: "none", label: "No CGM / Fingerstick", desc: "Manual glucose logging" },
-];
-
-const PUMP_DEVICES: { id: PumpDevice; label: string; desc: string }[] = [
-  { id: "omnipod_5", label: "Omnipod 5", desc: "Tubeless AID, FDA-cleared age 2+" },
-  { id: "omnipod_dash", label: "Omnipod DASH", desc: "Tubeless, manual mode" },
-  { id: "tandem_tslim", label: "Tandem t:slim X2", desc: "Control-IQ AID system" },
-  { id: "mdi", label: "Multiple Daily Injections", desc: "Pen or syringe" },
-  { id: "none", label: "No Pump", desc: "Injections or pump not yet set up" },
-];
-
 const LANGUAGES = [
-  { code: "en", label: "English" },
-  { code: "es", label: "Español" },
-  { code: "fr", label: "Français" },
-  { code: "pt", label: "Português" },
-  { code: "ht", label: "Kreyòl Ayisyen" },
-  { code: "zh", label: "中文" },
-  { code: "ar", label: "العربية" },
-  { code: "hi", label: "हिन्दी" },
+  { code: "en", label: "English" }, { code: "es", label: "Español" },
+  { code: "fr", label: "Français" }, { code: "pt", label: "Português" },
+  { code: "ht", label: "Kreyòl" },  { code: "zh", label: "中文" },
+  { code: "ar", label: "العربية" }, { code: "hi", label: "हिन्दी" },
 ];
 
-const TOTAL_STEPS = 7;
+const PRIMARY_GOALS: { id: PrimaryGoal; emoji: string; title: string; desc: string; color: string }[] = [
+  { id: "diabetes",  emoji: "🩸", title: "Diabetes Management",  desc: "I manage Type 1 or Type 2 diabetes",       color: "#F87171" },
+  { id: "general",   emoji: "💚", title: "General Health",        desc: "I want to monitor my overall wellness",     color: "#4ADE80" },
+  { id: "hospice",   emoji: "🏥", title: "Hospice / Palliative",  desc: "I am a hospice patient or care recipient",  color: "#FB923C" },
+  { id: "caregiver", emoji: "👩‍⚕️", title: "Caregiver / Provider", desc: "I care for someone else using this app",    color: "#A78BFA" },
+];
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-function calcAge(dob: string): number {
-  if (!dob) return 0;
-  const birth = new Date(dob);
-  const today = new Date();
-  let age = today.getFullYear() - birth.getFullYear();
-  const m = today.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-  return Math.max(0, age);
+const DIABETES_TYPES: { id: DiabetesType; emoji: string; title: string; desc: string; color: string }[] = [
+  { id: "type1",       emoji: "🩸", title: "Type 1 Diabetes",  desc: "Autoimmune, insulin-dependent",              color: "#F87171" },
+  { id: "type2",       emoji: "🍊", title: "Type 2 Diabetes",  desc: "Insulin resistance, lifestyle-related",       color: "#FF9F43" },
+  { id: "both",        emoji: "🔄", title: "Both / Dual",      desc: "Managing T1D and T2D in the household",       color: "#FBBF24" },
+  { id: "prediabetes", emoji: "⚠️", title: "Pre-Diabetes",     desc: "At-risk, monitoring blood sugar",             color: "#34D399" },
+];
+
+const GENERAL_GOALS: { id: GeneralGoal; emoji: string; title: string; color: string }[] = [
+  { id: "weight",        emoji: "⚖️",  title: "Weight Management",    color: "#38BDF8" },
+  { id: "heart",         emoji: "❤️",  title: "Heart Health",         color: "#F87171" },
+  { id: "sleep",         emoji: "😴",  title: "Sleep Quality",        color: "#A78BFA" },
+  { id: "nutrition",     emoji: "🥗",  title: "Nutrition Tracking",   color: "#4ADE80" },
+  { id: "fitness",       emoji: "🏃",  title: "Fitness & Activity",   color: "#FBBF24" },
+  { id: "mental",        emoji: "🧘",  title: "Mental Wellness",      color: "#34D399" },
+  { id: "medication",    emoji: "💊",  title: "Medication Reminders", color: "#F472B6" },
+  { id: "bloodpressure", emoji: "🩺",  title: "Blood Pressure",       color: "#FB923C" },
+];
+
+const HOSPICE_ROLES = [
+  { id: "patient",   emoji: "🛏️",  title: "Patient",               desc: "I am receiving hospice or palliative care",   color: "#FB923C" },
+  { id: "family",    emoji: "👨‍👩‍👧", title: "Family Caregiver",      desc: "I care for a loved one at home",              color: "#FBBF24" },
+  { id: "nurse",     emoji: "👩‍⚕️", title: "Nurse / Care Provider",  desc: "I am a professional hospice care provider",   color: "#A78BFA" },
+  { id: "admin",     emoji: "🏥",  title: "Hospice Administrator",  desc: "I manage a hospice program or facility",      color: "#38BDF8" },
+];
+
+const ALL_BENEFITS = [
+  { emoji: "🩸", title: "Type 1 Diabetes Portal",   desc: "CGM integration, insulin logging, hypo alerts, school nurse tools",        color: "#F87171" },
+  { emoji: "🍊", title: "Type 2 Diabetes Portal",   desc: "A1C tracking, oral meds, lifestyle coaching, ADA 2024 guidelines",         color: "#FF9F43" },
+  { emoji: "💚", title: "General Health Dashboard", desc: "Vitals, nutrition, sleep, fitness, mood — all in one place",               color: "#4ADE80" },
+  { emoji: "🏥", title: "Hospice Care Suite",       desc: "Comfort care plans, symptom management, family coordination tools",        color: "#FB923C" },
+  { emoji: "💊", title: "Smart Medication Manager", desc: "Due-today badge, reminders, cost comparison, scan-to-log",                 color: "#F472B6" },
+  { emoji: "📡", title: "Wearable & CGM Sync",      desc: "Dexcom, Libre, Apple Watch, Fitbit — real-time data on your dashboard",    color: "#38BDF8" },
+  { emoji: "👩‍⚕️", title: "Care Team Hub",          desc: "Share reports with doctors, nurses, and family caregivers instantly",      color: "#A78BFA" },
+  { emoji: "🚨", title: "Emergency Mode",           desc: "One-tap 911, medical ID card, hypo first-aid, DKA warning signs",          color: "#EF4444" },
+  { emoji: "📊", title: "AI Health Reports",        desc: "Auto-generated PDF reports for your healthcare provider visits",           color: "#FBBF24" },
+  { emoji: "🌐", title: "Public Web Portal",        desc: "Access JACS from any browser — share with family and providers",           color: "#67E8F9" },
+];
+
+function doHaptic() {
+  if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 }
 
-function calcDiagnosisYears(diagDate: string): number {
-  if (!diagDate) return 0;
-  const d = new Date(diagDate);
-  const today = new Date();
-  return Math.max(0, today.getFullYear() - d.getFullYear());
+function ProgressBar({ current, total }: { current: number; total: number }) {
+  const pct = Math.round((current / (total - 1)) * 100);
+  return (
+    <View style={{ paddingHorizontal: 24, paddingTop: 12, paddingBottom: 4 }}>
+      <View style={{ height: 4, backgroundColor: "#1e3a5f", borderRadius: 2 }}>
+        <View style={{ height: 4, width: `${pct}%` as any, backgroundColor: "#38BDF8", borderRadius: 2 }} />
+      </View>
+      <Text style={{ color: "#687076", fontSize: 11, marginTop: 4, textAlign: "right" }}>
+        Step {current} of {total - 1}
+      </Text>
+    </View>
+  );
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
 export default function SetupWizardScreen() {
-  const colors = useColors();
   const scrollRef = useRef<ScrollView>(null);
   const [step, setStep] = useState(0);
-
-  // Form state
-  const [role, setRole] = useState<UserRole>("parent");
-  const [caregiverName, setCaregiverName] = useState("");
-  const [childName, setChildName] = useState("");
-  const [childDOB, setChildDOB] = useState("");
-  const [diagnosisDate, setDiagnosisDate] = useState("");
-  const [cgmDevice, setCgmDevice] = useState<CGMDevice>("none");
-  const [pumpDevice, setPumpDevice] = useState<PumpDevice>("none");
-  const [selectedAllergies, setSelectedAllergies] = useState<string[]>([]);
-  const [carbRatio, setCarbRatio] = useState("15");
-  const [isf, setIsf] = useState("50");
-  const [bgTargetLow, setBgTargetLow] = useState("70");
-  const [bgTargetHigh, setBgTargetHigh] = useState("180");
-  const [glucoseUnit, setGlucoseUnit] = useState<"mgdl" | "mmol">("mgdl");
+  const [primaryGoal, setPrimaryGoal] = useState<PrimaryGoal | null>(null);
+  const [diabetesType, setDiabetesType] = useState<DiabetesType | null>(null);
+  const [generalGoals, setGeneralGoals] = useState<GeneralGoal[]>([]);
+  const [hospiceRole, setHospiceRole] = useState<string | null>(null);
+  const [name, setName] = useState("");
   const [language, setLanguage] = useState("en");
-  const [inviteInput, setInviteInput] = useState("");
-  const [invites, setInvites] = useState<string[]>([]);
 
-  const s = styles(colors);
+  const TOTAL = 5; // steps 0–4
 
-  const goNext = () => {
-    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (step < TOTAL_STEPS - 1) {
-      setStep(step + 1);
-      scrollRef.current?.scrollTo({ y: 0, animated: false });
-    } else {
-      handleComplete();
-    }
-  };
-
-  const goBack = () => {
-    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (step > 0) {
-      setStep(step - 1);
-      scrollRef.current?.scrollTo({ y: 0, animated: false });
-    }
+  const scrollTop = () => scrollRef.current?.scrollTo({ y: 0, animated: false });
+  const goNext = () => { doHaptic(); setStep((s) => s + 1); scrollTop(); };
+  const goBack = () => { doHaptic(); setStep((s) => Math.max(0, s - 1)); scrollTop(); };
+  const toggleGoal = (g: GeneralGoal) => {
+    doHaptic();
+    setGeneralGoals((prev) => prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]);
   };
 
   const handleComplete = async () => {
-    const profile: SetupProfile = {
-      role,
-      caregiverName,
-      child: {
-        name: childName || "My Child",
-        dateOfBirth: childDOB,
-        ageYears: calcAge(childDOB),
-        diagnosisDate,
-        cgmDevice,
-        pumpDevice,
-        allergies: selectedAllergies,
-        carbRatio: parseFloat(carbRatio) || 15,
-        isf: parseFloat(isf) || 50,
-        bgTargetLow: parseFloat(bgTargetLow) || 70,
-        bgTargetHigh: parseFloat(bgTargetHigh) || 180,
-        glucoseUnit,
-        language,
-      },
-      glucrewInvites: invites,
+    if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    const profile: JacsUserProfile = {
+      primaryGoal: primaryGoal!,
+      diabetesType: primaryGoal === "diabetes" ? (diabetesType ?? undefined) : undefined,
+      generalGoals: primaryGoal === "general" ? generalGoals : undefined,
+      hospiceRole: primaryGoal === "hospice" ? (hospiceRole ?? undefined) : undefined,
+      name: name.trim() || "Friend",
+      language,
       setupComplete: true,
       setupDate: new Date().toISOString(),
     };
-    await AsyncStorage.setItem("@jacs_setup_profile", JSON.stringify(profile));
+    await AsyncStorage.setItem("@jacs_user_profile", JSON.stringify(profile));
     await AsyncStorage.setItem("@jacs_setup_complete", "true");
-    if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     router.replace("/(tabs)");
   };
 
-  const toggleAllergy = (id: string) => {
-    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setSelectedAllergies((prev) =>
-      prev.includes(id) ? prev.filter((a) => a !== id) : [...prev, id]
-    );
-  };
+  const primaryColor =
+    primaryGoal === "diabetes"  ? "#F87171" :
+    primaryGoal === "general"   ? "#4ADE80" :
+    primaryGoal === "hospice"   ? "#FB923C" :
+    primaryGoal === "caregiver" ? "#A78BFA" : "#38BDF8";
 
-  const addInvite = () => {
-    const trimmed = inviteInput.trim();
-    if (trimmed && !invites.includes(trimmed)) {
-      setInvites([...invites, trimmed]);
-      setInviteInput("");
-    }
-  };
-
-  const removeInvite = (inv: string) => {
-    setInvites(invites.filter((i) => i !== inv));
-  };
-
-  // Progress bar
-  const progress = ((step + 1) / TOTAL_STEPS) * 100;
-
-  return (
-    <ScreenContainer containerClassName="bg-background">
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        {/* Header */}
-        <View style={s.header}>
-          <View style={s.progressBarBg}>
-            <View style={[s.progressBarFill, { width: `${progress}%` as any }]} />
-          </View>
-          <Text style={s.stepLabel}>Step {step + 1} of {TOTAL_STEPS}</Text>
+  const renderStep = () => {
+    // ── Step 0: Welcome ────────────────────────────────────────────────────────
+    if (step === 0) {
+      return (
+        <View style={st.center}>
+          <Text style={{ fontSize: 72, marginBottom: 20, textAlign: "center" }}>🩺</Text>
+          <Text style={st.heroTitle}>Welcome to JACS</Text>
+          <Text style={st.heroSub}>
+            Your complete health command center.{"\n"}
+            Let's personalise the app for you — it only takes 2 minutes.
+          </Text>
+          <TouchableOpacity style={[st.btn, { backgroundColor: "#38BDF8" }]} onPress={goNext}>
+            <Text style={st.btnText}>Get Started →</Text>
+          </TouchableOpacity>
+          <Text style={st.hint}>You can update your profile anytime in Settings</Text>
         </View>
+      );
+    }
 
-        <ScrollView
-          ref={scrollRef}
-          style={{ flex: 1 }}
-          contentContainerStyle={s.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          {step === 0 && <StepRole role={role} setRole={setRole} caregiverName={caregiverName} setCaregiverName={setCaregiverName} colors={colors} />}
-          {step === 1 && <StepChildProfile childName={childName} setChildName={setChildName} childDOB={childDOB} setChildDOB={setChildDOB} role={role} colors={colors} />}
-          {step === 2 && <StepDiagnosis diagnosisDate={diagnosisDate} setDiagnosisDate={setDiagnosisDate} childName={childName} colors={colors} />}
-          {step === 3 && <StepDevices cgmDevice={cgmDevice} setCgmDevice={setCgmDevice} pumpDevice={pumpDevice} setPumpDevice={setPumpDevice} colors={colors} />}
-          {step === 4 && <StepAllergies selectedAllergies={selectedAllergies} toggleAllergy={toggleAllergy} colors={colors} />}
-          {step === 5 && <StepPrescription carbRatio={carbRatio} setCarbRatio={setCarbRatio} isf={isf} setIsf={setIsf} bgTargetLow={bgTargetLow} setBgTargetLow={setBgTargetLow} bgTargetHigh={bgTargetHigh} setBgTargetHigh={setBgTargetHigh} glucoseUnit={glucoseUnit} setGlucoseUnit={setGlucoseUnit} language={language} setLanguage={setLanguage} colors={colors} />}
-          {step === 6 && <StepGluCrew inviteInput={inviteInput} setInviteInput={setInviteInput} invites={invites} addInvite={addInvite} removeInvite={removeInvite} childName={childName} colors={colors} />}
-        </ScrollView>
-
-        {/* Navigation Buttons */}
-        <View style={s.navRow}>
-          {step > 0 ? (
-            <TouchableOpacity style={s.backBtn} onPress={goBack} activeOpacity={0.7}>
-              <Text style={s.backBtnText}>← Back</Text>
+    // ── Step 1: Primary goal ───────────────────────────────────────────────────
+    if (step === 1) {
+      return (
+        <View>
+          <Text style={st.title}>What brings you to JACS?</Text>
+          <Text style={st.sub}>Choose your primary reason. You can explore all features anytime.</Text>
+          {PRIMARY_GOALS.map((g) => (
+            <TouchableOpacity
+              key={g.id}
+              style={[st.card, primaryGoal === g.id && { borderColor: g.color, backgroundColor: g.color + "18" }]}
+              onPress={() => { doHaptic(); setPrimaryGoal(g.id); }}
+              activeOpacity={0.8}
+            >
+              <Text style={{ fontSize: 30, marginRight: 14 }}>{g.emoji}</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={[st.cardTitle, primaryGoal === g.id && { color: g.color }]}>{g.title}</Text>
+                <Text style={st.cardDesc}>{g.desc}</Text>
+              </View>
+              {primaryGoal === g.id && <Text style={{ color: g.color, fontSize: 20, fontWeight: "800" }}>✓</Text>}
             </TouchableOpacity>
-          ) : (
-            <View style={{ flex: 1 }} />
-          )}
-          <TouchableOpacity style={s.nextBtn} onPress={goNext} activeOpacity={0.8}>
-            <Text style={s.nextBtnText}>
-              {step === TOTAL_STEPS - 1 ? "🚀 Get Started!" : "Continue →"}
-            </Text>
+          ))}
+          <TouchableOpacity
+            style={[st.btn, { backgroundColor: primaryGoal ? "#38BDF8" : "#1e3a5f" }]}
+            onPress={goNext}
+            disabled={!primaryGoal}
+          >
+            <Text style={[st.btnText, !primaryGoal && { color: "#687076" }]}>Continue →</Text>
           </TouchableOpacity>
         </View>
-      </KeyboardAvoidingView>
+      );
+    }
+
+    // ── Step 2: Condition-specific ─────────────────────────────────────────────
+    if (step === 2) {
+      if (primaryGoal === "diabetes") {
+        return (
+          <View>
+            <Text style={st.title}>Which type of diabetes?</Text>
+            <Text style={st.sub}>JACS will customise your dashboard, glucose targets, and medication tools.</Text>
+            {DIABETES_TYPES.map((t) => (
+              <TouchableOpacity
+                key={t.id}
+                style={[st.card, diabetesType === t.id && { borderColor: t.color, backgroundColor: t.color + "18" }]}
+                onPress={() => { doHaptic(); setDiabetesType(t.id); }}
+                activeOpacity={0.8}
+              >
+                <Text style={{ fontSize: 30, marginRight: 14 }}>{t.emoji}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={[st.cardTitle, diabetesType === t.id && { color: t.color }]}>{t.title}</Text>
+                  <Text style={st.cardDesc}>{t.desc}</Text>
+                </View>
+                {diabetesType === t.id && <Text style={{ color: t.color, fontSize: 20, fontWeight: "800" }}>✓</Text>}
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity
+              style={[st.btn, { backgroundColor: diabetesType ? "#38BDF8" : "#1e3a5f" }]}
+              onPress={goNext}
+              disabled={!diabetesType}
+            >
+              <Text style={[st.btnText, !diabetesType && { color: "#687076" }]}>Continue →</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={st.backBtn} onPress={goBack}>
+              <Text style={st.backText}>← Back</Text>
+            </TouchableOpacity>
+          </View>
+        );
+      }
+
+      if (primaryGoal === "general") {
+        return (
+          <View>
+            <Text style={st.title}>What would you like to monitor?</Text>
+            <Text style={st.sub}>Select all that apply. Your home screen will highlight these areas.</Text>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10, marginBottom: 20 }}>
+              {GENERAL_GOALS.map((g) => {
+                const on = generalGoals.includes(g.id);
+                return (
+                  <TouchableOpacity
+                    key={g.id}
+                    style={[st.chip, on && { backgroundColor: g.color + "22", borderColor: g.color }]}
+                    onPress={() => toggleGoal(g.id)}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={{ fontSize: 18, marginRight: 6 }}>{g.emoji}</Text>
+                    <Text style={[st.chipText, on && { color: g.color }]}>{g.title}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+            <TouchableOpacity
+              style={[st.btn, { backgroundColor: generalGoals.length > 0 ? "#4ADE80" : "#1e3a5f" }]}
+              onPress={goNext}
+              disabled={generalGoals.length === 0}
+            >
+              <Text style={[st.btnText, generalGoals.length === 0 && { color: "#687076" }]}>Continue →</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={st.backBtn} onPress={goBack}>
+              <Text style={st.backText}>← Back</Text>
+            </TouchableOpacity>
+          </View>
+        );
+      }
+
+      if (primaryGoal === "hospice") {
+        return (
+          <View>
+            <Text style={st.title}>What is your role?</Text>
+            <Text style={st.sub}>JACS will configure the Hospice Care Suite to match your needs.</Text>
+            {HOSPICE_ROLES.map((r) => (
+              <TouchableOpacity
+                key={r.id}
+                style={[st.card, hospiceRole === r.id && { borderColor: r.color, backgroundColor: r.color + "18" }]}
+                onPress={() => { doHaptic(); setHospiceRole(r.id); }}
+                activeOpacity={0.8}
+              >
+                <Text style={{ fontSize: 30, marginRight: 14 }}>{r.emoji}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={[st.cardTitle, hospiceRole === r.id && { color: r.color }]}>{r.title}</Text>
+                  <Text style={st.cardDesc}>{r.desc}</Text>
+                </View>
+                {hospiceRole === r.id && <Text style={{ color: r.color, fontSize: 20, fontWeight: "800" }}>✓</Text>}
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity
+              style={[st.btn, { backgroundColor: hospiceRole ? "#FB923C" : "#1e3a5f" }]}
+              onPress={goNext}
+              disabled={!hospiceRole}
+            >
+              <Text style={[st.btnText, !hospiceRole && { color: "#687076" }]}>Continue →</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={st.backBtn} onPress={goBack}>
+              <Text style={st.backText}>← Back</Text>
+            </TouchableOpacity>
+          </View>
+        );
+      }
+
+      // caregiver — skip condition step, go straight to profile
+      return (
+        <View>
+          <Text style={st.title}>Tell us about yourself</Text>
+          <Text style={st.sub}>Your name personalises your dashboard.</Text>
+          <Text style={st.label}>Your first name</Text>
+          <TextInput
+            value={name} onChangeText={setName}
+            placeholder="e.g. Maria" placeholderTextColor="#687076"
+            style={st.input} returnKeyType="done" autoCapitalize="words"
+          />
+          <Text style={[st.label, { marginTop: 16 }]}>Preferred language</Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
+            {LANGUAGES.map((l) => (
+              <TouchableOpacity
+                key={l.code}
+                style={[st.chip, language === l.code && { backgroundColor: "#38BDF833", borderColor: "#38BDF8" }]}
+                onPress={() => { doHaptic(); setLanguage(l.code); }}
+                activeOpacity={0.8}
+              >
+                <Text style={[st.chipText, language === l.code && { color: "#38BDF8" }]}>{l.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <TouchableOpacity
+            style={[st.btn, { backgroundColor: name.trim() ? "#A78BFA" : "#1e3a5f" }]}
+            onPress={goNext}
+            disabled={!name.trim()}
+          >
+            <Text style={[st.btnText, !name.trim() && { color: "#687076" }]}>Continue →</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={st.backBtn} onPress={goBack}>
+            <Text style={st.backText}>← Back</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    // ── Step 3: Profile (name + language) ─────────────────────────────────────
+    if (step === 3) {
+      return (
+        <View>
+          <Text style={st.title}>Tell us about yourself</Text>
+          <Text style={st.sub}>Your name personalises your dashboard. Language sets the display language.</Text>
+          <Text style={st.label}>Your first name</Text>
+          <TextInput
+            value={name} onChangeText={setName}
+            placeholder="e.g. Maria" placeholderTextColor="#687076"
+            style={st.input} returnKeyType="done" autoCapitalize="words"
+          />
+          <Text style={[st.label, { marginTop: 16 }]}>Preferred language</Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
+            {LANGUAGES.map((l) => (
+              <TouchableOpacity
+                key={l.code}
+                style={[st.chip, language === l.code && { backgroundColor: "#38BDF833", borderColor: "#38BDF8" }]}
+                onPress={() => { doHaptic(); setLanguage(l.code); }}
+                activeOpacity={0.8}
+              >
+                <Text style={[st.chipText, language === l.code && { color: "#38BDF8" }]}>{l.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <TouchableOpacity
+            style={[st.btn, { backgroundColor: name.trim() ? "#38BDF8" : "#1e3a5f" }]}
+            onPress={goNext}
+            disabled={!name.trim()}
+          >
+            <Text style={[st.btnText, !name.trim() && { color: "#687076" }]}>Continue →</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={st.backBtn} onPress={goBack}>
+            <Text style={st.backText}>← Back</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    // ── Step 4: Benefits discovery ─────────────────────────────────────────────
+    if (step === 4) {
+      const conditionLabel =
+        primaryGoal === "diabetes"
+          ? diabetesType === "type1" ? "Type 1 Diabetes"
+          : diabetesType === "type2" ? "Type 2 Diabetes"
+          : diabetesType === "both" ? "T1D & T2D"
+          : "Pre-Diabetes"
+        : primaryGoal === "general"   ? "General Health"
+        : primaryGoal === "hospice"   ? "Hospice Care"
+        : "Caregiver Tools";
+
+      return (
+        <View>
+          <View style={[st.badge, { backgroundColor: primaryColor + "22", borderColor: primaryColor }]}>
+            <Text style={[st.badgeText, { color: primaryColor }]}>✓ Customised for {conditionLabel}</Text>
+          </View>
+          <Text style={st.title}>But there's so much more!</Text>
+          <Text style={st.sub}>
+            Hi {name || "there"} — JACS is a complete health platform.{"\n"}
+            Here's everything available to you, regardless of your primary goal:
+          </Text>
+          {ALL_BENEFITS.map((b) => (
+            <View key={b.title} style={[st.benefitRow, { borderLeftColor: b.color }]}>
+              <Text style={{ fontSize: 20, marginRight: 12, width: 28 }}>{b.emoji}</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={[st.benefitTitle, { color: b.color }]}>{b.title}</Text>
+                <Text style={st.benefitDesc}>{b.desc}</Text>
+              </View>
+            </View>
+          ))}
+          <Text style={st.hint}>All features are free. Explore them anytime from the tab bar.</Text>
+          <TouchableOpacity style={[st.btn, { backgroundColor: primaryColor, marginTop: 8 }]} onPress={handleComplete}>
+            <Text style={st.btnText}>I'm Ready — Open JACS 🚀</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={st.backBtn} onPress={goBack}>
+            <Text style={st.backText}>← Back</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    return null;
+  };
+
+  return (
+    <ScreenContainer containerClassName="bg-[#0A0F1E]">
+      {step > 0 && <ProgressBar current={step} total={TOTAL} />}
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={{ padding: 24, paddingBottom: 60 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        {renderStep()}
+      </ScrollView>
     </ScreenContainer>
   );
 }
 
-// ─── Step 1: Role ─────────────────────────────────────────────────────────────
-function StepRole({ role, setRole, caregiverName, setCaregiverName, colors }: any) {
-  const s = styles(colors);
-  const roles = [
-    { id: "parent", emoji: "👨‍👧", label: "Parent / Guardian", desc: "Managing my child's T1D" },
-    { id: "child", emoji: "🧒", label: "Child (Self-Managing)", desc: "I manage my own diabetes" },
-    { id: "caregiver", emoji: "🏥", label: "Caregiver / Grandparent", desc: "Helping care for someone with T1D" },
-    { id: "provider", emoji: "👩‍⚕️", label: "Healthcare Provider", desc: "School nurse, educator, or clinician" },
-  ];
-  return (
-    <View>
-      <Text style={s.stepEmoji}>👋</Text>
-      <Text style={s.stepTitle}>Welcome to JACS!</Text>
-      <Text style={s.stepSubtitle}>Let's set up your profile. Who are you?</Text>
-      {roles.map((r) => (
-        <TouchableOpacity
-          key={r.id}
-          style={[s.optionCard, role === r.id && s.optionCardSelected]}
-          onPress={() => { setRole(r.id); if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
-          activeOpacity={0.8}
-        >
-          <Text style={s.optionEmoji}>{r.emoji}</Text>
-          <View style={{ flex: 1 }}>
-            <Text style={[s.optionLabel, role === r.id && s.optionLabelSelected]}>{r.label}</Text>
-            <Text style={s.optionDesc}>{r.desc}</Text>
-          </View>
-          {role === r.id && <Text style={{ color: colors.primary, fontSize: 20 }}>✓</Text>}
-        </TouchableOpacity>
-      ))}
-      <Text style={[s.fieldLabel, { marginTop: 20 }]}>Your Name</Text>
-      <TextInput
-        style={s.textInput}
-        value={caregiverName}
-        onChangeText={setCaregiverName}
-        placeholder="Enter your name"
-        placeholderTextColor={colors.muted}
-        returnKeyType="done"
-      />
-    </View>
-  );
-}
-
-// ─── Step 2: Child Profile ────────────────────────────────────────────────────
-function StepChildProfile({ childName, setChildName, childDOB, setChildDOB, role, colors }: any) {
-  const s = styles(colors);
-  const isChild = role === "child";
-  const label = isChild ? "Your" : "Child's";
-  const age = calcAge(childDOB);
-  return (
-    <View>
-      <Text style={s.stepEmoji}>🧒</Text>
-      <Text style={s.stepTitle}>{label} Profile</Text>
-      <Text style={s.stepSubtitle}>
-        {isChild ? "Tell us about yourself." : "Tell us about the child you're caring for."}
-      </Text>
-      <Text style={s.fieldLabel}>{label} First Name</Text>
-      <TextInput
-        style={s.textInput}
-        value={childName}
-        onChangeText={setChildName}
-        placeholder={isChild ? "Your first name" : "Child's first name"}
-        placeholderTextColor={colors.muted}
-        returnKeyType="done"
-      />
-      <Text style={s.fieldLabel}>{label} Date of Birth</Text>
-      <TextInput
-        style={s.textInput}
-        value={childDOB}
-        onChangeText={setChildDOB}
-        placeholder="YYYY-MM-DD (e.g. 2020-03-15)"
-        placeholderTextColor={colors.muted}
-        keyboardType="numbers-and-punctuation"
-        returnKeyType="done"
-      />
-      {childDOB.length === 10 && (
-        <View style={s.infoPill}>
-          <Text style={s.infoPillText}>
-            {age === 0 ? "Under 1 year old" : `${age} year${age !== 1 ? "s" : ""} old`}
-          </Text>
-        </View>
-      )}
-      <View style={s.tipBox}>
-        <Text style={s.tipText}>
-          💡 Age determines ADA-recommended glucose targets. Under 6: 100–180 mg/dL · Ages 6–12: 90–180 mg/dL · Teens: 70–180 mg/dL
-        </Text>
-      </View>
-    </View>
-  );
-}
-
-// ─── Step 3: Diagnosis ────────────────────────────────────────────────────────
-function StepDiagnosis({ diagnosisDate, setDiagnosisDate, childName, colors }: any) {
-  const s = styles(colors);
-  const years = calcDiagnosisYears(diagnosisDate);
-  const name = childName || "your child";
-  return (
-    <View>
-      <Text style={s.stepEmoji}>📋</Text>
-      <Text style={s.stepTitle}>T1D Diagnosis</Text>
-      <Text style={s.stepSubtitle}>When was {name} diagnosed with Type 1 Diabetes?</Text>
-      <Text style={s.fieldLabel}>Diagnosis Date</Text>
-      <TextInput
-        style={s.textInput}
-        value={diagnosisDate}
-        onChangeText={setDiagnosisDate}
-        placeholder="YYYY-MM-DD (e.g. 2023-06-01)"
-        placeholderTextColor={colors.muted}
-        keyboardType="numbers-and-punctuation"
-        returnKeyType="done"
-      />
-      {diagnosisDate.length === 10 && (
-        <View style={s.infoPill}>
-          <Text style={s.infoPillText}>
-            {years === 0
-              ? "Diagnosed this year — newly diagnosed"
-              : `${years} year${years !== 1 ? "s" : ""} since diagnosis`}
-          </Text>
-        </View>
-      )}
-      <View style={s.tipBox}>
-        <Text style={s.tipText}>
-          💡 This helps JACS tailor insulin sensitivity estimates and honeymoon phase guidance. You can skip this and set it later in Settings.
-        </Text>
-      </View>
-      <TouchableOpacity onPress={() => setDiagnosisDate("")} style={s.skipLink}>
-        <Text style={s.skipLinkText}>Skip for now</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-// ─── Step 4: Devices ──────────────────────────────────────────────────────────
-function StepDevices({ cgmDevice, setCgmDevice, pumpDevice, setPumpDevice, colors }: any) {
-  const s = styles(colors);
-  return (
-    <View>
-      <Text style={s.stepEmoji}>📡</Text>
-      <Text style={s.stepTitle}>Devices</Text>
-      <Text style={s.stepSubtitle}>Which CGM and insulin delivery system are you using?</Text>
-
-      <Text style={s.sectionLabel}>Continuous Glucose Monitor (CGM)</Text>
-      {CGM_DEVICES.map((d) => (
-        <TouchableOpacity
-          key={d.id}
-          style={[s.optionCard, cgmDevice === d.id && s.optionCardSelected]}
-          onPress={() => { setCgmDevice(d.id); if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
-          activeOpacity={0.8}
-        >
-          <View style={{ flex: 1 }}>
-            <Text style={[s.optionLabel, cgmDevice === d.id && s.optionLabelSelected]}>{d.label}</Text>
-            <Text style={s.optionDesc}>{d.desc}</Text>
-          </View>
-          {cgmDevice === d.id && <Text style={{ color: colors.primary, fontSize: 20 }}>✓</Text>}
-        </TouchableOpacity>
-      ))}
-
-      <Text style={[s.sectionLabel, { marginTop: 16 }]}>Insulin Delivery</Text>
-      {PUMP_DEVICES.map((d) => (
-        <TouchableOpacity
-          key={d.id}
-          style={[s.optionCard, pumpDevice === d.id && s.optionCardSelected]}
-          onPress={() => { setPumpDevice(d.id); if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
-          activeOpacity={0.8}
-        >
-          <View style={{ flex: 1 }}>
-            <Text style={[s.optionLabel, pumpDevice === d.id && s.optionLabelSelected]}>{d.label}</Text>
-            <Text style={s.optionDesc}>{d.desc}</Text>
-          </View>
-          {pumpDevice === d.id && <Text style={{ color: colors.primary, fontSize: 20 }}>✓</Text>}
-        </TouchableOpacity>
-      ))}
-      <View style={s.tipBox}>
-        <Text style={s.tipText}>💡 No device? No problem. JACS works with manual fingerstick logging too.</Text>
-      </View>
-    </View>
-  );
-}
-
-// ─── Step 5: Allergies ────────────────────────────────────────────────────────
-function StepAllergies({ selectedAllergies, toggleAllergy, colors }: any) {
-  const s = styles(colors);
-  return (
-    <View>
-      <Text style={s.stepEmoji}>⚠️</Text>
-      <Text style={s.stepTitle}>Food Allergies</Text>
-      <Text style={s.stepSubtitle}>
-        Select all known food allergies. JACS will alert you when scanning food labels.
-      </Text>
-      <View style={s.allergyGrid}>
-        {ALLERGIES_LIST.map((a) => {
-          const selected = selectedAllergies.includes(a.id);
-          return (
-            <TouchableOpacity
-              key={a.id}
-              style={[s.allergyChip, selected && s.allergyChipSelected]}
-              onPress={() => toggleAllergy(a.id)}
-              activeOpacity={0.8}
-            >
-              <Text style={s.allergyEmoji}>{a.emoji}</Text>
-              <Text style={[s.allergyLabel, selected && s.allergyLabelSelected]}>{a.label}</Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-      {selectedAllergies.includes("wheat") && (
-        <View style={[s.tipBox, { borderColor: "#F59E0B", backgroundColor: "#FEF3C7" }]}>
-          <Text style={[s.tipText, { color: "#92400E" }]}>
-            🌾 Wheat/Gluten allergy detected! JACS will activate the Food Scanner with gluten alerts and the Emergency Anaphylaxis Protocol.
-          </Text>
-        </View>
-      )}
-      <TouchableOpacity onPress={() => {}} style={s.skipLink}>
-        <Text style={s.skipLinkText}>No known allergies — skip</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-// ─── Step 6: Prescription ─────────────────────────────────────────────────────
-function StepPrescription({ carbRatio, setCarbRatio, isf, setIsf, bgTargetLow, setBgTargetLow, bgTargetHigh, setBgTargetHigh, glucoseUnit, setGlucoseUnit, language, setLanguage, colors }: any) {
-  const s = styles(colors);
-  return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <Text style={s.stepEmoji}>💊</Text>
-      <Text style={s.stepTitle}>Prescription Settings</Text>
-      <Text style={s.stepSubtitle}>
-        Enter the values from your endocrinologist. You can update these any time in Settings.
-      </Text>
-
-      <View style={s.unitRow}>
-        <Text style={s.fieldLabel}>Glucose Units</Text>
-        <View style={s.unitToggle}>
-          {(["mgdl", "mmol"] as const).map((u) => (
-            <TouchableOpacity
-              key={u}
-              style={[s.unitBtn, glucoseUnit === u && s.unitBtnActive]}
-              onPress={() => setGlucoseUnit(u)}
-            >
-              <Text style={[s.unitBtnText, glucoseUnit === u && s.unitBtnTextActive]}>
-                {u === "mgdl" ? "mg/dL" : "mmol/L"}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-
-      <Text style={s.fieldLabel}>Carb Ratio (CR)</Text>
-      <Text style={s.fieldHint}>Grams of carbs covered by 1 unit of insulin</Text>
-      <TextInput style={s.textInput} value={carbRatio} onChangeText={setCarbRatio} keyboardType="decimal-pad" placeholder="e.g. 15" placeholderTextColor={colors.muted} returnKeyType="done" />
-
-      <Text style={s.fieldLabel}>Insulin Sensitivity Factor (ISF)</Text>
-      <Text style={s.fieldHint}>How many {glucoseUnit === "mgdl" ? "mg/dL" : "mmol/L"} 1 unit of insulin lowers BG</Text>
-      <TextInput style={s.textInput} value={isf} onChangeText={setIsf} keyboardType="decimal-pad" placeholder={glucoseUnit === "mgdl" ? "e.g. 50" : "e.g. 2.8"} placeholderTextColor={colors.muted} returnKeyType="done" />
-
-      <Text style={s.fieldLabel}>BG Target Range</Text>
-      <View style={s.rangeRow}>
-        <View style={{ flex: 1, marginRight: 8 }}>
-          <Text style={s.fieldHint}>Low ({glucoseUnit === "mgdl" ? "mg/dL" : "mmol/L"})</Text>
-          <TextInput style={s.textInput} value={bgTargetLow} onChangeText={setBgTargetLow} keyboardType="decimal-pad" placeholder={glucoseUnit === "mgdl" ? "70" : "3.9"} placeholderTextColor={colors.muted} returnKeyType="done" />
-        </View>
-        <View style={{ flex: 1, marginLeft: 8 }}>
-          <Text style={s.fieldHint}>High ({glucoseUnit === "mgdl" ? "mg/dL" : "mmol/L"})</Text>
-          <TextInput style={s.textInput} value={bgTargetHigh} onChangeText={setBgTargetHigh} keyboardType="decimal-pad" placeholder={glucoseUnit === "mgdl" ? "180" : "10.0"} placeholderTextColor={colors.muted} returnKeyType="done" />
-        </View>
-      </View>
-
-      <Text style={s.fieldLabel}>App Language</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 8 }}>
-        {LANGUAGES.map((lang) => (
-          <TouchableOpacity
-            key={lang.code}
-            style={[s.langChip, language === lang.code && s.langChipSelected]}
-            onPress={() => setLanguage(lang.code)}
-          >
-            <Text style={[s.langLabel, language === lang.code && s.langLabelSelected]}>{lang.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      <View style={s.tipBox}>
-        <Text style={s.tipText}>💡 Don't know these values yet? Leave the defaults — they are based on ADA guidelines for your child's age. Your endocrinologist will provide exact values.</Text>
-      </View>
-    </ScrollView>
-  );
-}
-
-// ─── Step 7: GluCrew ──────────────────────────────────────────────────────────
-function StepGluCrew({ inviteInput, setInviteInput, invites, addInvite, removeInvite, childName, colors }: any) {
-  const s = styles(colors);
-  const name = childName || "your child";
-  return (
-    <View>
-      <Text style={s.stepEmoji}>👨‍👩‍👧</Text>
-      <Text style={s.stepTitle}>Build Your Care Team</Text>
-      <Text style={s.stepSubtitle}>
-        Invite family, caregivers, and school nurses to monitor {name}'s health in real time.
-      </Text>
-      <Text style={s.fieldLabel}>Invite by Email or Phone</Text>
-      <View style={s.inviteRow}>
-        <TextInput
-          style={[s.textInput, { flex: 1, marginBottom: 0, marginRight: 8 }]}
-          value={inviteInput}
-          onChangeText={setInviteInput}
-          placeholder="email@example.com or +1-555-0100"
-          placeholderTextColor={colors.muted}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          returnKeyType="done"
-          onSubmitEditing={addInvite}
-        />
-        <TouchableOpacity style={s.addBtn} onPress={addInvite} activeOpacity={0.8}>
-          <Text style={s.addBtnText}>Add</Text>
-        </TouchableOpacity>
-      </View>
-      {invites.length > 0 && (
-        <View style={{ marginTop: 12 }}>
-          {invites.map((inv: string) => (
-            <View key={inv} style={s.inviteChip}>
-              <Text style={s.inviteChipText} numberOfLines={1}>✉️ {inv}</Text>
-              <TouchableOpacity onPress={() => removeInvite(inv)}>
-                <Text style={{ color: colors.error, fontSize: 18, paddingLeft: 8 }}>✕</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
-        </View>
-      )}
-      <View style={s.tipBox}>
-        <Text style={s.tipText}>
-          💡 Your Care Team can see {name}'s live glucose, log meals and insulin, and receive emergency alerts — all from their own phone. You control what they can see.
-        </Text>
-      </View>
-      <View style={[s.tipBox, { borderColor: colors.primary, backgroundColor: `${colors.primary}15` }]}>
-        <Text style={[s.tipText, { color: colors.primary }]}>
-          🎉 You're almost done! Tap "Get Started" to launch JACS. You can always update these settings from the Settings tab.
-        </Text>
-      </View>
-    </View>
-  );
-}
-
 // ─── Styles ───────────────────────────────────────────────────────────────────
-function styles(colors: any) {
-  return StyleSheet.create({
-    header: {
-      paddingHorizontal: 20,
-      paddingTop: 8,
-      paddingBottom: 4,
-    },
-    progressBarBg: {
-      height: 6,
-      backgroundColor: colors.border,
-      borderRadius: 3,
-      overflow: "hidden",
-    },
-    progressBarFill: {
-      height: 6,
-      backgroundColor: colors.primary,
-      borderRadius: 3,
-    },
-    stepLabel: {
-      color: colors.muted,
-      fontSize: 12,
-      marginTop: 4,
-      textAlign: "right",
-    },
-    scrollContent: {
-      padding: 20,
-      paddingBottom: 32,
-    },
-    stepEmoji: {
-      fontSize: 48,
-      textAlign: "center",
-      marginBottom: 8,
-    },
-    stepTitle: {
-      fontSize: 26,
-      fontWeight: "700",
-      color: colors.foreground,
-      textAlign: "center",
-      marginBottom: 6,
-    },
-    stepSubtitle: {
-      fontSize: 15,
-      color: colors.muted,
-      textAlign: "center",
-      marginBottom: 24,
-      lineHeight: 22,
-    },
-    sectionLabel: {
-      fontSize: 14,
-      fontWeight: "600",
-      color: colors.muted,
-      textTransform: "uppercase",
-      letterSpacing: 0.5,
-      marginBottom: 8,
-    },
-    fieldLabel: {
-      fontSize: 15,
-      fontWeight: "600",
-      color: colors.foreground,
-      marginBottom: 4,
-      marginTop: 12,
-    },
-    fieldHint: {
-      fontSize: 12,
-      color: colors.muted,
-      marginBottom: 4,
-    },
-    textInput: {
-      backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
-      borderRadius: 12,
-      paddingHorizontal: 16,
-      paddingVertical: 12,
-      fontSize: 16,
-      color: colors.foreground,
-      marginBottom: 4,
-    },
-    optionCard: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: colors.surface,
-      borderWidth: 1.5,
-      borderColor: colors.border,
-      borderRadius: 14,
-      padding: 14,
-      marginBottom: 10,
-    },
-    optionCardSelected: {
-      borderColor: colors.primary,
-      backgroundColor: `${colors.primary}12`,
-    },
-    optionEmoji: {
-      fontSize: 28,
-      marginRight: 12,
-    },
-    optionLabel: {
-      fontSize: 16,
-      fontWeight: "600",
-      color: colors.foreground,
-    },
-    optionLabelSelected: {
-      color: colors.primary,
-    },
-    optionDesc: {
-      fontSize: 13,
-      color: colors.muted,
-      marginTop: 2,
-    },
-    allergyGrid: {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      gap: 8,
-      marginBottom: 16,
-    },
-    allergyChip: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: colors.surface,
-      borderWidth: 1.5,
-      borderColor: colors.border,
-      borderRadius: 20,
-      paddingHorizontal: 12,
-      paddingVertical: 8,
-    },
-    allergyChipSelected: {
-      borderColor: "#EF4444",
-      backgroundColor: "#FEE2E2",
-    },
-    allergyEmoji: {
-      fontSize: 18,
-      marginRight: 6,
-    },
-    allergyLabel: {
-      fontSize: 13,
-      fontWeight: "500",
-      color: colors.foreground,
-    },
-    allergyLabelSelected: {
-      color: "#DC2626",
-    },
-    tipBox: {
-      backgroundColor: `${colors.primary}10`,
-      borderWidth: 1,
-      borderColor: `${colors.primary}30`,
-      borderRadius: 12,
-      padding: 12,
-      marginTop: 12,
-    },
-    tipText: {
-      fontSize: 13,
-      color: colors.muted,
-      lineHeight: 19,
-    },
-    infoPill: {
-      alignSelf: "flex-start",
-      backgroundColor: `${colors.success}20`,
-      borderRadius: 20,
-      paddingHorizontal: 12,
-      paddingVertical: 4,
-      marginTop: 4,
-      marginBottom: 8,
-    },
-    infoPillText: {
-      fontSize: 13,
-      color: colors.success,
-      fontWeight: "600",
-    },
-    skipLink: {
-      alignSelf: "center",
-      marginTop: 12,
-      padding: 8,
-    },
-    skipLinkText: {
-      color: colors.muted,
-      fontSize: 14,
-      textDecorationLine: "underline",
-    },
-    unitRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      marginTop: 12,
-      marginBottom: 4,
-    },
-    unitToggle: {
-      flexDirection: "row",
-      backgroundColor: colors.surface,
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: colors.border,
-      overflow: "hidden",
-    },
-    unitBtn: {
-      paddingHorizontal: 14,
-      paddingVertical: 8,
-    },
-    unitBtnActive: {
-      backgroundColor: colors.primary,
-    },
-    unitBtnText: {
-      fontSize: 14,
-      fontWeight: "600",
-      color: colors.muted,
-    },
-    unitBtnTextActive: {
-      color: "#fff",
-    },
-    rangeRow: {
-      flexDirection: "row",
-    },
-    langChip: {
-      backgroundColor: colors.surface,
-      borderWidth: 1.5,
-      borderColor: colors.border,
-      borderRadius: 20,
-      paddingHorizontal: 14,
-      paddingVertical: 8,
-      marginRight: 8,
-    },
-    langChipSelected: {
-      borderColor: colors.primary,
-      backgroundColor: `${colors.primary}15`,
-    },
-    langLabel: {
-      fontSize: 14,
-      color: colors.foreground,
-      fontWeight: "500",
-    },
-    langLabelSelected: {
-      color: colors.primary,
-    },
-    inviteRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginTop: 4,
-    },
-    addBtn: {
-      backgroundColor: colors.primary,
-      borderRadius: 12,
-      paddingHorizontal: 16,
-      paddingVertical: 13,
-    },
-    addBtnText: {
-      color: "#fff",
-      fontWeight: "700",
-      fontSize: 15,
-    },
-    inviteChip: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: colors.surface,
-      borderRadius: 10,
-      paddingHorizontal: 14,
-      paddingVertical: 10,
-      marginBottom: 8,
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-    inviteChipText: {
-      flex: 1,
-      fontSize: 14,
-      color: colors.foreground,
-    },
-    navRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      paddingHorizontal: 20,
-      paddingVertical: 12,
-      borderTopWidth: 1,
-      borderTopColor: colors.border,
-      backgroundColor: colors.background,
-      gap: 12,
-    },
-    backBtn: {
-      flex: 1,
-      paddingVertical: 14,
-      borderRadius: 14,
-      borderWidth: 1.5,
-      borderColor: colors.border,
-      alignItems: "center",
-    },
-    backBtnText: {
-      fontSize: 16,
-      fontWeight: "600",
-      color: colors.foreground,
-    },
-    nextBtn: {
-      flex: 2,
-      paddingVertical: 14,
-      borderRadius: 14,
-      backgroundColor: colors.primary,
-      alignItems: "center",
-    },
-    nextBtnText: {
-      fontSize: 16,
-      fontWeight: "700",
-      color: "#fff",
-    },
-  });
-}
+const st = StyleSheet.create({
+  center:      { alignItems: "center", paddingTop: 20 },
+  heroTitle:   { fontSize: 34, fontWeight: "800", color: "#ECEDEE", textAlign: "center", marginBottom: 12 },
+  heroSub:     { fontSize: 16, color: "#9BA1A6", textAlign: "center", lineHeight: 24, marginBottom: 36 },
+  title:       { fontSize: 26, fontWeight: "800", color: "#ECEDEE", marginBottom: 8, lineHeight: 34 },
+  sub:         { fontSize: 14, color: "#9BA1A6", lineHeight: 22, marginBottom: 20 },
+  card:        { flexDirection: "row", alignItems: "center", backgroundColor: "#0F1A2A", borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1.5, borderColor: "#1e3a5f" },
+  cardTitle:   { fontSize: 16, fontWeight: "700", color: "#ECEDEE", marginBottom: 3 },
+  cardDesc:    { fontSize: 12, color: "#9BA1A6", lineHeight: 18 },
+  chip:        { flexDirection: "row", alignItems: "center", paddingHorizontal: 14, paddingVertical: 10, borderRadius: 24, backgroundColor: "#0F1A2A", borderWidth: 1.5, borderColor: "#1e3a5f" },
+  chipText:    { fontSize: 13, fontWeight: "600", color: "#9BA1A6" },
+  label:       { fontSize: 14, fontWeight: "700", color: "#ECEDEE", marginBottom: 8 },
+  input:       { backgroundColor: "#0F1A2A", borderRadius: 14, padding: 14, color: "#ECEDEE", fontSize: 16, borderWidth: 1.5, borderColor: "#1e3a5f", marginBottom: 8 },
+  btn:         { borderRadius: 18, padding: 18, alignItems: "center", marginTop: 8, marginBottom: 4 },
+  btnText:     { color: "#0F0F1A", fontWeight: "800", fontSize: 17 },
+  backBtn:     { alignItems: "center", paddingVertical: 12, marginTop: 4 },
+  backText:    { color: "#38BDF8", fontSize: 15, fontWeight: "600" },
+  hint:        { textAlign: "center", color: "#687076", fontSize: 12, marginTop: 8, marginBottom: 20, lineHeight: 18 },
+  badge:       { alignSelf: "flex-start", borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6, borderWidth: 1.5, marginBottom: 14 },
+  badgeText:   { fontSize: 13, fontWeight: "700" },
+  benefitRow:  { flexDirection: "row", alignItems: "flex-start", backgroundColor: "#0F1A2A", borderRadius: 12, padding: 12, marginBottom: 8, borderLeftWidth: 3 },
+  benefitTitle:{ fontSize: 14, fontWeight: "700", marginBottom: 2 },
+  benefitDesc: { fontSize: 12, color: "#9BA1A6", lineHeight: 18 },
+});

@@ -4464,3 +4464,11 @@
 - [x] Add What's New ribbon banner to web portal
 - [x] Fix QR code to use exps:// Expo Go URL instead of web portal URL
 - [x] Audit and fix all cards/tabs to be clickable and persistently functional across entire app
+- [ ] First-launch personalized onboarding wizard: health profile questions, condition-specific customization, benefits discovery for all users
+- [ ] User profile context/store persisting onboarding answers (condition, goals) via AsyncStorage
+- [ ] Tab bar and home screen dynamically customized based on user profile
+- [ ] Onboarding gate in root layout: first-time users see wizard, returning users skip it
+- [x] Smart first-run onboarding wizard: branching flow for Diabetes (T1/T2/both/pre), General Health (multi-select goals), Hospice (role), Caregiver
+- [x] Personalised home screen hero greeting with user name and condition-specific dashboard title
+- [x] Benefits discovery step shown to ALL users regardless of primary goal
+- [x] useJacsProfile hook for reading persisted profile across the app

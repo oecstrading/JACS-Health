@@ -1,7 +1,9 @@
-import { ScrollView, Text, View, Pressable, Switch, type ViewStyle, Linking, Platform, Image } from "react-native";
+import { ScrollView, Text, View, Pressable, Switch, type ViewStyle, Linking, Platform, Image, Alert } from "react-native";
 import { useState, useEffect } from "react";
 import { router } from "expo-router";
 import * as Haptics from "expo-haptics";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useJacsProfile } from "@/hooks/use-jacs-profile";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -18,6 +20,102 @@ interface SettingItem {
   icon: React.ComponentProps<typeof IconSymbol>["name"];
   type: "toggle" | "select" | "action";
   value?: boolean | string;
+}
+
+// ── Reset Profile Card ────────────────────────────────────────────────────────
+function ResetProfileCard() {
+  const { profile, refresh } = useJacsProfile();
+
+  const goalLabel =
+    !profile ? 'Not set up yet' :
+    profile.primaryGoal === 'diabetes'
+      ? profile.diabetesType === 'type1' ? 'Type 1 Diabetes'
+        : profile.diabetesType === 'type2' ? 'Type 2 Diabetes'
+        : profile.diabetesType === 'both' ? 'T1D & T2D'
+        : 'Pre-Diabetes'
+    : profile.primaryGoal === 'general' ? 'General Health'
+    : profile.primaryGoal === 'hospice' ? 'Hospice Care'
+    : 'Caregiver';
+
+  const handleReset = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    Alert.alert(
+      'Update Health Profile',
+      'This will re-run the setup wizard so you can update your health profile. Your health data will not be deleted.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Re-run Setup',
+          style: 'destructive',
+          onPress: async () => {
+            await AsyncStorage.removeItem('@jacs_setup_complete');
+            router.replace('/setup-wizard' as any);
+          },
+        },
+      ]
+    );
+  };
+
+  return (
+    <View style={{ marginBottom: 24 }}>
+      <Text style={{ fontSize: 18, fontWeight: '700', color: '#ECEDEE', lineHeight: 26, marginBottom: 12 }}>
+        🩺 Your Health Profile
+      </Text>
+      <View style={{
+        backgroundColor: '#0F1A2A',
+        borderRadius: 20,
+        borderWidth: 1.5,
+        borderColor: '#1e3a5f',
+        padding: 20,
+      }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 14 }}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: '#9BA1A6', fontSize: 12, fontWeight: '600', letterSpacing: 0.5, marginBottom: 4 }}>PRIMARY FOCUS</Text>
+            <Text style={{ color: '#ECEDEE', fontSize: 17, fontWeight: '800', lineHeight: 22 }}>{goalLabel}</Text>
+            {profile?.name ? (
+              <Text style={{ color: '#687076', fontSize: 13, marginTop: 2 }}>Logged in as {profile.name}</Text>
+            ) : null}
+          </View>
+          <View style={{
+            backgroundColor:
+              profile?.primaryGoal === 'diabetes' ? '#F8717122' :
+              profile?.primaryGoal === 'general' ? '#4ADE8022' :
+              profile?.primaryGoal === 'hospice' ? '#FB923C22' : '#A78BFA22',
+            borderRadius: 16, padding: 12,
+          }}>
+            <Text style={{ fontSize: 28 }}>
+              {profile?.primaryGoal === 'diabetes' ? '🩸'
+               : profile?.primaryGoal === 'general' ? '💚'
+               : profile?.primaryGoal === 'hospice' ? '🏥'
+               : profile ? '👩\u200d⚕️' : '❓'}
+            </Text>
+          </View>
+        </View>
+        <Pressable
+          onPress={handleReset}
+          style={({ pressed }) => ({
+            backgroundColor: pressed ? '#1a2a3a' : '#0A1628',
+            borderWidth: 1.5,
+            borderColor: '#F87171',
+            borderRadius: 14,
+            paddingVertical: 12,
+            paddingHorizontal: 20,
+            flexDirection: 'row' as const,
+            alignItems: 'center' as const,
+            justifyContent: 'center' as const,
+            gap: 10,
+            opacity: pressed ? 0.85 : 1,
+          })}
+        >
+          <Text style={{ fontSize: 16 }}>🔄</Text>
+          <Text style={{ color: '#F87171', fontWeight: '700', fontSize: 15 }}>Update Health Profile</Text>
+        </Pressable>
+        <Text style={{ color: '#687076', fontSize: 11, textAlign: 'center', marginTop: 8, lineHeight: 16 }}>
+          Re-run setup wizard to change your health focus. Your data is kept.
+        </Text>
+      </View>
+    </View>
+  );
 }
 
 /**
@@ -367,6 +465,9 @@ export default function SettingsScreen() {
             ))}
           </View>
         </View>
+
+        {/* Reset Profile Card */}
+        <ResetProfileCard />
 
         {/* Clinician QR Code Card */}
         <View className="mb-6">

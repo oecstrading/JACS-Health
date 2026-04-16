@@ -146,7 +146,20 @@ export default function SetupWizardScreen() {
     };
     await AsyncStorage.setItem("@jacs_user_profile", JSON.stringify(profile));
     await AsyncStorage.setItem("@jacs_setup_complete", "true");
-    router.replace("/(tabs)");
+    // Smart redirect: land the user directly in their primary portal tab
+    if (primaryGoal === "diabetes") {
+      if (diabetesType === "type2") {
+        router.replace("/(tabs)/diabetes2-portal" as any);
+      } else {
+        router.replace("/(tabs)/diabetes-portal" as any);
+      }
+    } else if (primaryGoal === "general") {
+      router.replace("/(tabs)/my-health" as any);
+    } else if (primaryGoal === "hospice") {
+      router.replace("/(tabs)/hospice-revenue-command" as any);
+    } else {
+      router.replace("/(tabs)");
+    }
   };
 
   const primaryColor =

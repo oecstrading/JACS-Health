@@ -4472,3 +4472,6 @@
 - [x] Personalised home screen hero greeting with user name and condition-specific dashboard title
 - [x] Benefits discovery step shown to ALL users regardless of primary goal
 - [x] useJacsProfile hook for reading persisted profile across the app
+- [x] Reset Profile / Re-run Setup option in Settings
+- [ ] Smart post-onboarding tab redirect based on user's primary goal
+- [ ] Health score ring widget on Home screen (glucose + meds + sleep)

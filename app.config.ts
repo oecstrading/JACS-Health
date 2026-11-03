@@ -149,6 +149,8 @@ const config: ExpoConfig = {
   experiments: {
     typedRoutes: true,
     reactCompiler: true,
+    // GitHub Pages serves this repository under a subpath, not at the domain root.
+    ...(process.env.GITHUB_PAGES === "true" ? { baseUrl: "/jacs-health-companion" } : {}),
   },
 };
 
